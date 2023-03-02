@@ -1,0 +1,24 @@
+<app-toolbar title="Exercises"></app-toolbar>
+<div class="p-2 md:p-8">
+  <mat-form-field class="example-full-width">
+    <mat-label>Search</mat-label>
+    <input
+      matInput
+      placeholder="Search Exercises..."
+      [formControl]="searchControl"
+    />
+  </mat-form-field>
+  <app-label-autocomplete
+    [formControl]="labelIdControl"
+  ></app-label-autocomplete>
+
+  <ng-container *ngIf="exercises$ | async as exercises">
+    <ng-container *ngFor="let exercise of exercises">
+      <button mat-button (click)="navigateToExercise(exercise)">
+        {{ exercise.question }}
+      </button>
+    </ng-container>
+  </ng-container>
+
+  <app-exercise-form></app-exercise-form>
+</div>

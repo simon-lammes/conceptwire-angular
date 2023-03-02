@@ -1,0 +1,14 @@
+<mat-form-field class="example-full-width" appearance="fill">
+  <mat-label>Label</mat-label>
+  <input
+    type="text"
+    matInput
+    [formControl]="control"
+    [matAutocomplete]="auto"
+  />
+  <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+    <mat-option *ngFor="let label of filteredLabels$ | async" [value]="label">
+      {{ label.title }}
+    </mat-option>
+  </mat-autocomplete>
+</mat-form-field>

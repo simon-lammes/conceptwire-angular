@@ -1,0 +1,11 @@
+<app-toolbar title="Labels"></app-toolbar>
+<div class="p-8">
+  <ng-container *ngIf="labels$ | async as labels">
+    <ng-container *ngFor="let label of labels">
+      <button mat-raised-button (click)="onLabelClicked(label)">
+        {{ label.title }}
+      </button>
+    </ng-container>
+    <app-label-form></app-label-form>
+  </ng-container>
+</div>

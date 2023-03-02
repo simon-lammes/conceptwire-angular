@@ -1,0 +1,18 @@
+<app-toolbar title="Study"></app-toolbar>
+<div
+  *ngIf="
+    exerciseSituation$ | async as exerciseSituation;
+    else templateNoExercise
+  "
+  class="p-2 md:p-8"
+>
+  <h1>Studying {{ labelId$ | async }}</h1>
+  <app-exercise
+    [exerciseSituation]="exerciseSituation"
+    (exerciseResult)="onExerciseResult($event)"
+  ></app-exercise>
+</div>
+
+<ng-template #templateNoExercise>
+  <div>There is no exercise</div>
+</ng-template>
