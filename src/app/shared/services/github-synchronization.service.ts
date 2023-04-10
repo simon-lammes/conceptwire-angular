@@ -34,6 +34,7 @@ export class GithubSynchronizationService {
       );
       await this.synchronisationService.importLabel(labelContent, id);
     }
+    await this.synchronisationService.generateTransitiveClosureForLabelImplications();
     const exercises = (await this.octokit.rest.repos
       .getContent({
         ...props,

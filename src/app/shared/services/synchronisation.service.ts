@@ -6,6 +6,13 @@ import * as _ from 'lodash-es';
 import { AssetService } from './asset.service';
 import { AssetAttribution } from '../models/asset-attribution';
 import { AssetAttributionService } from './asset-attribution.service';
+import {
+  createAcyclicGraph,
+  createGraph,
+  transitiveClosure,
+} from 'simple-digraph';
+import { DbService } from './db.service';
+import { lab } from 'd3';
 
 @Injectable({
   providedIn: 'root',
@@ -17,7 +24,8 @@ export class SynchronisationService {
     private exerciseService: ExerciseService,
     private labelService: LabelService,
     private assetService: AssetService,
-    private assetAttributionService: AssetAttributionService
+    private assetAttributionService: AssetAttributionService,
+    private db: DbService
   ) {}
 
   async uploadContent() {
@@ -39,6 +47,7 @@ export class SynchronisationService {
       const labelContent = await file.text();
       await this.importLabel(labelContent, id);
     }
+    await this.generateTransitiveClosureForLabelImplications();
     const assetsDirectoryHandle =
       await this.directoryHandle!.getDirectoryHandle('assets', {
         create: false,
@@ -117,6 +126,38 @@ export class SynchronisationService {
 
   public async importAssetAttribution(assetAttribution: AssetAttribution) {
     return this.assetAttributionService.saveAssetAttribution(assetAttribution);
+  }
+
+  /**
+   * When A implicated B and B implicates C, then we can also say that A implicated C.
+   * For our application to properly work, we should add all implication to the database.
+   */
+  public async generateTransitiveClosureForLabelImplications() {
+    const labelIds = await this.db.labels
+      .toArray()
+      .then((x) => x.map((y) => y.id));
+    const labelImplications = await this.db.labelImplications.toArray();
+    const originalEdges: [number, number][] = labelImplications.map(
+      (labelImplication) => [
+        labelIds.indexOf(labelImplication.causingLabelId),
+        labelIds.indexOf(labelImplication.implicatedLabelId),
+      ]
+    );
+    const graph = createAcyclicGraph(originalEdges);
+    const closure = transitiveClosure(graph);
+    const neededAdditionalEdges = _.differenceWith(
+      [...closure[1].values()],
+      originalEdges,
+      _.isEqual
+    );
+    const needAdditionalLabelImplications = neededAdditionalEdges.map(
+      ([source, target]) =>
+        ({
+          causingLabelId: labelIds[source],
+          implicatedLabelId: labelIds[target],
+        } as LabelImplication)
+    );
+    await this.db.labelImplications.bulkPut(needAdditionalLabelImplications);
   }
 
   private createHtmlElement(content: string): HTMLElement {

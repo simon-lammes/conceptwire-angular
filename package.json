@@ -43,6 +43,7 @@
     "octokit": "^2.0.14",
     "prettier": "^2.8.4",
     "rxjs": "~7.8.0",
+    "simple-digraph": "^1.0.1",
     "tslib": "^2.3.0",
     "zone.js": "^0.12.0"
   },
