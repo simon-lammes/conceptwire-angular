@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
 import { combineLatest, Observable, startWith, switchMap } from 'rxjs';
 import { Exercise } from '../shared/models/exercise';
 import { ExerciseService } from '../shared/services/exercise.service';
@@ -10,6 +10,7 @@ import { ActivatedRoute, Router } from '@angular/router';
   selector: 'app-exercises',
   templateUrl: './exercises.component.html',
   styleUrls: ['./exercises.component.sass'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ExercisesComponent implements OnDestroy {
   exercises$: Observable<Exercise[]>;

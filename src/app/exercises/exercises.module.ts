@@ -7,8 +7,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { ReactiveFormsModule } from '@angular/forms';
 import { LabelAutocompleteComponent } from '../shared/components/label-autocomplete/label-autocomplete.component';
-import { ExerciseFormComponent } from '../shared/components/exercise-form/exercise-form.component';
 import { ToolbarComponent } from '../shared/components/toolbar/toolbar.component';
+import { ExercisePreviewSmallClickableComponent } from '../shared/components/exercise-preview-small-clickable/exercise-preview-small-clickable.component';
 
 @NgModule({
   declarations: [ExercisesComponent],
@@ -19,8 +19,8 @@ import { ToolbarComponent } from '../shared/components/toolbar/toolbar.component
     MatInputModule,
     ReactiveFormsModule,
     LabelAutocompleteComponent,
-    ExerciseFormComponent,
     ToolbarComponent,
+    ExercisePreviewSmallClickableComponent,
   ],
 })
 export class ExercisesModule {}

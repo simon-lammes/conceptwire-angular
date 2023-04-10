@@ -1,13 +1,15 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { LabelService } from '../shared/services/label.service';
 import { Observable } from 'rxjs';
 import { Label } from '../shared/models/label';
 import { ActivatedRoute, Router } from '@angular/router';
+import { lab } from 'd3';
 
 @Component({
   selector: 'app-labels',
   templateUrl: './labels.component.html',
   styleUrls: ['./labels.component.sass'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LabelsComponent {
   readonly labels$: Observable<Label[]>;
@@ -23,4 +25,6 @@ export class LabelsComponent {
   async onLabelClicked(label: Label) {
     await this.router.navigate([label.id], { relativeTo: this.route });
   }
+
+  protected readonly lab = lab;
 }

@@ -1,33 +1,5 @@
-<mat-card (click)="isAnswerShown = true">
-  <mat-card-content>
-    <div>
-      {{ exerciseSituation.exercise.question }}
-    </div>
-    <div class="h-1 w-full rounded-full bg-neutral-200 my-4"></div>
-    <div>
-      <ng-container *ngIf="isAnswerShown">
-        <div>
-          {{ exerciseSituation.exercise.answer }}
-        </div>
-        <div class="flex gap-8">
-          <button
-            mat-fab
-            color="warn"
-            aria-label="Failed Exercise"
-            (click)="emitExerciseResult('failure')"
-          >
-            <mat-icon>thumb_down</mat-icon>
-          </button>
-          <button
-            mat-fab
-            color="primary"
-            aria-label="Succeeded at Exercise"
-            (click)="emitExerciseResult('success')"
-          >
-            <mat-icon>thumb_up</mat-icon>
-          </button>
-        </div>
-      </ng-container>
-    </div>
-  </mat-card-content>
-</mat-card>
+<span
+  [innerHtml]="
+    exerciseContent | applyRuntimeTransformationsToExercise | async | trustHtml
+  "
+></span>

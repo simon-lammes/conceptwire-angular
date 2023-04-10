@@ -36,9 +36,7 @@ export class ExerciseService {
           return lowerCaseQuery
             ? collectionFilteredByLabel
                 .filter((exercise) =>
-                  `${exercise.question} ${exercise.answer}`
-                    .toLowerCase()
-                    .includes(lowerCaseQuery)
+                  exercise.content.toLowerCase().includes(lowerCaseQuery)
                 )
                 .toArray()
             : collectionFilteredByLabel.toArray();
@@ -49,14 +47,14 @@ export class ExerciseService {
 
   async saveExercise({
     id,
-    question,
-    answer,
+    content,
     labelIds,
+    title,
   }: {
     id?: string;
-    question: string;
-    answer: string;
+    content: string;
     labelIds?: string[] | null;
+    title?: string;
   }) {
     await this.db.transaction(
       'rw',
@@ -64,8 +62,8 @@ export class ExerciseService {
       async () => {
         const exerciseId = await this.db.exercises.put({
           id: id ?? self.crypto.randomUUID(),
-          question,
-          answer,
+          content,
+          title,
         });
         if (labelIds) {
           await this.db.exerciseLabels.bulkPut(

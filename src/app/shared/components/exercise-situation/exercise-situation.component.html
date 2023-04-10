@@ -1,0 +1,5 @@
+<app-exercise
+  [exerciseContent]="exerciseSituation.exercise.content"
+  (exerciseFeedback)="emitExerciseResult($event)"
+  (nextExerciseRequested)="nextExerciseRequested.emit()"
+></app-exercise>

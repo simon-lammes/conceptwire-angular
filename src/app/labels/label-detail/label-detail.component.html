@@ -1,22 +1,39 @@
 <app-toolbar [title]="(label$ | async)?.title ?? ''"></app-toolbar>
 <div class="p-2 md:p-8 gap-4 flex flex-col">
   <ng-container *ngIf="label$ | async as label">
-    <mat-card>
-      <mat-card-header>
-        <mat-card-title>{{ label.title }}</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <p>{{ label.description }}</p>
-      </mat-card-content>
-      <mat-card-actions>
-        <button mat-raised-button (click)="showExercisesForLabel(label)">
-          Show Exercises
-        </button>
-        <button mat-raised-button color="primary" (click)="study()">
-          Study
-        </button>
-      </mat-card-actions>
-    </mat-card>
+    <div
+      class="block w-full rounded-lg border-neutral-200 border-2 overflow-hidden"
+    >
+      <button
+        class="w-full h-20 bg-neutral-200"
+        (click)="onLabelImageClicked(label)"
+      >
+        <img
+          *ngIf="label.localImageId | localAssetUrl | async as url"
+          [src]="url"
+          class="h-full w-full object-contain"
+        />
+      </button>
+      <div class="px-3 py-2">
+        <div class="text-lg">
+          {{ label.title }}
+        </div>
+        <div class="text-neutral-700">{{ label.description }}</div>
+        <div class="mt-4">
+          <button mat-raised-button (click)="showExercisesForLabel(label)">
+            Show Exercises
+          </button>
+          <button
+            mat-raised-button
+            color="primary"
+            (click)="study()"
+            class="ml-4"
+          >
+            Study
+          </button>
+        </div>
+      </div>
+    </div>
 
     <mat-card>
       <mat-card-header>
@@ -32,7 +49,5 @@
         </ng-container>
       </mat-card-content>
     </mat-card>
-
-    <app-label-form [label]="label"></app-label-form>
   </ng-container>
 </div>

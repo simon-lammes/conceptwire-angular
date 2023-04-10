@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { DbService } from './db.service';
-import { from, Observable } from 'rxjs';
+import { from, Observable, switchMap } from 'rxjs';
 import { liveQuery } from 'dexie';
 import {
   Experience,
@@ -8,12 +8,18 @@ import {
 } from '../models/experience';
 import { ExerciseResult } from '../models/exerciseResult';
 import { sub } from 'date-fns';
+import { StudySettingsService } from './study-settings.service';
+import { ExerciseCooldownService } from './exercise-cooldown.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ExperienceService {
-  constructor(private db: DbService) {}
+  constructor(
+    private db: DbService,
+    private studySettingsService: StudySettingsService,
+    private exerciseCooldownService: ExerciseCooldownService
+  ) {}
 
   updateExperiencesTable() {
     this.db.transaction(
@@ -53,16 +59,32 @@ export class ExperienceService {
   }: {
     labelId: string;
   }): Observable<Experience | undefined> {
-    return from(
-      liveQuery(() =>
-        this.db.experiences
-          .where('indexesForLabelStreakAndLastSeen')
-          // We basically want to look at all experiences with the given label.
-          // The nature of the index already guarantees that they are ordered by streak and last seen - just as we like it.
-          // Inspired by: https://github.com/dexie/Dexie.js/issues/368
-          .between([labelId, -Infinity], [labelId, Infinity], true, true)
-          .filter((x) => x.lastSeen < sub(new Date(), { seconds: 10 }))
-          .first()
+    return this.studySettingsService.studySettings$.pipe(
+      switchMap((studySettings) =>
+        from(
+          liveQuery(() =>
+            this.db.experiences
+              .where('indexesForLabelStreakAndLastSeen')
+              // We basically want to look at all experiences with the given label.
+              // The nature of the index already guarantees that they are ordered by streak and last seen - just as we like it.
+              // Inspired by: https://github.com/dexie/Dexie.js/issues/368
+              .between([labelId, -Infinity], [labelId, Infinity], true, true)
+              .filter((x) => {
+                const cooldownDurationMillis =
+                  this.exerciseCooldownService.calculateCooldown({
+                    formula: studySettings?.cooldownFormula,
+                    correctStreak: x.streak,
+                  });
+                const cooldownDuration = cooldownDurationMillis
+                  ? this.exerciseCooldownService.durationMillisToDuration(
+                      cooldownDurationMillis
+                    )
+                  : { seconds: 30 };
+                return x.lastSeen < sub(new Date(), cooldownDuration);
+              })
+              .first()
+          )
+        )
       )
     );
   }
@@ -82,8 +104,8 @@ export class ExperienceService {
       indexesForLabelStreakAndLastSeen:
         experience.indexesForLabelStreakAndLastSeen?.map((index) => [
           index[0],
-          updatedExperience.streak,
-          updatedExperience.lastSeen,
+          streak,
+          lastSeen,
         ]),
     };
     this.db.experiences.put(updatedExperience);

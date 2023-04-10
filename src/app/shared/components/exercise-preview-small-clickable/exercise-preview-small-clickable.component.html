@@ -1,0 +1,5 @@
+<button mat-button>
+  <div
+    [innerHtml]="exercise.title ?? (exercise.content | textContentOfHtml)"
+  ></div>
+</button>

@@ -3,6 +3,9 @@
   "ignorePatterns": [
     "projects/**/*"
   ],
+  "plugins": [
+    "change-detection-strategy"
+  ],
   "overrides": [
     {
       "files": [
@@ -15,6 +18,9 @@
         "plugin:@angular-eslint/template/process-inline-templates"
       ],
       "rules": {
+        "@typescript-eslint/ban-ts-comment": "off",
+        "@typescript-eslint/no-non-null-assertion": "off",
+        "change-detection-strategy/on-push": "error",
         "@angular-eslint/directive-selector": [
           "error",
           {

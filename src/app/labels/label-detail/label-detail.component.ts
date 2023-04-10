@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { LabelService } from '../../shared/services/label.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map, Observable, switchMap } from 'rxjs';
@@ -6,9 +6,9 @@ import { Label } from '../../shared/models/label';
 import { ExperienceService } from '../../shared/services/experience.service';
 
 @Component({
-  selector: 'app-label-detail',
   templateUrl: './label-detail.component.html',
   styleUrls: ['./label-detail.component.sass'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LabelDetailComponent {
   label$: Observable<Label | undefined>;
@@ -42,5 +42,9 @@ export class LabelDetailComponent {
   async study() {
     await this.experienceService.updateExperiencesTable();
     await this.router.navigate(['study'], { relativeTo: this.route });
+  }
+
+  async onLabelImageClicked(label: Label) {
+    await this.router.navigate(['local-assets', label.localImageId]);
   }
 }

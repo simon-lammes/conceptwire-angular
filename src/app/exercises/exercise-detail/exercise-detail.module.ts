@@ -4,8 +4,8 @@ import { CommonModule } from '@angular/common';
 import { ExerciseDetailRoutingModule } from './exercise-detail-routing.module';
 import { ExerciseDetailComponent } from './exercise-detail.component';
 import { MatCardModule } from '@angular/material/card';
-import { ExerciseFormComponent } from '../../shared/components/exercise-form/exercise-form.component';
 import { ToolbarComponent } from '../../shared/components/toolbar/toolbar.component';
+import { ExercisePreviewComponent } from '../../shared/components/exercise-preview/exercise-preview.component';
 
 @NgModule({
   declarations: [ExerciseDetailComponent],
@@ -13,8 +13,8 @@ import { ToolbarComponent } from '../../shared/components/toolbar/toolbar.compon
     CommonModule,
     ExerciseDetailRoutingModule,
     MatCardModule,
-    ExerciseFormComponent,
     ToolbarComponent,
+    ExercisePreviewComponent,
   ],
 })
 export class ExerciseDetailModule {}

@@ -1,4 +1,4 @@
-<app-toolbar title="Study"></app-toolbar>
+<app-toolbar [title]="(label$ | async)?.title ?? ''"></app-toolbar>
 <div
   *ngIf="
     exerciseSituation$ | async as exerciseSituation;
@@ -6,11 +6,11 @@
   "
   class="p-2 md:p-8"
 >
-  <h1>Studying {{ labelId$ | async }}</h1>
-  <app-exercise
+  <app-exercise-situation
     [exerciseSituation]="exerciseSituation"
     (exerciseResult)="onExerciseResult($event)"
-  ></app-exercise>
+    (nextExerciseRequested)="onNextExerciseRequested()"
+  ></app-exercise-situation>
 </div>
 
 <ng-template #templateNoExercise>

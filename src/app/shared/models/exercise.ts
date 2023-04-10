@@ -1,5 +1,5 @@
 export interface Exercise {
   id: string;
-  question: string;
-  answer: string;
+  title?: string;
+  content: string;
 }

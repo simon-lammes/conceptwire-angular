@@ -19,40 +19,30 @@ export class LabelService {
     id,
     title,
     description,
-    implicatedLabels,
+    labelImplications,
+    localImageId,
   }: {
     id?: string;
     title: string;
     description?: string;
-    implicatedLabels?: Label[];
+    labelImplications?: LabelImplication[];
+    localImageId?: string;
   }) {
     await this.db.transaction(
       'rw',
       [this.db.labels, this.db.labelImplications],
       async () => {
-        const labelId = await this.db.labels.put({
+        await this.db.labels.put({
           id: id ?? self.crypto.randomUUID(),
           title,
           description,
+          localImageId,
         });
-        if (implicatedLabels?.length) {
-          await this.db.labelImplications.bulkPut(
-            implicatedLabels.map(
-              (implicatedLabel) =>
-                <LabelImplication>{
-                  implicatedLabelId: implicatedLabel.id,
-                  causingLabelId: labelId,
-                }
-            )
-          );
+        if (labelImplications?.length) {
+          await this.db.labelImplications.bulkPut(labelImplications);
         }
       }
     );
-    this.db.labels.put({
-      id: id ?? self.crypto.randomUUID(),
-      title,
-      description,
-    });
   }
 
   searchLabels(query: string) {
@@ -100,5 +90,38 @@ export class LabelService {
       ),
       map((labels) => labels.filter((x) => !!x) as Array<Label>)
     );
+  }
+
+  async getAllTransitiveLabelIdsByBreathFirstSearch(initialLabelIds: string[]) {
+    const breathFirstSearchQueueOfLabelIds: string[] = initialLabelIds;
+    const visitedLabelIds: string[] = [];
+    while (breathFirstSearchQueueOfLabelIds.length) {
+      const currentLabelId = breathFirstSearchQueueOfLabelIds.pop()!;
+      if (visitedLabelIds.includes(currentLabelId)) continue;
+      const implicatedLabelIds = await this.getImplicatedParentLabels(
+        currentLabelId
+      ).then((x) => x.map((y) => y.implicatedLabelId));
+      breathFirstSearchQueueOfLabelIds.push(...implicatedLabelIds);
+      visitedLabelIds.push(currentLabelId);
+    }
+    return visitedLabelIds;
+  }
+
+  /**
+   * Gets all parent labels which we also call implicated labels.
+   *
+   * I think both parent and implicated are suitable terms: One is more widely accepted
+   * while the other more clearly shows what it means mathematically in our context:
+   * If an exercise has a sub label, it implicitly also has all the parent labels.
+   * It is a transitive relationship.
+   *
+   * @param currentLabelId
+   * @private
+   */
+  private async getImplicatedParentLabels(currentLabelId: string) {
+    return this.db.labelImplications
+      .where('causingLabelId')
+      .equals(currentLabelId)
+      .toArray();
   }
 }

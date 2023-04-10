@@ -1,0 +1,15 @@
+<app-toolbar title="Synchronization"></app-toolbar>
+<button mat-raised-button color="primary" (click)="exportIntoDirectory()">
+  Export Into Local Directory
+</button>
+<button
+  mat-raised-button
+  color="primary"
+  [routerLink]="['github']"
+  [relativeTo]="route"
+>
+  Import From GitHub
+</button>
+<button mat-raised-button color="warn" (click)="dbService.clearAllTables()">
+  Clear Database
+</button>

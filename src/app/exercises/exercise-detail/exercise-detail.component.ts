@@ -1,17 +1,20 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { map, switchMap } from 'rxjs';
+import { map, Observable, switchMap } from 'rxjs';
 import { ExerciseService } from '../../shared/services/exercise.service';
+import { ExerciseSituation } from '../../shared/models/exercise-situation';
+import { Exercise } from '../../shared/models/exercise';
 
 @Component({
   selector: 'app-exercise-detail',
   templateUrl: './exercise-detail.component.html',
   styleUrls: ['./exercise-detail.component.sass'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ExerciseDetailComponent {
   exerciseId$ = this.route.params.pipe(map((params) => params['exerciseId']));
 
-  exercise$ = this.exerciseId$.pipe(
+  exercise$: Observable<Exercise | undefined> = this.exerciseId$.pipe(
     switchMap((exerciseId) => this.exerciseService.getExerciseById(exerciseId))
   );
 

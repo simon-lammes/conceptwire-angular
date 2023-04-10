@@ -16,6 +16,25 @@ const routes: Routes = [
     loadChildren: () =>
       import('./exercises/exercises.module').then((m) => m.ExercisesModule),
   },
+  {
+    path: 'synchronization',
+    loadChildren: () =>
+      import('./synchronization/synchronization.module').then(
+        (m) => m.SynchronizationModule
+      ),
+  },
+  {
+    path: 'settings',
+    loadChildren: () =>
+      import('./settings/settings.module').then((m) => m.SettingsModule),
+  },
+  {
+    path: 'local-assets',
+    loadChildren: () =>
+      import('./local-assets/local-assets.module').then(
+        (m) => m.LocalAssetsModule
+      ),
+  },
   { path: '**', redirectTo: 'home' },
 ];
 

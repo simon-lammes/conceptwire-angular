@@ -27,7 +27,17 @@
             "inlineStyleLanguage": "sass",
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              {
+                "glob": "**/*",
+                "input": "./node_modules/@vanillawc/wc-monaco-editor/",
+                "output": "./@vanillawc/wc-monaco-editor/"
+              },
+              {
+                "glob": "**/*.ttf",
+                "input": "./node_modules/@vanillawc/wc-monaco-editor/monaco",
+                "output": "./"
+              }
             ],
             "styles": [
               "src/custom-theme.scss",

@@ -12,13 +12,14 @@
     [formControl]="labelIdControl"
   ></app-label-autocomplete>
 
-  <ng-container *ngIf="exercises$ | async as exercises">
-    <ng-container *ngFor="let exercise of exercises">
-      <button mat-button (click)="navigateToExercise(exercise)">
-        {{ exercise.question }}
-      </button>
+  <div class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+    <ng-container *ngIf="exercises$ | async as exercises">
+      <ng-container *ngFor="let exercise of exercises">
+        <app-exercise-preview-small-clickable
+          [exercise]="exercise"
+          (click)="navigateToExercise(exercise)"
+        ></app-exercise-preview-small-clickable>
+      </ng-container>
     </ng-container>
-  </ng-container>
-
-  <app-exercise-form></app-exercise-form>
+  </div>
 </div>
