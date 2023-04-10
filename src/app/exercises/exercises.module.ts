@@ -9,6 +9,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { LabelAutocompleteComponent } from '../shared/components/label-autocomplete/label-autocomplete.component';
 import { ToolbarComponent } from '../shared/components/toolbar/toolbar.component';
 import { ExercisePreviewSmallClickableComponent } from '../shared/components/exercise-preview-small-clickable/exercise-preview-small-clickable.component';
+import { PaddedLayoutComponent } from '../shared/components/padded-layout/padded-layout.component';
 
 @NgModule({
   declarations: [ExercisesComponent],
@@ -21,6 +22,7 @@ import { ExercisePreviewSmallClickableComponent } from '../shared/components/exe
     LabelAutocompleteComponent,
     ToolbarComponent,
     ExercisePreviewSmallClickableComponent,
+    PaddedLayoutComponent,
   ],
 })
 export class ExercisesModule {}

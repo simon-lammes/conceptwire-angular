@@ -6,6 +6,7 @@ import { ExerciseDetailComponent } from './exercise-detail.component';
 import { MatCardModule } from '@angular/material/card';
 import { ToolbarComponent } from '../../shared/components/toolbar/toolbar.component';
 import { ExercisePreviewComponent } from '../../shared/components/exercise-preview/exercise-preview.component';
+import { PaddedLayoutComponent } from '../../shared/components/padded-layout/padded-layout.component';
 
 @NgModule({
   declarations: [ExerciseDetailComponent],
@@ -15,6 +16,7 @@ import { ExercisePreviewComponent } from '../../shared/components/exercise-previ
     MatCardModule,
     ToolbarComponent,
     ExercisePreviewComponent,
+    PaddedLayoutComponent,
   ],
 })
 export class ExerciseDetailModule {}

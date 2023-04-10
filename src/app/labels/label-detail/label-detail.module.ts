@@ -7,6 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { ToolbarComponent } from '../../shared/components/toolbar/toolbar.component';
 import { LabelDetailComponent } from './label-detail.component';
 import { LocalAssetUrlPipe } from '../../shared/pipes/local-asset-url.pipe';
+import { PaddedLayoutComponent } from '../../shared/components/padded-layout/padded-layout.component';
 
 @NgModule({
   declarations: [LabelDetailComponent],
@@ -17,6 +18,7 @@ import { LocalAssetUrlPipe } from '../../shared/pipes/local-asset-url.pipe';
     MatButtonModule,
     ToolbarComponent,
     LocalAssetUrlPipe,
+    PaddedLayoutComponent,
   ],
 })
 export class LabelDetailModule {}

@@ -1,5 +1,5 @@
 <app-toolbar title="Exercises"></app-toolbar>
-<div class="p-2 md:p-8">
+<app-padded-layout>
   <mat-form-field class="example-full-width">
     <mat-label>Search</mat-label>
     <input
@@ -12,7 +12,7 @@
     [formControl]="labelIdControl"
   ></app-label-autocomplete>
 
-  <div class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+  <div class="grid sm:grid-cols-2">
     <ng-container *ngIf="exercises$ | async as exercises">
       <ng-container *ngFor="let exercise of exercises">
         <app-exercise-preview-small-clickable
@@ -22,4 +22,4 @@
       </ng-container>
     </ng-container>
   </div>
-</div>
+</app-padded-layout>
