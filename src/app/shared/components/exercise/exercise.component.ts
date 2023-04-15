@@ -30,6 +30,8 @@ import '../../../shared/custom-elements/external-reference.element';
 import '../../../shared/custom-elements/opinion-exercise.element';
 import '../../custom-elements/opinion.element';
 import '../../custom-elements/cw-example.element';
+import '../../custom-elements/element.element';
+import '../../custom-elements/personal-note.element';
 
 @Component({
   selector: 'app-exercise',
