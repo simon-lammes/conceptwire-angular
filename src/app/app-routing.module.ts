@@ -35,6 +35,10 @@ const routes: Routes = [
         (m) => m.LocalAssetsModule
       ),
   },
+  {
+    path: 'designer',
+    loadChildren: () => import('./designer/designer.routes'),
+  },
   { path: '**', redirectTo: 'home' },
 ];
 
