@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { map, Observable, switchMap } from 'rxjs';
 import { ExerciseService } from '../../shared/services/exercise.service';
-import { ExerciseSituation } from '../../shared/models/exercise-situation';
 import { Exercise } from '../../shared/models/exercise';
 
 @Component({

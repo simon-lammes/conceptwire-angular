@@ -4,7 +4,6 @@ import {
   ElementRef,
   EventEmitter,
   Input,
-  OnDestroy,
   Output,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -65,7 +64,7 @@ export class ExerciseComponent {
     );
     this.elementRef.nativeElement.addEventListener(
       'cw-request-next-exercise',
-      (ev: CustomEvent) => {
+      () => {
         this.nextExerciseRequested.emit();
       }
     );

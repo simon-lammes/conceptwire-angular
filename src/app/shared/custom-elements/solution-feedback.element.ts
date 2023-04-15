@@ -1,7 +1,6 @@
 import { css, html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { ExerciseFeedback } from '../models/exercise-feedback';
-import { classMap } from 'lit/directives/class-map.js';
 
 @customElement('cw-solution-feedback')
 export class SolutionFeedbackElement extends LitElement {

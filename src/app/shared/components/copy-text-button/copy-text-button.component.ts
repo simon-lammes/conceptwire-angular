@@ -29,8 +29,6 @@ export class CopyTextButtonComponent {
     shareReplay({ bufferSize: 1, refCount: true })
   );
 
-  constructor() {}
-
   async onClick() {
     await navigator.clipboard.writeText(this.text);
     this.successfullyCopied.next({});
