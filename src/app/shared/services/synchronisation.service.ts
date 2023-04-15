@@ -234,6 +234,7 @@ export class SynchronisationService {
         this.importSetConcept({
           setConceptElement: conceptElement,
           conceptDocument: conceptDocumentElement,
+          conceptId: id,
         })
       )
     );
@@ -242,9 +243,11 @@ export class SynchronisationService {
   private async importSetConcept({
     setConceptElement,
     conceptDocument,
+    conceptId,
   }: {
     setConceptElement: Element;
     conceptDocument: Element;
+    conceptId: string;
   }) {
     const setElements = Array.from(
       setConceptElement.querySelectorAll('cw-element')
@@ -260,6 +263,10 @@ export class SynchronisationService {
         <meta
           name="direct-label-ids"
           content="{{concept.directLabelIds}}"
+        />
+        <meta
+          name="source-concept-id"
+          content="{{concept.id}}"
         />
       </head>
       <body>
@@ -283,6 +290,7 @@ export class SynchronisationService {
       console.log(conceptDocument.outerHTML);
       const exercise = template({
         concept: {
+          id: conceptId,
           title: conceptDocument.querySelector('title')?.innerText,
           setDescription:
             conceptDocument.querySelector(
