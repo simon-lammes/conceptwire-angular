@@ -1,6 +1,13 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject, map, Observable, switchMap, zip } from 'rxjs';
+import {
+  BehaviorSubject,
+  map,
+  Observable,
+  switchMap,
+  zip,
+  combineLatest,
+} from 'rxjs';
 import { ExerciseService } from '../../../shared/services/exercise.service';
 import { ExperienceService } from '../../../shared/services/experience.service';
 import { ExerciseSituation } from '../../../shared/models/exercise-situation';
@@ -39,6 +46,11 @@ export class StudyComponent {
   ).pipe(map(([x]) => x));
   label$: Observable<Label | undefined> = this.labelId$.pipe(
     switchMap((labelId) => this.labelService.getLabelById(labelId))
+  );
+  studyProgress$ = combineLatest([this.labelId$, this.experience$]).pipe(
+    switchMap(([labelId, experience]) =>
+      this.experienceService.getStudyProgress(labelId, experience)
+    )
   );
 
   constructor(

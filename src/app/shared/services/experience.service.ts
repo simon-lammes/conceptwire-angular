@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { DbService } from './db.service';
-import { from, Observable, switchMap } from 'rxjs';
+import { from, map, Observable, switchMap } from 'rxjs';
 import { liveQuery } from 'dexie';
 import {
   Experience,
@@ -10,6 +10,8 @@ import { ExerciseResult } from '../models/exerciseResult';
 import { sub } from 'date-fns';
 import { StudySettingsService } from './study-settings.service';
 import { ExerciseCooldownService } from './exercise-cooldown.service';
+import { StudyProgress } from '../models/study-progress';
+import { StudySettings } from '../models/study-settings';
 
 @Injectable({
   providedIn: 'root',
@@ -69,19 +71,10 @@ export class ExperienceService {
               // The nature of the index already guarantees that they are ordered by streak and last seen - just as we like it.
               // Inspired by: https://github.com/dexie/Dexie.js/issues/368
               .between([labelId, -Infinity], [labelId, Infinity], true, true)
-              .filter((x) => {
-                const cooldownDurationMillis =
-                  this.exerciseCooldownService.calculateCooldown({
-                    formula: studySettings?.cooldownFormula,
-                    correctStreak: x.streak,
-                  });
-                const cooldownDuration = cooldownDurationMillis
-                  ? this.exerciseCooldownService.durationMillisToDuration(
-                      cooldownDurationMillis
-                    )
-                  : { seconds: 30 };
-                return x.lastSeen < sub(new Date(), cooldownDuration);
-              })
+              .filter(
+                (experience) =>
+                  !this.isExerciseCoolingDown({ studySettings, experience })
+              )
               .first()
           )
         )
@@ -109,5 +102,69 @@ export class ExperienceService {
         ]),
     };
     this.db.experiences.put(updatedExperience);
+  }
+
+  getStudyProgress(labelId: string, experience: Experience | undefined) {
+    return this.studySettingsService.studySettings$.pipe(
+      switchMap((studySettings) => {
+        let finishedExercises = 0;
+        let upcomingExercises = 0;
+        return from(
+          liveQuery(() => {
+            finishedExercises = 0;
+            upcomingExercises = 0;
+            return (
+              this.db.experiences
+                .where('indexesForLabelStreakAndLastSeen')
+                // We basically want to look at all experiences with the given label.
+                // The nature of the index already guarantees that they are ordered by streak and last seen - just as we like it.
+                // Inspired by: https://github.com/dexie/Dexie.js/issues/368
+                .between([labelId, -Infinity], [labelId, Infinity], true, true)
+                .each((experience) => {
+                  const isExerciseCoolingDown = this.isExerciseCoolingDown({
+                    studySettings,
+                    experience,
+                  });
+                  if (isExerciseCoolingDown) {
+                    finishedExercises += 1;
+                  } else {
+                    upcomingExercises += 1;
+                  }
+                })
+            );
+          })
+        ).pipe(
+          map(
+            () =>
+              ({
+                finishedExercises,
+                upcomingExercises,
+                totalExercises: finishedExercises + upcomingExercises,
+                correctStreakOfCurrentExercise: experience?.streak,
+              } as StudyProgress)
+          )
+        );
+      })
+    );
+  }
+
+  private isExerciseCoolingDown({
+    studySettings,
+    experience,
+  }: {
+    studySettings?: StudySettings;
+    experience: Experience;
+  }) {
+    const cooldownDurationMillis =
+      this.exerciseCooldownService.calculateCooldown({
+        formula: studySettings?.cooldownFormula,
+        correctStreak: experience.streak,
+      });
+    const cooldownDuration = cooldownDurationMillis
+      ? this.exerciseCooldownService.durationMillisToDuration(
+          cooldownDurationMillis
+        )
+      : { seconds: 30 };
+    return experience.lastSeen >= sub(new Date(), cooldownDuration);
   }
 }

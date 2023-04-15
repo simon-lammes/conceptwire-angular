@@ -5,6 +5,12 @@
     else templateNoExercise
   "
 >
+  <div class="flex justify-center mb-4">
+    <app-study-progress
+      [studyProgress]="studyProgress$ | async"
+    ></app-study-progress>
+  </div>
+
   <app-exercise-situation
     [exerciseSituation]="exerciseSituation"
     (exerciseResult)="onExerciseResult($event)"
