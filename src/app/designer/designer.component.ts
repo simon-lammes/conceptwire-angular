@@ -8,7 +8,15 @@ import { MatInputModule } from '@angular/material/input';
 import '../shared/custom-elements/shoelace-context.element';
 import { LabelService } from '../shared/services/label.service';
 import { ExerciseService } from '../shared/services/exercise.service';
-import { BehaviorSubject, Observable, of, scan, switchMap } from 'rxjs';
+import {
+  BehaviorSubject,
+  debounceTime,
+  Observable,
+  of,
+  scan,
+  shareReplay,
+  switchMap,
+} from 'rxjs';
 import { Exercise } from '../shared/models/exercise';
 import { Label } from '../shared/models/label';
 import { ExercisePreviewComponent } from '../shared/components/exercise-preview/exercise-preview.component';
@@ -38,9 +46,17 @@ interface Selection {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DesignerComponent {
-  readonly labels$ = this.labelService.labels$;
-  readonly exercises$: Observable<Exercise[]> =
-    this.exerciseService.searchExercises({});
+  readonly searchValue$ = new BehaviorSubject('');
+  debouncedSearchValue$ = this.searchValue$.pipe(
+    debounceTime(50),
+    shareReplay({ bufferSize: 1, refCount: true })
+  );
+  readonly labels$ = this.debouncedSearchValue$.pipe(
+    switchMap((query) => this.labelService.searchLabels(query))
+  );
+  readonly exercises$: Observable<Exercise[]> = this.debouncedSearchValue$.pipe(
+    switchMap((query) => this.exerciseService.searchExercises({ query }))
+  );
   readonly selection$ = new BehaviorSubject<Selection | undefined>(undefined);
   recentSelections$ = this.selection$.pipe(
     scan((recentSelections, currentSelection) => {
@@ -82,5 +98,11 @@ export class DesignerComponent {
 
   selectLabel(label: Label) {
     this.selection$.next({ label });
+  }
+
+  onInputChange(event: CustomEvent) {
+    // @ts-ignore
+    const value = event.target.value;
+    this.searchValue$.next(value);
   }
 }

@@ -46,8 +46,11 @@ export class LabelService {
   }
 
   searchLabels(query: string) {
+    const queryLowercase = query.toLowerCase();
     return this.labels$.pipe(
-      map((labels) => labels.filter((x) => x.title.includes(query)))
+      map((labels) =>
+        labels.filter((x) => x.title.toLowerCase().includes(queryLowercase))
+      )
     );
   }
 
