@@ -13,6 +13,7 @@ import { Exercise } from '../shared/models/exercise';
 import { Label } from '../shared/models/label';
 import { ExercisePreviewComponent } from '../shared/components/exercise-preview/exercise-preview.component';
 import { LabelComponent } from '../shared/components/label/label.component';
+import { ToolbarComponent } from '../shared/components/toolbar/toolbar.component';
 
 interface Selection {
   label?: Label;
@@ -27,6 +28,7 @@ interface Selection {
     MatInputModule,
     ExercisePreviewComponent,
     LabelComponent,
+    ToolbarComponent,
   ],
   templateUrl: './designer.component.html',
   styleUrls: ['./designer.component.sass'],

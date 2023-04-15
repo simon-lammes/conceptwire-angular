@@ -1,3 +1,4 @@
+<app-toolbar title="Designer"></app-toolbar>
 <cw-shoelace-context>
   <div class="grid grid-cols-4">
     <div class="row-span-3 p-2">
@@ -38,14 +39,24 @@
         <app-label *ngIf="selection.label as label" [label]="label"></app-label>
       </ng-container>
     </div>
-    <div class="row-span-3">
+    <div class="row-span-3 p-4">
       <ng-container *ngIf="recentSelections$ | async as recentSelections">
         <ng-container *ngFor="let recentSelection of recentSelections">
           <ng-container *ngIf="recentSelection.exercise as exercise">
-            <div class="p-2">{{ exercise.title }}</div>
+            <button
+              class="block overflow-ellipsis overflow-hidden whitespace-nowrap max-w-full"
+              (click)="selectExercise(exercise)"
+            >
+              {{ exercise.title }}
+            </button>
           </ng-container>
           <ng-container *ngIf="recentSelection.label as label">
-            <div class="p-2">{{ label.title }}</div>
+            <button
+              class="block overflow-ellipsis overflow-hidden whitespace-nowrap max-w-full"
+              (click)="selectLabel(label)"
+            >
+              {{ label.title }}
+            </button>
           </ng-container>
         </ng-container>
       </ng-container>
