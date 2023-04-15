@@ -224,7 +224,7 @@ export class SynchronisationService {
     return imageMetaTag.getAttribute('content') ?? undefined;
   }
 
-  private async importConceptDocument(conceptContent: string, id: string) {
+  public async importConceptDocument(conceptContent: string, id: string) {
     const conceptDocumentElement = this.createHtmlElement(conceptContent);
     const conceptElements = Array.from(
       conceptDocumentElement.querySelectorAll('cw-set-concept')
@@ -287,7 +287,6 @@ export class SynchronisationService {
     `);
     for (const missingElement of setElementsThatCanBeUsedForFindMissingElementExercises) {
       const existingElements = setElements.filter((x) => x !== missingElement);
-      console.log(conceptDocument.outerHTML);
       const exercise = template({
         concept: {
           id: conceptId,

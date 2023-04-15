@@ -35,6 +35,27 @@ export class GithubSynchronizationService {
       await this.synchronisationService.importLabel(labelContent, id);
     }
     await this.synchronisationService.generateTransitiveClosureForLabelImplications();
+
+    const concepts = (await this.octokit.rest.repos
+      .getContent({
+        ...props,
+        // @ts-ignore
+        path: 'concepts',
+      })
+      .then((response) => response.data)) as FilePreview[];
+    // @ts-ignore
+    for await (const concept of concepts) {
+      if (!concept.name.endsWith('.html')) continue;
+      const id = concept.name.slice(0, concept.name.length - 5);
+      const conceptContent = await fetch(concept.download_url).then((x) =>
+        x.text()
+      );
+      await this.synchronisationService.importConceptDocument(
+        conceptContent,
+        id
+      );
+    }
+
     const exercises = (await this.octokit.rest.repos
       .getContent({
         ...props,
