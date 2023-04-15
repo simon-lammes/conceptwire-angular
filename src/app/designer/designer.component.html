@@ -29,13 +29,25 @@
         </div>
       </div>
     </div>
-    <div class="row-span-3 col-span-2">
+    <div class="row-span-3 col-span-2 p-4">
       <ng-container *ngIf="selection$ | async as selection">
         <app-exercise-preview
           *ngIf="selection.exercise as exercise"
           [content]="exercise.content"
         ></app-exercise-preview>
         <app-label *ngIf="selection.label as label" [label]="label"></app-label>
+      </ng-container>
+    </div>
+    <div class="row-span-3">
+      <ng-container *ngIf="recentSelections$ | async as recentSelections">
+        <ng-container *ngFor="let recentSelection of recentSelections">
+          <ng-container *ngIf="recentSelection.exercise as exercise">
+            <div class="p-2">{{ exercise.title }}</div>
+          </ng-container>
+          <ng-container *ngIf="recentSelection.label as label">
+            <div class="p-2">{{ label.title }}</div>
+          </ng-container>
+        </ng-container>
       </ng-container>
     </div>
   </div>

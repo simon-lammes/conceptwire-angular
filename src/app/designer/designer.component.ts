@@ -8,11 +8,16 @@ import { MatInputModule } from '@angular/material/input';
 import '../shared/custom-elements/shoelace-context.element';
 import { LabelService } from '../shared/services/label.service';
 import { ExerciseService } from '../shared/services/exercise.service';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, scan } from 'rxjs';
 import { Exercise } from '../shared/models/exercise';
 import { Label } from '../shared/models/label';
 import { ExercisePreviewComponent } from '../shared/components/exercise-preview/exercise-preview.component';
 import { LabelComponent } from '../shared/components/label/label.component';
+
+interface Selection {
+  label?: Label;
+  exercise?: Exercise;
+}
 
 @Component({
   selector: 'app-designer',
@@ -32,9 +37,22 @@ export class DesignerComponent {
   readonly labels$ = this.labelService.labels$;
   readonly exercises$: Observable<Exercise[]> =
     this.exerciseService.searchExercises({});
-  readonly selection$ = new BehaviorSubject<
-    { label?: Label; exercise?: Exercise } | undefined
-  >(undefined);
+  readonly selection$ = new BehaviorSubject<Selection | undefined>(undefined);
+  recentSelections$ = this.selection$.pipe(
+    scan((recentSelections, currentSelection) => {
+      if (!currentSelection) return recentSelections;
+      const recentSelectionsWithoutCurrentSelection = currentSelection.label
+        ? recentSelections.filter(
+            (x) => x.label?.id !== currentSelection.label?.id
+          )
+        : currentSelection.exercise
+        ? recentSelections.filter(
+            (x) => x.exercise?.id !== currentSelection.exercise?.id
+          )
+        : recentSelections;
+      return [currentSelection, ...recentSelectionsWithoutCurrentSelection];
+    }, [] as Selection[])
+  );
 
   constructor(
     private labelService: LabelService,
