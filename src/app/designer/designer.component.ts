@@ -8,12 +8,13 @@ import { MatInputModule } from '@angular/material/input';
 import '../shared/custom-elements/shoelace-context.element';
 import { LabelService } from '../shared/services/label.service';
 import { ExerciseService } from '../shared/services/exercise.service';
-import { BehaviorSubject, Observable, scan } from 'rxjs';
+import { BehaviorSubject, Observable, of, scan, switchMap } from 'rxjs';
 import { Exercise } from '../shared/models/exercise';
 import { Label } from '../shared/models/label';
 import { ExercisePreviewComponent } from '../shared/components/exercise-preview/exercise-preview.component';
 import { LabelComponent } from '../shared/components/label/label.component';
 import { ToolbarComponent } from '../shared/components/toolbar/toolbar.component';
+import { LabelPreviewComponent } from '../shared/components/label-preview/label-preview.component';
 
 interface Selection {
   label?: Label;
@@ -29,6 +30,7 @@ interface Selection {
     ExercisePreviewComponent,
     LabelComponent,
     ToolbarComponent,
+    LabelPreviewComponent,
   ],
   templateUrl: './designer.component.html',
   styleUrls: ['./designer.component.sass'],
@@ -54,6 +56,19 @@ export class DesignerComponent {
         : recentSelections;
       return [currentSelection, ...recentSelectionsWithoutCurrentSelection];
     }, [] as Selection[])
+  );
+  readonly labelsOfSelectedExercise$ = this.selection$.pipe(
+    switchMap((selection) => {
+      if (!selection?.exercise) of(undefined);
+      return this.labelService.getLabelsOfExercise(selection?.exercise);
+    })
+  );
+  readonly subLabelsOfSelectedLabel$ = this.selection$.pipe(
+    switchMap((selection) => {
+      const label = selection?.label;
+      if (!label) return of(undefined);
+      return this.labelService.getChildLabels(label.id);
+    })
   );
 
   constructor(

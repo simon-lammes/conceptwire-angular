@@ -34,9 +34,16 @@
       <ng-container *ngIf="selection$ | async as selection">
         <app-exercise-preview
           *ngIf="selection.exercise as exercise"
-          [content]="exercise.content"
+          [exercise]="exercise"
+          [labels]="(labelsOfSelectedExercise$ | async) ?? []"
+          (labelClicked)="selectLabel($event)"
         ></app-exercise-preview>
-        <app-label *ngIf="selection.label as label" [label]="label"></app-label>
+        <app-label-preview
+          *ngIf="selection.label as label"
+          [label]="label"
+          [subLabels]="(subLabelsOfSelectedLabel$ | async) ?? []"
+          (labelClicked)="selectLabel($event)"
+        ></app-label-preview>
       </ng-container>
     </div>
     <div class="row-span-3 p-4">

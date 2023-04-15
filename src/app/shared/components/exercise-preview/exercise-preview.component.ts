@@ -1,8 +1,16 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { TrustHtmlPipe } from '../../pipes/trust-html.pipe';
 import { ExerciseComponent } from '../exercise/exercise.component';
+import { Exercise } from '../../models/exercise';
+import { Label } from '../../models/label';
 
 @Component({
   selector: 'app-exercise-preview',
@@ -14,5 +22,15 @@ import { ExerciseComponent } from '../exercise/exercise.component';
 })
 export class ExercisePreviewComponent {
   @Input()
-  content?: string | null;
+  exercise!: Exercise;
+
+  @Input()
+  labels: Label[] = [];
+
+  @Output()
+  labelClicked = new EventEmitter<Label>();
+
+  onLabelClicked(label: Label) {
+    this.labelClicked.emit(label);
+  }
 }
