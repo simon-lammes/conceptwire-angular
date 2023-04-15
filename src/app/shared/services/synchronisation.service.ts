@@ -6,13 +6,10 @@ import * as _ from 'lodash-es';
 import { AssetService } from './asset.service';
 import { AssetAttribution } from '../models/asset-attribution';
 import { AssetAttributionService } from './asset-attribution.service';
-import {
-  createAcyclicGraph,
-  createGraph,
-  transitiveClosure,
-} from 'simple-digraph';
+// @ts-ignore
+import * as Handlebars from 'handlebars/dist/handlebars.js';
+import { createAcyclicGraph, transitiveClosure } from 'simple-digraph';
 import { DbService } from './db.service';
-import { lab } from 'd3';
 
 @Injectable({
   providedIn: 'root',
@@ -82,6 +79,19 @@ export class SynchronisationService {
         ...JSON.parse(await file.text()),
       } as AssetAttribution;
       await this.importAssetAttribution(assetAttribution);
+    }
+
+    const conceptsDirectoryHandle =
+      await this.directoryHandle!.getDirectoryHandle('concepts', {
+        create: false,
+      });
+    // @ts-ignore
+    for await (const [key, value] of conceptsDirectoryHandle.entries()) {
+      if (!(key as string).endsWith('.html')) continue;
+      const id = (key as string).slice(0, (key as string).length - 5);
+      const file = (await value.getFile()) as File;
+      const conceptContent = await file.text();
+      await this.importConceptDocument(conceptContent, id);
     }
 
     const exercisesDirectoryHandle =
@@ -212,5 +222,90 @@ export class SynchronisationService {
     const imageMetaTag = labelElement.querySelector('meta[name="cw:image"]');
     if (!imageMetaTag) return undefined;
     return imageMetaTag.getAttribute('content') ?? undefined;
+  }
+
+  private async importConceptDocument(conceptContent: string, id: string) {
+    const conceptDocumentElement = this.createHtmlElement(conceptContent);
+    const conceptElements = Array.from(
+      conceptDocumentElement.querySelectorAll('cw-set-concept')
+    );
+    await Promise.all(
+      conceptElements.map((conceptElement) =>
+        this.importSetConcept({
+          setConceptElement: conceptElement,
+          conceptDocument: conceptDocumentElement,
+        })
+      )
+    );
+  }
+
+  private async importSetConcept({
+    setConceptElement,
+    conceptDocument,
+  }: {
+    setConceptElement: Element;
+    conceptDocument: Element;
+  }) {
+    const setElements = Array.from(
+      setConceptElement.querySelectorAll('cw-element')
+    );
+    const setElementsThatCanBeUsedForFindMissingElementExercises =
+      setElements.filter((x) =>
+        x.getAttribute('cw-find-missing-element-exercise-id')
+      );
+    const template = Handlebars.compile(`
+    <html>
+      <head>
+        <title>{{concept.title}} - {{missingElement.title}}</title>
+        <meta
+          name="direct-label-ids"
+          content="{{concept.directLabelIds}}"
+        />
+      </head>
+      <body>
+        <cw-question-answer-exercise>
+          <div slot="question">
+            <div>Which element is missing in the following set?</div>
+            <div>{{{concept.setDescription}}}</div>
+            {{#each existingElements}}
+              {{{this.rawContent}}}
+            {{/each}}
+          </div>
+          <div slot="answer">
+            {{{missingElement.rawContent}}}
+          </div>
+        </cw-question-answer-exercise>
+      </body>
+    </html>
+    `);
+    for (const missingElement of setElementsThatCanBeUsedForFindMissingElementExercises) {
+      const existingElements = setElements.filter((x) => x !== missingElement);
+      console.log(conceptDocument.outerHTML);
+      const exercise = template({
+        concept: {
+          title: conceptDocument.querySelector('title')?.innerText,
+          setDescription:
+            conceptDocument.querySelector(
+              'cw-set-concept > *[slot=description]'
+            )?.innerHTML ?? '',
+          directLabelIds:
+            conceptDocument
+              .querySelector('meta[name=direct-label-ids]')
+              ?.getAttribute('content') ?? '',
+        },
+        existingElements: existingElements.map((existingElement) => ({
+          rawContent: existingElement.outerHTML,
+        })),
+        missingElement: {
+          rawContent: missingElement.outerHTML,
+          title: missingElement.getAttribute('cw-title'),
+        },
+      });
+      const exerciseId = missingElement.getAttribute(
+        'cw-find-missing-element-exercise-id'
+      );
+      if (!exerciseId) throw Error('Missing Exercise Id');
+      await this.importExercise(exercise, exerciseId);
+    }
   }
 }
