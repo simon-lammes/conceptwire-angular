@@ -66,16 +66,17 @@ export class DesignerComponent {
   recentSelections$ = this.selection$.pipe(
     scan((recentSelections, currentSelection) => {
       if (!currentSelection) return recentSelections;
-      const recentSelectionsWithoutCurrentSelection = currentSelection.label
-        ? recentSelections.filter(
-            (x) => x.label?.id !== currentSelection.label?.id
-          )
-        : currentSelection.exercise
-        ? recentSelections.filter(
-            (x) => x.exercise?.id !== currentSelection.exercise?.id
-          )
-        : recentSelections;
-      return [currentSelection, ...recentSelectionsWithoutCurrentSelection];
+      const isAlreadyIncluded =
+        (currentSelection.exercise &&
+          recentSelections.some(
+            (x) => x.exercise?.id === currentSelection.exercise?.id
+          )) ||
+        (currentSelection.label &&
+          recentSelections.some(
+            (x) => x.label?.id === currentSelection.label?.id
+          ));
+      if (isAlreadyIncluded) return recentSelections;
+      return [currentSelection, ...recentSelections];
     }, [] as Selection[])
   );
   readonly labelsOfSelectedExercise$ = this.selection$.pipe(
