@@ -11,12 +11,14 @@ import * as Handlebars from 'handlebars/dist/handlebars.js';
 import { createAcyclicGraph, transitiveClosure } from 'simple-digraph';
 import { DbService } from './db.service';
 
+/**
+ * Offers functionality for synchronizing studying content. But this service is not necessarily responsible
+ * for connecting to a specific data source like database, file system or GitHub.
+ */
 @Injectable({
   providedIn: 'root',
 })
 export class SynchronisationService {
-  private directoryHandle?: FileSystemDirectoryHandle;
-
   constructor(
     private exerciseService: ExerciseService,
     private labelService: LabelService,
@@ -24,89 +26,6 @@ export class SynchronisationService {
     private assetAttributionService: AssetAttributionService,
     private db: DbService
   ) {}
-
-  async uploadContent() {
-    if (!this.directoryHandle) {
-      // @ts-ignore
-      this.directoryHandle = await showDirectoryPicker({
-        mode: 'readwrite',
-      });
-    }
-    const labelsDirectoryHandle =
-      await this.directoryHandle!.getDirectoryHandle('labels', {
-        create: false,
-      });
-    // @ts-ignore
-    for await (const [key, value] of labelsDirectoryHandle.entries()) {
-      if (!(key as string).endsWith('.html')) continue;
-      const id = (key as string).slice(0, (key as string).length - 5);
-      const file = (await value.getFile()) as File;
-      const labelContent = await file.text();
-      await this.importLabel(labelContent, id);
-    }
-    await this.generateTransitiveClosureForLabelImplications();
-    const assetsDirectoryHandle =
-      await this.directoryHandle!.getDirectoryHandle('assets', {
-        create: false,
-      });
-    // @ts-ignore
-    for await (const [key, value] of assetsDirectoryHandle.entries()) {
-      const fileExtension = _.last((key as string).split('.'));
-      if (!fileExtension || !['svg', 'png', 'jpg'].includes(fileExtension))
-        continue;
-      const id = _.first((key as string).split('.'));
-      if (!id) return;
-      const file = (await value.getFile()) as File;
-      await this.importAsset(file, id);
-    }
-
-    const assetsAttributionsDirectoryHandle =
-      await this.directoryHandle!.getDirectoryHandle('asset-attributions', {
-        create: false,
-      });
-    for await (const [
-      key,
-      value,
-      // @ts-ignore
-    ] of assetsAttributionsDirectoryHandle.entries()) {
-      const fileExtension = _.last((key as string).split('.'));
-      if (!fileExtension || fileExtension !== 'json') continue;
-      const id = _.first((key as string).split('.'));
-      if (!id) return;
-      const file = (await value.getFile()) as File;
-      const assetAttribution = {
-        assetId: id,
-        ...JSON.parse(await file.text()),
-      } as AssetAttribution;
-      await this.importAssetAttribution(assetAttribution);
-    }
-
-    const conceptsDirectoryHandle =
-      await this.directoryHandle!.getDirectoryHandle('concepts', {
-        create: false,
-      });
-    // @ts-ignore
-    for await (const [key, value] of conceptsDirectoryHandle.entries()) {
-      if (!(key as string).endsWith('.html')) continue;
-      const id = (key as string).slice(0, (key as string).length - 5);
-      const file = (await value.getFile()) as File;
-      const conceptContent = await file.text();
-      await this.importConceptDocument(conceptContent, id);
-    }
-
-    const exercisesDirectoryHandle =
-      await this.directoryHandle!.getDirectoryHandle('exercises', {
-        create: false,
-      });
-    // @ts-ignore
-    for await (const [key, value] of exercisesDirectoryHandle.entries()) {
-      if (!(key as string).endsWith('.html')) continue;
-      const id = (key as string).slice(0, (key as string).length - 5);
-      const file = (await value.getFile()) as File;
-      const exerciseContent = await file.text();
-      await this.importExercise(exerciseContent, id);
-    }
-  }
 
   public async importExercise(exerciseContent: string, id: string) {
     const exerciseElement = this.createHtmlElement(exerciseContent);

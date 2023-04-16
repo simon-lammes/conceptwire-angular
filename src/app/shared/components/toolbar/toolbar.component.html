@@ -2,8 +2,12 @@
   <button mat-icon-button (click)="goBack()">
     <mat-icon>arrow_back</mat-icon>
   </button>
-  <button mat-icon-button (click)="synchronisationService.uploadContent()">
+  <span class="flex-grow">{{ title }}</span>
+  <button
+    *ngIf="showUploadButton"
+    mat-icon-button
+    (click)="fileSystemSynchronisationService.uploadContent()"
+  >
     <mat-icon>upload</mat-icon>
   </button>
-  <span>{{ title }}</span>
 </mat-toolbar>

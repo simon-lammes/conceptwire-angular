@@ -4,7 +4,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SynchronisationService } from '../../services/synchronisation.service';
+import { FileSystemSynchronisationService } from '../../services/file-system-synchronisation.service';
 
 @Component({
   selector: 'app-toolbar',
@@ -18,10 +18,13 @@ export class ToolbarComponent {
   @Input()
   title!: string;
 
+  @Input()
+  showUploadButton = false;
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    protected synchronisationService: SynchronisationService
+    protected fileSystemSynchronisationService: FileSystemSynchronisationService
   ) {}
 
   async goBack() {
