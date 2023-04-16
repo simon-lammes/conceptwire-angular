@@ -112,24 +112,7 @@ export class FileSystemSynchronisationService {
       { create: true }
     )) as any;
     const writable = await fileHandle.createWritable();
-    const labelContent = `
-<html>
-  <head>
-    <title>New Label - ${labelId}</title>
-    <meta
-      name="description"
-      content=""
-    />
-    <meta name="cw:image" content="" />
-  </head>
-  <body>
-    <cw-label-implication
-      cw-implicated-label-id=""
-    >
-    </cw-label-implication>
-  </body>
-</html>
-    `;
+    const labelContent = await this.templateService.createNewLabel({ labelId });
     await writable.write(labelContent);
     await writable.close();
     await this.synchronisationService.importLabel(labelContent, labelId);
