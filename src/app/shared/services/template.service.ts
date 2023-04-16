@@ -22,6 +22,10 @@ export class TemplateService {
     './assets/templates/new-label.hbs'
   );
 
+  readonly findMissingElementExerciseTemplate$ = this.loadAndCompileTemplate(
+    './assets/templates/find-missing-element-exercise.hbs'
+  );
+
   constructor(private http: HttpClient) {}
 
   async createNewExercise(args: { exerciseId: string }) {
@@ -31,6 +35,22 @@ export class TemplateService {
 
   async createNewLabel(args: { labelId: string }) {
     const template = await firstValueFrom(this.newLabelTemplate$);
+    return template(args);
+  }
+
+  async createFindMissingElementExercise(args: {
+    concept: {
+      id: string;
+      setDescription: string;
+      title: string;
+      directLabelIds: string;
+    };
+    missingElement: { title: string; rawContent: string };
+    existingElements: { rawContent: string }[];
+  }) {
+    const template = await firstValueFrom(
+      this.findMissingElementExerciseTemplate$
+    );
     return template(args);
   }
 }

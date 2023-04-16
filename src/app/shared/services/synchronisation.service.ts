@@ -10,6 +10,7 @@ import { AssetAttributionService } from './asset-attribution.service';
 import * as Handlebars from 'handlebars/dist/handlebars.js';
 import { createAcyclicGraph, transitiveClosure } from 'simple-digraph';
 import { DbService } from './db.service';
+import { TemplateService } from './template.service';
 
 /**
  * Offers functionality for synchronizing studying content. But this service is not necessarily responsible
@@ -24,7 +25,8 @@ export class SynchronisationService {
     private labelService: LabelService,
     private assetService: AssetService,
     private assetAttributionService: AssetAttributionService,
-    private db: DbService
+    private db: DbService,
+    private templateService: TemplateService
   ) {}
 
   public async clearModels() {
@@ -186,58 +188,30 @@ export class SynchronisationService {
       setElements.filter((x) =>
         x.getAttribute('cw-find-missing-element-exercise-id')
       );
-    const template = Handlebars.compile(`
-    <html>
-      <head>
-        <title>{{concept.title}} - {{missingElement.title}}</title>
-        <meta
-          name="direct-label-ids"
-          content="{{concept.directLabelIds}}"
-        />
-        <meta
-          name="source-concept-id"
-          content="{{concept.id}}"
-        />
-      </head>
-      <body>
-        <cw-question-answer-exercise>
-          <div slot="question">
-            <div>Which element is missing in the following set?</div>
-            <div>{{{concept.setDescription}}}</div>
-            {{#each existingElements}}
-              {{{this.rawContent}}}
-            {{/each}}
-          </div>
-          <div slot="answer">
-            {{{missingElement.rawContent}}}
-          </div>
-        </cw-question-answer-exercise>
-      </body>
-    </html>
-    `);
     for (const missingElement of setElementsThatCanBeUsedForFindMissingElementExercises) {
       const existingElements = setElements.filter((x) => x !== missingElement);
-      const exercise = template({
-        concept: {
-          id: conceptId,
-          title: conceptDocument.querySelector('title')?.innerText,
-          setDescription:
-            conceptDocument.querySelector(
-              'cw-set-concept > *[slot=description]'
-            )?.innerHTML ?? '',
-          directLabelIds:
-            conceptDocument
-              .querySelector('meta[name=direct-label-ids]')
-              ?.getAttribute('content') ?? '',
-        },
-        existingElements: existingElements.map((existingElement) => ({
-          rawContent: existingElement.outerHTML,
-        })),
-        missingElement: {
-          rawContent: missingElement.outerHTML,
-          title: missingElement.getAttribute('cw-title'),
-        },
-      });
+      const exercise =
+        await this.templateService.createFindMissingElementExercise({
+          concept: {
+            id: conceptId,
+            title: conceptDocument.querySelector('title')?.innerText ?? '',
+            setDescription:
+              conceptDocument.querySelector(
+                'cw-set-concept > *[slot=description]'
+              )?.innerHTML ?? '',
+            directLabelIds:
+              conceptDocument
+                .querySelector('meta[name=direct-label-ids]')
+                ?.getAttribute('content') ?? '',
+          },
+          existingElements: existingElements.map((existingElement) => ({
+            rawContent: existingElement.outerHTML,
+          })),
+          missingElement: {
+            rawContent: missingElement.outerHTML,
+            title: missingElement.getAttribute('cw-title') ?? '',
+          },
+        });
       const exerciseId = missingElement.getAttribute(
         'cw-find-missing-element-exercise-id'
       );
