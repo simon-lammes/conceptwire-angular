@@ -2,13 +2,17 @@ import { Injectable } from '@angular/core';
 import { SynchronisationService } from './synchronisation.service';
 import * as _ from 'lodash-es';
 import { AssetAttribution } from '../models/asset-attribution';
+import { TemplateService } from './template.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FileSystemSynchronisationService {
   private directoryHandle?: FileSystemDirectoryHandle;
-  constructor(private synchronisationService: SynchronisationService) {}
+  constructor(
+    private synchronisationService: SynchronisationService,
+    private templateService: TemplateService
+  ) {}
 
   async uploadContent() {
     await this.getExistingOrNewDirectoryHandle();
@@ -146,20 +150,9 @@ export class FileSystemSynchronisationService {
       { create: true }
     )) as any;
     const writable = await fileHandle.createWritable();
-    const exerciseContent = `
-<html>
-  <head>
-    <title>New Exercise - ${exerciseId}</title>
-    <meta
-      name="direct-label-ids"
-      content=""
-    />
-  </head>
-  <body>
-
-  </body>
-</html>
-    `;
+    const exerciseContent = await this.templateService.createNewExercise({
+      exerciseId,
+    });
     await writable.write(exerciseContent);
     await writable.close();
     await this.synchronisationService.importExercise(

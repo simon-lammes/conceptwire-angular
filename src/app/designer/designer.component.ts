@@ -46,7 +46,6 @@ interface Selection {
   templateUrl: './designer.component.html',
   styleUrls: ['./designer.component.sass'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  providers: [MatSnackBar],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DesignerComponent {
