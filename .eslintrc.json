@@ -20,6 +20,7 @@
       "rules": {
         "@typescript-eslint/ban-ts-comment": "off",
         "@typescript-eslint/no-non-null-assertion": "off",
+        "@typescript-eslint/no-explicit-any": "off",
         "change-detection-strategy/on-push": "error",
         "@angular-eslint/directive-selector": [
           "error",

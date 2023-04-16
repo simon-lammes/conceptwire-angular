@@ -132,6 +132,43 @@ export class FileSystemSynchronisationService {
     return labelId;
   }
 
+  async createExercise() {
+    const directoryHandle = await this.getExistingOrNewDirectoryHandle();
+    const exercisesDirectoryHandle = await directoryHandle!.getDirectoryHandle(
+      'exercises',
+      {
+        create: false,
+      }
+    );
+    const exerciseId = self.crypto.randomUUID();
+    const fileHandle = (await exercisesDirectoryHandle.getFileHandle(
+      `${exerciseId}.html`,
+      { create: true }
+    )) as any;
+    const writable = await fileHandle.createWritable();
+    const exerciseContent = `
+<html>
+  <head>
+    <title>New Exercise - ${exerciseId}</title>
+    <meta
+      name="direct-label-ids"
+      content=""
+    />
+  </head>
+  <body>
+
+  </body>
+</html>
+    `;
+    await writable.write(exerciseContent);
+    await writable.close();
+    await this.synchronisationService.importExercise(
+      exerciseContent,
+      exerciseId
+    );
+    return exerciseId;
+  }
+
   private async getExistingOrNewDirectoryHandle() {
     if (!this.directoryHandle) {
       // @ts-ignore

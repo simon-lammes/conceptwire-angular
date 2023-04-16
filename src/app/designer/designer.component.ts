@@ -107,6 +107,18 @@ export class DesignerComponent {
     this._snackBar.open('ID copied', undefined, { duration: 2000 });
   }
 
+  async createExercise() {
+    const exerciseId =
+      await this.fileSystemSynchronisationService.createExercise();
+    const exercise = await firstValueFrom(
+      this.exerciseService.getExerciseById(exerciseId)
+    );
+    if (!exercise) throw Error();
+    this.selectExercise(exercise);
+    await navigator.clipboard.writeText(exerciseId);
+    this._snackBar.open('ID copied', undefined, { duration: 2000 });
+  }
+
   selectExercise(exercise: Exercise) {
     this.selection$.next({ exercise });
   }
