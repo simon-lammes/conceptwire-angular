@@ -26,6 +26,7 @@ import { ToolbarComponent } from '../shared/components/toolbar/toolbar.component
 import { LabelPreviewComponent } from '../shared/components/label-preview/label-preview.component';
 import { FileSystemSynchronisationService } from '../shared/services/file-system-synchronisation.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { FileButtonComponent } from './file-button/file-button.component';
 
 interface Selection {
   label?: Label;
@@ -42,6 +43,7 @@ interface Selection {
     LabelComponent,
     ToolbarComponent,
     LabelPreviewComponent,
+    FileButtonComponent,
   ],
   templateUrl: './designer.component.html',
   styleUrls: ['./designer.component.sass'],

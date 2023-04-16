@@ -21,16 +21,12 @@
           </button>
         </div>
         <div class="ml-4">
-          <button
+          <app-file-button
             *ngFor="let label of labels$ | async"
-            class="block overflow-ellipsis overflow-hidden whitespace-nowrap max-w-full px-1 py-0.5 rounded-md"
-            [ngClass]="{
-              'bg-blue-100': label.id === (selection$ | async)?.label?.id
-            }"
-            (click)="selectLabel(label)"
-          >
-            {{ label.title }}
-          </button>
+            [title]="label.title"
+            [highlighted]="label.id === (selection$ | async)?.label?.id"
+            (clicked)="selectLabel(label)"
+          ></app-file-button>
         </div>
       </div>
       <div class="p-2">
@@ -44,16 +40,12 @@
           </button>
         </div>
         <div class="ml-4">
-          <button
+          <app-file-button
             *ngFor="let exercise of exercises$ | async"
-            class="block overflow-ellipsis overflow-hidden whitespace-nowrap max-w-full px-1 py-0.5 rounded-md"
-            [ngClass]="{
-              'bg-blue-100': exercise.id === (selection$ | async)?.exercise?.id
-            }"
-            (click)="selectExercise(exercise)"
-          >
-            {{ exercise.title }}
-          </button>
+            [title]="exercise.title"
+            [highlighted]="exercise.id === (selection$ | async)?.exercise?.id"
+            (clicked)="selectExercise(exercise)"
+          ></app-file-button>
         </div>
       </div>
     </div>
@@ -77,27 +69,18 @@
       <ng-container *ngIf="recentSelections$ | async as recentSelections">
         <ng-container *ngFor="let recentSelection of recentSelections">
           <ng-container *ngIf="recentSelection.exercise as exercise">
-            <button
-              class="block overflow-ellipsis overflow-hidden whitespace-nowrap max-w-full px-1 py-0.5 rounded-md"
-              [ngClass]="{
-                'bg-blue-100':
-                  exercise.id === (selection$ | async)?.exercise?.id
-              }"
-              (click)="selectExercise(exercise)"
-            >
-              {{ exercise.title }}
-            </button>
+            <app-file-button
+              [title]="exercise.title"
+              [highlighted]="exercise.id === (selection$ | async)?.exercise?.id"
+              (clicked)="selectExercise(exercise)"
+            ></app-file-button>
           </ng-container>
           <ng-container *ngIf="recentSelection.label as label">
-            <button
-              class="block overflow-ellipsis overflow-hidden whitespace-nowrap max-w-full px-1 py-0.5 rounded-md"
-              [ngClass]="{
-                'bg-blue-100': label.id === (selection$ | async)?.label?.id
-              }"
-              (click)="selectLabel(label)"
-            >
-              {{ label.title }}
-            </button>
+            <app-file-button
+              [title]="label.title"
+              [highlighted]="label.id === (selection$ | async)?.label?.id"
+              (clicked)="selectLabel(label)"
+            ></app-file-button>
           </ng-container>
         </ng-container>
       </ng-container>

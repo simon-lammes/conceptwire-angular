@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom, map, shareReplay } from 'rxjs';
 // @ts-ignore
-import * as Handlebars from 'handlebars/dist/Handlebars.js';
+import * as Handlebars from 'handlebars/dist/handlebars.js';
 
 @Injectable({
   providedIn: 'root',
