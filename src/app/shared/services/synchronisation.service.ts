@@ -6,8 +6,6 @@ import * as _ from 'lodash-es';
 import { AssetService } from './asset.service';
 import { AssetAttribution } from '../models/asset-attribution';
 import { AssetAttributionService } from './asset-attribution.service';
-// @ts-ignore
-import * as Handlebars from 'handlebars/dist/handlebars.js';
 import { createAcyclicGraph, transitiveClosure } from 'simple-digraph';
 import { DbService } from './db.service';
 import { TemplateService } from './template.service';
