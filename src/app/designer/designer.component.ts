@@ -11,6 +11,7 @@ import { ExerciseService } from '../shared/services/exercise.service';
 import {
   BehaviorSubject,
   debounceTime,
+  firstValueFrom,
   Observable,
   of,
   scan,
@@ -23,6 +24,8 @@ import { ExercisePreviewComponent } from '../shared/components/exercise-preview/
 import { LabelComponent } from '../shared/components/label/label.component';
 import { ToolbarComponent } from '../shared/components/toolbar/toolbar.component';
 import { LabelPreviewComponent } from '../shared/components/label-preview/label-preview.component';
+import { FileSystemSynchronisationService } from '../shared/services/file-system-synchronisation.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 interface Selection {
   label?: Label;
@@ -43,6 +46,7 @@ interface Selection {
   templateUrl: './designer.component.html',
   styleUrls: ['./designer.component.sass'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  providers: [MatSnackBar],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DesignerComponent {
@@ -89,8 +93,19 @@ export class DesignerComponent {
 
   constructor(
     private labelService: LabelService,
-    private exerciseService: ExerciseService
+    private exerciseService: ExerciseService,
+    private fileSystemSynchronisationService: FileSystemSynchronisationService,
+    private _snackBar: MatSnackBar
   ) {}
+
+  async createLabel() {
+    const labelId = await this.fileSystemSynchronisationService.createLabel();
+    const label = await firstValueFrom(this.labelService.getLabelById(labelId));
+    if (!label) throw Error();
+    this.selectLabel(label);
+    await navigator.clipboard.writeText(labelId);
+    this._snackBar.open('ID copied', undefined, { duration: 2000 });
+  }
 
   selectExercise(exercise: Exercise) {
     this.selection$.next({ exercise });

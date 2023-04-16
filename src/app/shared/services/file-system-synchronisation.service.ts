@@ -11,16 +11,12 @@ export class FileSystemSynchronisationService {
   constructor(private synchronisationService: SynchronisationService) {}
 
   async uploadContent() {
-    if (!this.directoryHandle) {
-      // @ts-ignore
-      this.directoryHandle = await showDirectoryPicker({
-        mode: 'readwrite',
-      });
-    }
+    await this.getExistingOrNewDirectoryHandle();
     const labelsDirectoryHandle =
       await this.directoryHandle!.getDirectoryHandle('labels', {
         create: false,
       });
+    await this.synchronisationService.clearModels();
     // @ts-ignore
     for await (const [key, value] of labelsDirectoryHandle.entries()) {
       if (!(key as string).endsWith('.html')) continue;
@@ -96,5 +92,53 @@ export class FileSystemSynchronisationService {
       const exerciseContent = await file.text();
       await this.synchronisationService.importExercise(exerciseContent, id);
     }
+  }
+
+  async createLabel() {
+    const directoryHandle = await this.getExistingOrNewDirectoryHandle();
+    const labelsDirectoryHandle = await directoryHandle!.getDirectoryHandle(
+      'labels',
+      {
+        create: false,
+      }
+    );
+    const labelId = self.crypto.randomUUID();
+    const fileHandle = (await labelsDirectoryHandle.getFileHandle(
+      `${labelId}.html`,
+      { create: true }
+    )) as any;
+    const writable = await fileHandle.createWritable();
+    const labelContent = `
+<html>
+  <head>
+    <title>New Label - ${labelId}</title>
+    <meta
+      name="description"
+      content=""
+    />
+    <meta name="cw:image" content="" />
+  </head>
+  <body>
+    <cw-label-implication
+      cw-implicated-label-id=""
+    >
+    </cw-label-implication>
+  </body>
+</html>
+    `;
+    await writable.write(labelContent);
+    await writable.close();
+    await this.synchronisationService.importLabel(labelContent, labelId);
+    return labelId;
+  }
+
+  private async getExistingOrNewDirectoryHandle() {
+    if (!this.directoryHandle) {
+      // @ts-ignore
+      this.directoryHandle = await showDirectoryPicker({
+        mode: 'readwrite',
+      });
+    }
+    return this.directoryHandle;
   }
 }

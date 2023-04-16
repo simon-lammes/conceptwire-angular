@@ -11,7 +11,15 @@
         <sl-icon name="search" slot="prefix"></sl-icon>
       </sl-input>
       <div class="p-2">
-        <div class="text-lg">Labels</div>
+        <div class="text-lg flex items-baseline gap-2">
+          <div>Labels</div>
+          <button
+            class="bg-blue-100 rounded-full w-5 h-5 flex items-center justify-center hover:bg-blue-200"
+            (click)="createLabel()"
+          >
+            <i class="fa-plus not-italic text-blue-800"></i>
+          </button>
+        </div>
         <div class="ml-4">
           <button
             *ngFor="let label of labels$ | async"
@@ -23,7 +31,14 @@
         </div>
       </div>
       <div class="p-2">
-        <div class="text-lg">Exercises</div>
+        <div class="text-lg flex items-baseline gap-2">
+          <div>Exercises</div>
+          <button
+            class="bg-blue-100 rounded-full w-5 h-5 flex items-center justify-center hover:bg-blue-200"
+          >
+            <i class="fa-plus not-italic text-blue-800"></i>
+          </button>
+        </div>
         <div class="ml-4">
           <button
             *ngFor="let exercise of exercises$ | async"

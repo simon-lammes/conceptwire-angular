@@ -19,6 +19,7 @@ export class GithubSynchronizationService {
   constructor(private synchronisationService: SynchronisationService) {}
 
   async importContent(props: { owner: string; repo: string; ref: string }) {
+    await this.synchronisationService.clearModels();
     const labels = (await this.octokit.rest.repos
       .getContent({
         ...props,

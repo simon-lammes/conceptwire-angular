@@ -27,6 +27,17 @@ export class SynchronisationService {
     private db: DbService
   ) {}
 
+  public async clearModels() {
+    await Promise.all([
+      this.db.labels.clear(),
+      this.db.labelImplications.clear(),
+      this.db.assets.clear(),
+      this.db.assetAttributions.clear(),
+      this.db.exerciseLabels.clear(),
+      this.db.exercises.clear(),
+    ]);
+  }
+
   public async importExercise(exerciseContent: string, id: string) {
     const exerciseElement = this.createHtmlElement(exerciseContent);
     await this.exerciseService.saveExercise({
