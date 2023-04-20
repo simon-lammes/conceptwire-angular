@@ -31,6 +31,7 @@ import '../../custom-elements/opinion.element';
 import '../../custom-elements/cw-example.element';
 import '../../custom-elements/element.element';
 import '../../custom-elements/personal-note.element';
+import '../../custom-elements/youtube-video.element';
 
 @Component({
   selector: 'app-exercise',

@@ -8,6 +8,7 @@ export class MathElement extends LitElement {
   static override styles = css`
     :host {
       display: block;
+      font-size: 1.5rem;
     }
   `;
 
