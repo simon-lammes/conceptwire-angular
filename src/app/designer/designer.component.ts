@@ -12,6 +12,7 @@ import {
   BehaviorSubject,
   debounceTime,
   firstValueFrom,
+  map,
   Observable,
   of,
   scan,
@@ -29,8 +30,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { FileButtonComponent } from './file-button/file-button.component';
 
 interface Selection {
-  label?: Label;
-  exercise?: Exercise;
+  labelId?: string;
+  exerciseId?: string;
 }
 
 @Component({
@@ -67,30 +68,52 @@ export class DesignerComponent {
     scan((recentSelections, currentSelection) => {
       if (!currentSelection) return recentSelections;
       const isAlreadyIncluded =
-        (currentSelection.exercise &&
+        (currentSelection.exerciseId &&
           recentSelections.some(
-            (x) => x.exercise?.id === currentSelection.exercise?.id
+            (x) => x.exerciseId === currentSelection.exerciseId
           )) ||
-        (currentSelection.label &&
-          recentSelections.some(
-            (x) => x.label?.id === currentSelection.label?.id
-          ));
+        (currentSelection.labelId &&
+          recentSelections.some((x) => x.labelId === currentSelection.labelId));
       if (isAlreadyIncluded) return recentSelections;
       return [currentSelection, ...recentSelections];
     }, [] as Selection[])
   );
   readonly labelsOfSelectedExercise$ = this.selection$.pipe(
     switchMap((selection) => {
-      if (!selection?.exercise) of(undefined);
-      return this.labelService.getLabelsOfExercise(selection?.exercise);
+      if (!selection?.exerciseId) of(undefined);
+      return this.labelService.getLabelsOfExercise(selection?.exerciseId);
     })
   );
   readonly subLabelsOfSelectedLabel$ = this.selection$.pipe(
     switchMap((selection) => {
-      const label = selection?.label;
-      if (!label) return of(undefined);
-      return this.labelService.getChildLabels(label.id);
+      const labelId = selection?.labelId;
+      if (!labelId) return of(undefined);
+      return this.labelService.getChildLabels(labelId);
     })
+  );
+  readonly selectedExercise$ = this.selection$.pipe(
+    switchMap((selection) =>
+      this.exerciseService.getExerciseById(selection?.exerciseId)
+    )
+  );
+  readonly selectedLabel$ = this.selection$.pipe(
+    switchMap((selection) => this.labelService.getLabelById(selection?.labelId))
+  );
+  readonly recentlySelectedExercises$ = this.recentSelections$.pipe(
+    map(
+      (selections) =>
+        selections.map((x) => x.exerciseId).filter((x) => !!x) as string[]
+    ),
+    switchMap((exerciseIds) =>
+      this.exerciseService.getExercisesByIds(exerciseIds)
+    )
+  );
+  readonly recentlySelectedLabels$ = this.recentSelections$.pipe(
+    map(
+      (selections) =>
+        selections.map((x) => x.labelId).filter((x) => !!x) as string[]
+    ),
+    switchMap((labelIds) => this.labelService.getLabelsByIds(labelIds))
   );
 
   constructor(
@@ -122,11 +145,11 @@ export class DesignerComponent {
   }
 
   selectExercise(exercise: Exercise) {
-    this.selection$.next({ exercise });
+    this.selection$.next({ exerciseId: exercise.id });
   }
 
   selectLabel(label: Label) {
-    this.selection$.next({ label });
+    this.selection$.next({ labelId: label.id });
   }
 
   onInputChange(event: CustomEvent) {

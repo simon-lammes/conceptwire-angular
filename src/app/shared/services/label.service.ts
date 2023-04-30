@@ -4,7 +4,6 @@ import { from, map, Observable, of, switchMap } from 'rxjs';
 import { Label } from '../models/label';
 import { liveQuery } from 'dexie';
 import { LabelImplication } from '../models/label-implication';
-import { Exercise } from '../models/exercise';
 
 @Injectable({
   providedIn: 'root',
@@ -58,7 +57,7 @@ export class LabelService {
     return this.db.labels.where('title').equals(title).first();
   }
 
-  getLabelById(labelId: string) {
+  getLabelById(labelId?: string) {
     if (!labelId) return of(undefined);
     return from(liveQuery(() => this.db.labels.get(labelId)));
   }
@@ -81,11 +80,11 @@ export class LabelService {
     );
   }
 
-  getLabelsOfExercise(exercise?: Exercise): Observable<Label[] | undefined> {
-    if (!exercise) return of(undefined);
+  getLabelsOfExercise(exerciseId?: string): Observable<Label[] | undefined> {
+    if (!exerciseId) return of(undefined);
     return from(
       liveQuery(() =>
-        this.db.exerciseLabels.where('exerciseId').equals(exercise.id).toArray()
+        this.db.exerciseLabels.where('exerciseId').equals(exerciseId).toArray()
       )
     ).pipe(
       switchMap((exerciseLabels) =>
@@ -126,5 +125,11 @@ export class LabelService {
       .where('causingLabelId')
       .equals(currentLabelId)
       .toArray();
+  }
+
+  getLabelsByIds(labelIds: string[]) {
+    return from(liveQuery(() => this.db.labels.bulkGet(labelIds))).pipe(
+      map((exercises) => exercises.filter((x) => !!x) as Label[])
+    );
   }
 }

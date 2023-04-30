@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { DbService } from './db.service';
-import { from, Observable, of, switchMap } from 'rxjs';
+import { from, map, Observable, of, switchMap } from 'rxjs';
 import { liveQuery } from 'dexie';
 import { ExerciseLabel } from '../models/exercise-label';
+import { Exercise } from '../models/exercise';
 
 @Injectable({
   providedIn: 'root',
@@ -79,5 +80,11 @@ export class ExerciseService {
       return of(undefined);
     }
     return from(liveQuery(() => this.db.exercises.get(exerciseId)));
+  }
+
+  getExercisesByIds(exerciseIds: string[]) {
+    return from(liveQuery(() => this.db.exercises.bulkGet(exerciseIds))).pipe(
+      map((exercises) => exercises.filter((x) => !!x) as Exercise[])
+    );
   }
 }

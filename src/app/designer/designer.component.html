@@ -24,7 +24,7 @@
           <app-file-button
             *ngFor="let label of labels$ | async"
             [title]="label.title"
-            [highlighted]="label.id === (selection$ | async)?.label?.id"
+            [highlighted]="label.id === (selection$ | async)?.labelId"
             (clicked)="selectLabel(label)"
           ></app-file-button>
         </div>
@@ -42,47 +42,45 @@
         <div class="ml-4">
           <app-file-button
             *ngFor="let exercise of exercises$ | async"
-            [title]="exercise.title"
-            [highlighted]="exercise.id === (selection$ | async)?.exercise?.id"
+            [title]="exercise?.title ?? ''"
+            [highlighted]="exercise.id === (selection$ | async)?.exerciseId"
             (clicked)="selectExercise(exercise)"
           ></app-file-button>
         </div>
       </div>
     </div>
     <div class="row-span-3 col-span-2 p-4">
-      <ng-container *ngIf="selection$ | async as selection">
-        <app-exercise-preview
-          *ngIf="selection.exercise as exercise"
-          [exercise]="exercise"
-          [labels]="(labelsOfSelectedExercise$ | async) ?? []"
-          (labelClicked)="selectLabel($event)"
-        ></app-exercise-preview>
-        <app-label-preview
-          *ngIf="selection.label as label"
-          [label]="label"
-          [subLabels]="(subLabelsOfSelectedLabel$ | async) ?? []"
-          (labelClicked)="selectLabel($event)"
-        ></app-label-preview>
-      </ng-container>
+      <app-exercise-preview
+        *ngIf="selectedExercise$ | async as exercise"
+        [exercise]="exercise"
+        [labels]="(labelsOfSelectedExercise$ | async) ?? []"
+        (labelClicked)="selectLabel($event)"
+      ></app-exercise-preview>
+      <app-label-preview
+        *ngIf="selectedLabel$ | async as label"
+        [label]="label"
+        [subLabels]="(subLabelsOfSelectedLabel$ | async) ?? []"
+        (labelClicked)="selectLabel($event)"
+      ></app-label-preview>
     </div>
     <div class="row-span-3 p-4">
-      <ng-container *ngIf="recentSelections$ | async as recentSelections">
-        <ng-container *ngFor="let recentSelection of recentSelections">
-          <ng-container *ngIf="recentSelection.exercise as exercise">
-            <app-file-button
-              [title]="exercise.title"
-              [highlighted]="exercise.id === (selection$ | async)?.exercise?.id"
-              (clicked)="selectExercise(exercise)"
-            ></app-file-button>
-          </ng-container>
-          <ng-container *ngIf="recentSelection.label as label">
-            <app-file-button
-              [title]="label.title"
-              [highlighted]="label.id === (selection$ | async)?.label?.id"
-              (clicked)="selectLabel(label)"
-            ></app-file-button>
-          </ng-container>
-        </ng-container>
+      <div class="text-blue-800">Labels</div>
+      <ng-container *ngIf="recentlySelectedLabels$ | async as labels">
+        <app-file-button
+          *ngFor="let label of labels"
+          [title]="label.title"
+          [highlighted]="label.id === (selection$ | async)?.labelId"
+          (clicked)="selectLabel(label)"
+        ></app-file-button>
+      </ng-container>
+      <div class="mt-4 text-blue-800">Exercises</div>
+      <ng-container *ngIf="recentlySelectedExercises$ | async as exercises">
+        <app-file-button
+          *ngFor="let exercise of exercises"
+          [title]="exercise.title ?? ''"
+          [highlighted]="exercise.id === (selection$ | async)?.exerciseId"
+          (clicked)="selectExercise(exercise)"
+        ></app-file-button>
       </ng-container>
     </div>
   </div>

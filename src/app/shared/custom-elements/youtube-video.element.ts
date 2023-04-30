@@ -18,11 +18,11 @@ class YoutubeVideoElement extends LitElement {
     super();
   }
 
-  @property()
+  @property({ attribute: 'video-id' })
   videoId: string | undefined;
 
   override render() {
-    const url = 'https://www.youtube.com/embed/' + this.id;
+    const url = 'https://www.youtube.com/embed/' + this.videoId;
     return html`
       <iframe
         style="max-width: 100%"
