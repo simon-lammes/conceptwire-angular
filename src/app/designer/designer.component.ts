@@ -157,4 +157,18 @@ export class DesignerComponent {
     const value = event.target.value;
     this.searchValue$.next(value);
   }
+
+  async duplicateExercise(duplicatedExercise: Exercise) {
+    const exerciseId =
+      await this.fileSystemSynchronisationService.createExercise({
+        initialExerciseContent: duplicatedExercise.content,
+      });
+    const exercise = await firstValueFrom(
+      this.exerciseService.getExerciseById(exerciseId)
+    );
+    if (!exercise) throw Error();
+    this.selectExercise(exercise);
+    await navigator.clipboard.writeText(exerciseId);
+    this._snackBar.open('ID copied', undefined, { duration: 2000 });
+  }
 }

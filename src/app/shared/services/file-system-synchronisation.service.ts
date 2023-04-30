@@ -119,7 +119,9 @@ export class FileSystemSynchronisationService {
     return labelId;
   }
 
-  async createExercise() {
+  async createExercise({
+    initialExerciseContent,
+  }: { initialExerciseContent?: string } = {}) {
     const directoryHandle = await this.getExistingOrNewDirectoryHandle();
     const exercisesDirectoryHandle = await directoryHandle!.getDirectoryHandle(
       'exercises',
@@ -133,9 +135,11 @@ export class FileSystemSynchronisationService {
       { create: true }
     )) as any;
     const writable = await fileHandle.createWritable();
-    const exerciseContent = await this.templateService.createNewExercise({
-      exerciseId,
-    });
+    const exerciseContent = initialExerciseContent
+      ? initialExerciseContent
+      : await this.templateService.createNewExercise({
+          exerciseId,
+        });
     await writable.write(exerciseContent);
     await writable.close();
     await this.synchronisationService.importExercise(

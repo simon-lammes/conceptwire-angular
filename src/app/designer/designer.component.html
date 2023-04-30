@@ -55,6 +55,7 @@
         [exercise]="exercise"
         [labels]="(labelsOfSelectedExercise$ | async) ?? []"
         (labelClicked)="selectLabel($event)"
+        (duplicated)="duplicateExercise(exercise)"
       ></app-exercise-preview>
       <app-label-preview
         *ngIf="selectedLabel$ | async as label"
