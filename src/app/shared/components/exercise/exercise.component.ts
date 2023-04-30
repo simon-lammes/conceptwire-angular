@@ -32,6 +32,7 @@ import '../../custom-elements/cw-example.element';
 import '../../custom-elements/element.element';
 import '../../custom-elements/personal-note.element';
 import '../../custom-elements/youtube-video.element';
+import '../../custom-elements/book-reference.element';
 
 @Component({
   selector: 'app-exercise',
