@@ -12,11 +12,6 @@ const routes: Routes = [
       import('./labels/labels.module').then((m) => m.LabelsModule),
   },
   {
-    path: 'exercises',
-    loadChildren: () =>
-      import('./exercises/exercises.module').then((m) => m.ExercisesModule),
-  },
-  {
     path: 'synchronization',
     loadChildren: () =>
       import('./synchronization/synchronization.module').then(

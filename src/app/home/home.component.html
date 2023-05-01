@@ -1,17 +1,49 @@
-<div class="p-8">
-  <button mat-raised-button color="primary" [routerLink]="'/labels'">
-    Labels
-  </button>
-  <button mat-raised-button color="primary" [routerLink]="'/exercises'">
-    Exercises
-  </button>
-  <button mat-raised-button color="primary" [routerLink]="'/designer'">
-    Designer
-  </button>
-  <button mat-raised-button color="primary" [routerLink]="'/synchronization'">
-    Synchronization
-  </button>
-  <button mat-raised-button color="primary" [routerLink]="'/settings'">
-    Settings
-  </button>
-</div>
+<app-padded-layout>
+  <div class="flex items-end text-xl text-blue-800 py-2">
+    <div class="flex-grow">Continue Studying...</div>
+    <button class="hover:underline" [routerLink]="'/labels'">
+      all labels <i class="fa-solid fa-arrow-right text-base"></i>
+    </button>
+  </div>
+
+  <ng-container *ngIf="labelService.labels$ | async as labels">
+    <div class="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-2">
+      <ng-container *ngFor="let label of labels">
+        <app-label
+          [label]="label"
+          (clicked)="onLabelClicked(label)"
+        ></app-label>
+      </ng-container>
+    </div>
+  </ng-container>
+
+  <div class="flex items-end text-xl text-blue-800 pb-2 pt-8">
+    Further Functionality
+  </div>
+
+  <div class="flex gap-4">
+    <button
+      class="px-4 py-2 gap-2 flex text-blue-800 flex-col items-center bg-neutral-100 rounded-lg border-2 border-neutral-300 hover:bg-neutral-200 w-0 flex-grow"
+      [routerLink]="'/designer'"
+    >
+      <i class="fa-solid fa-compass-drafting text-5xl"></i>
+      <div class="text-xl font-medium">Designer</div>
+    </button>
+
+    <button
+      class="px-4 py-2 gap-2 flex text-blue-800 flex-col items-center bg-neutral-100 rounded-lg border-2 border-neutral-300 hover:bg-neutral-200 w-0 flex-grow"
+      [routerLink]="'/synchronization'"
+    >
+      <i class="fa-solid fa-rotate text-5xl"></i>
+      <div class="text-xl font-medium">Synchronisation</div>
+    </button>
+
+    <button
+      class="px-4 py-2 gap-2 flex text-blue-800 flex-col items-center bg-neutral-100 rounded-lg border-2 border-neutral-300 hover:bg-neutral-200 w-0 flex-grow"
+      [routerLink]="'/settings'"
+    >
+      <i class="fa-solid fa-gear text-5xl"></i>
+      <div class="text-xl font-medium">Settings</div>
+    </button>
+  </div>
+</app-padded-layout>

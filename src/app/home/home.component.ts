@@ -1,4 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { LabelService } from '../shared/services/label.service';
+import { Label } from '../shared/models/label';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -6,4 +9,10 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   styleUrls: ['./home.component.sass'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class HomeComponent {}
+export class HomeComponent {
+  constructor(protected labelService: LabelService, private router: Router) {}
+
+  async onLabelClicked(label: Label) {
+    await this.router.navigate(['study', label.id]);
+  }
+}
