@@ -2,22 +2,18 @@ import { css, html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { ExerciseFeedback } from '../models/exercise-feedback';
 
+import install from '@twind/with-web-components';
+// @ts-ignore
+import config from '../../../../twind.config.js';
+
+const withTwind = install(config);
+
 @customElement('cw-solution-feedback')
-export class SolutionFeedbackElement extends LitElement {
+@install(config)
+export class SolutionFeedbackElement extends withTwind(LitElement) {
   static override styles = css`
     :host {
       display: block;
-    }
-
-    button {
-      cursor: pointer;
-    }
-
-    .feedback-row {
-      display: flex;
-      flex-direction: row;
-      gap: 4rem;
-      padding-top: 1rem;
     }
   `;
 
@@ -72,7 +68,7 @@ export class SolutionFeedbackElement extends LitElement {
     return html` <cw-shoelace-context>
       ${this.isAnswerShown
         ? html`
-            <div class="feedback-row">
+            <div class="flex flex-row gap-8 pt-4">
               <sl-button
                 variant="${this.feedback === 'failure' ? 'danger' : 'default'}"
                 size="large"
