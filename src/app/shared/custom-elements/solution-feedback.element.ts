@@ -101,7 +101,14 @@ export class SolutionFeedbackElement extends withTwind(LitElement) {
                 : ''}
             </div>
           `
-        : html` <button @click="${this.showAnswer}">show solution</button> `}
+        : html`
+            <button
+              @click="${this.showAnswer}"
+              class="bg-blue-50 rounded-lg border-2 border-blue-200 text-blue-800 hover:bg-blue-100 focus:border-blue-800 focus:rounded-2xl px-3 py-2"
+            >
+              show solution
+            </button>
+          `}
     </cw-shoelace-context>`;
   }
 }
