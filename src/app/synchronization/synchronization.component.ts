@@ -2,19 +2,20 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ExerciseService } from '../shared/services/exercise.service';
 import { firstValueFrom } from 'rxjs';
 import { DbService } from '../shared/services/db.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-synchronization',
   templateUrl: './synchronization.component.html',
-  styleUrls: ['./synchronization.component.sass'],
+  styleUrls: ['./synchronization.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SynchronizationComponent {
   constructor(
     private exerciseService: ExerciseService,
     protected route: ActivatedRoute,
-    protected dbService: DbService
+    protected dbService: DbService,
+    protected router: Router
   ) {}
 
   async exportIntoDirectory() {

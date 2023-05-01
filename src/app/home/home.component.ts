@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomeComponent {
-  constructor(protected labelService: LabelService, private router: Router) {}
+  constructor(protected labelService: LabelService, protected router: Router) {}
 
   async onLabelClicked(label: Label) {
     await this.router.navigate(['labels', label.id, 'study']);

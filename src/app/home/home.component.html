@@ -7,7 +7,7 @@
   </div>
 
   <ng-container *ngIf="labelService.labels$ | async as labels">
-    <div class="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-2">
+    <div class="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-4">
       <ng-container *ngFor="let label of labels">
         <app-label
           [label]="label"
@@ -22,28 +22,26 @@
   </div>
 
   <div class="flex gap-4">
-    <button
-      class="px-4 py-2 gap-2 flex text-blue-800 flex-col items-center bg-neutral-100 rounded-lg border-2 border-neutral-300 hover:bg-neutral-200 w-0 flex-grow"
-      [routerLink]="'/designer'"
+    <app-tile
+      class="w-0 flex-grow"
+      title="Designer"
+      fontawesomeIconClasses="fa-solid fa-compass-drafting"
+      (clicked)="router.navigate(['designer'])"
     >
-      <i class="fa-solid fa-compass-drafting text-5xl"></i>
-      <div class="text-xl font-medium">Designer</div>
-    </button>
-
-    <button
-      class="px-4 py-2 gap-2 flex text-blue-800 flex-col items-center bg-neutral-100 rounded-lg border-2 border-neutral-300 hover:bg-neutral-200 w-0 flex-grow"
-      [routerLink]="'/synchronization'"
+    </app-tile>
+    <app-tile
+      class="w-0 flex-grow"
+      title="Synchronization"
+      fontawesomeIconClasses="fa-solid fa-rotate"
+      (clicked)="router.navigate(['synchronization'])"
     >
-      <i class="fa-solid fa-rotate text-5xl"></i>
-      <div class="text-xl font-medium">Synchronisation</div>
-    </button>
-
-    <button
-      class="px-4 py-2 gap-2 flex text-blue-800 flex-col items-center bg-neutral-100 rounded-lg border-2 border-neutral-300 hover:bg-neutral-200 w-0 flex-grow"
-      [routerLink]="'/settings'"
+    </app-tile>
+    <app-tile
+      class="w-0 flex-grow"
+      title="Settings"
+      fontawesomeIconClasses="fa-solid fa-gear"
+      (clicked)="router.navigate(['settings'])"
     >
-      <i class="fa-solid fa-gear text-5xl"></i>
-      <div class="text-xl font-medium">Settings</div>
-    </button>
+    </app-tile>
   </div>
 </app-padded-layout>

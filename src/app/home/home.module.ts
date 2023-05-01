@@ -6,6 +6,7 @@ import { HomeComponent } from './home.component';
 import { MatButtonModule } from '@angular/material/button';
 import { LabelComponent } from '../shared/components/label/label.component';
 import { PaddedLayoutComponent } from '../shared/components/padded-layout/padded-layout.component';
+import { TileComponent } from '../shared/components/tile/tile.component';
 
 @NgModule({
   declarations: [HomeComponent],
@@ -15,6 +16,7 @@ import { PaddedLayoutComponent } from '../shared/components/padded-layout/padded
     MatButtonModule,
     LabelComponent,
     PaddedLayoutComponent,
+    TileComponent,
   ],
 })
 export class HomeModule {}
