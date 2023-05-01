@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   CUSTOM_ELEMENTS_SCHEMA,
+  OnDestroy,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
@@ -9,7 +10,6 @@ import '../shared/custom-elements/shoelace-context.element';
 import { LabelService } from '../shared/services/label.service';
 import { ExerciseService } from '../shared/services/exercise.service';
 import {
-  BehaviorSubject,
   debounceTime,
   firstValueFrom,
   map,
@@ -55,11 +55,29 @@ interface Selection {
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DesignerComponent {
+export class DesignerComponent implements OnDestroy {
   readonly searchControl = new FormControl('');
+  readonly selectionControl = new FormControl<Selection | null>({
+    disabled: false,
+    value: {},
+  });
   readonly controls$ = new FormGroup({
     search: this.searchControl,
+    selection: this.selectionControl,
   });
+  /**
+   * Must be destroyed to prevent memory leaks.
+   * Makes sure that the URL query params are in sync with the control on the page.
+   */
+  readonly bindQueryParamsManager = this.factory
+    .create([
+      { queryKey: 'search' },
+      {
+        queryKey: 'selection',
+        type: 'object',
+      },
+    ])
+    .connect(this.controls$);
   readonly searchValue$ = this.searchControl.valueChanges.pipe(
     startWith(this.searchControl.value),
     shareReplay({ bufferSize: 1, refCount: true })
@@ -74,8 +92,11 @@ export class DesignerComponent {
   readonly exercises$: Observable<Exercise[]> = this.debouncedSearchValue$.pipe(
     switchMap((query) => this.exerciseService.searchExercises({ query }))
   );
-  readonly selection$ = new BehaviorSubject<Selection | undefined>(undefined);
-  recentSelections$ = this.selection$.pipe(
+  readonly selection$ = this.selectionControl.valueChanges.pipe(
+    startWith(this.selectionControl.value),
+    shareReplay({ refCount: true, bufferSize: 1 })
+  );
+  readonly recentSelections$ = this.selection$.pipe(
     scan((recentSelections, currentSelection) => {
       if (!currentSelection) return recentSelections;
       const isAlreadyIncluded =
@@ -127,14 +148,6 @@ export class DesignerComponent {
     switchMap((labelIds) => this.labelService.getLabelsByIds(labelIds))
   );
 
-  /**
-   * Must be destroyed to prevent memory leaks.
-   * Makes sure that the URL query params are in sync with the control on the page.
-   */
-  bindQueryParamsManager = this.factory
-    .create([{ queryKey: 'search' }])
-    .connect(this.controls$);
-
   constructor(
     private labelService: LabelService,
     private exerciseService: ExerciseService,
@@ -142,6 +155,10 @@ export class DesignerComponent {
     private _snackBar: MatSnackBar,
     private factory: BindQueryParamsFactory
   ) {}
+
+  ngOnDestroy(): void {
+    this.bindQueryParamsManager.destroy();
+  }
 
   async createLabel() {
     const labelId = await this.fileSystemSynchronisationService.createLabel();
@@ -165,11 +182,11 @@ export class DesignerComponent {
   }
 
   selectExercise(exercise: Exercise) {
-    this.selection$.next({ exerciseId: exercise.id });
+    this.selectionControl.patchValue({ exerciseId: exercise.id });
   }
 
   selectLabel(label: Label) {
-    this.selection$.next({ labelId: label.id });
+    this.selectionControl.patchValue({ labelId: label.id });
   }
 
   async duplicateExercise(duplicatedExercise: Exercise) {
