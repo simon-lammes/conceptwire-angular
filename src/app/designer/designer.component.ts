@@ -17,6 +17,7 @@ import {
   of,
   scan,
   shareReplay,
+  startWith,
   switchMap,
 } from 'rxjs';
 import { Exercise } from '../shared/models/exercise';
@@ -28,6 +29,8 @@ import { LabelPreviewComponent } from '../shared/components/label-preview/label-
 import { FileSystemSynchronisationService } from '../shared/services/file-system-synchronisation.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FileButtonComponent } from './file-button/file-button.component';
+import { BindQueryParamsFactory } from '@ngneat/bind-query-params';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 interface Selection {
   labelId?: string;
@@ -45,6 +48,7 @@ interface Selection {
     ToolbarComponent,
     LabelPreviewComponent,
     FileButtonComponent,
+    ReactiveFormsModule,
   ],
   templateUrl: './designer.component.html',
   styleUrls: ['./designer.component.sass'],
@@ -52,7 +56,14 @@ interface Selection {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DesignerComponent {
-  readonly searchValue$ = new BehaviorSubject('');
+  readonly searchControl = new FormControl('');
+  readonly controls$ = new FormGroup({
+    search: this.searchControl,
+  });
+  readonly searchValue$ = this.searchControl.valueChanges.pipe(
+    startWith(this.searchControl.value),
+    shareReplay({ bufferSize: 1, refCount: true })
+  ) as unknown as Observable<string>;
   debouncedSearchValue$ = this.searchValue$.pipe(
     debounceTime(50),
     shareReplay({ bufferSize: 1, refCount: true })
@@ -116,11 +127,20 @@ export class DesignerComponent {
     switchMap((labelIds) => this.labelService.getLabelsByIds(labelIds))
   );
 
+  /**
+   * Must be destroyed to prevent memory leaks.
+   * Makes sure that the URL query params are in sync with the control on the page.
+   */
+  bindQueryParamsManager = this.factory
+    .create([{ queryKey: 'search' }])
+    .connect(this.controls$);
+
   constructor(
     private labelService: LabelService,
     private exerciseService: ExerciseService,
     private fileSystemSynchronisationService: FileSystemSynchronisationService,
-    private _snackBar: MatSnackBar
+    private _snackBar: MatSnackBar,
+    private factory: BindQueryParamsFactory
   ) {}
 
   async createLabel() {
@@ -150,12 +170,6 @@ export class DesignerComponent {
 
   selectLabel(label: Label) {
     this.selection$.next({ labelId: label.id });
-  }
-
-  onInputChange(event: CustomEvent) {
-    // @ts-ignore
-    const value = event.target.value;
-    this.searchValue$.next(value);
   }
 
   async duplicateExercise(duplicatedExercise: Exercise) {
