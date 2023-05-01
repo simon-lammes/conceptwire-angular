@@ -40,6 +40,9 @@ export class ExercisePreviewComponent {
   @Output()
   duplicated = new EventEmitter<any>();
 
+  @Output()
+  openExercise = new EventEmitter<Exercise>();
+
   onLabelClicked(label: Label) {
     this.labelClicked.emit(label);
   }

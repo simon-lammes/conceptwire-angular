@@ -2,6 +2,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { StudySettingsService } from '../services/study-settings.service';
 import * as _ from 'lodash-es';
 import { firstValueFrom } from 'rxjs';
+import { ExerciseService } from '../services/exercise.service';
 
 @Pipe({
   name: 'applyRuntimeTransformationsToExercise',
@@ -10,7 +11,10 @@ import { firstValueFrom } from 'rxjs';
 export class ApplyRuntimeTransformationsToExercisePipe
   implements PipeTransform
 {
-  constructor(private studySettingsService: StudySettingsService) {}
+  constructor(
+    private studySettingsService: StudySettingsService,
+    private exerciseService: ExerciseService
+  ) {}
 
   /**
    * Before displaying an exercise, we might want to transform/adjust it a bit to enhance the user experience.
@@ -25,6 +29,7 @@ export class ApplyRuntimeTransformationsToExercisePipe
     exerciseContainer.innerHTML = exerciseContent;
     this.writeCodeContentIntoAttribute(exerciseContainer, exerciseContent);
     await this.applySettings(exerciseContainer);
+    await this.loadExerciseReferences(exerciseContainer);
     return exerciseContainer.innerHTML;
   }
 
@@ -94,6 +99,27 @@ export class ApplyRuntimeTransformationsToExercisePipe
           indexOfInnerHtml + innerHtmlLowercase.length
         )
       );
+    });
+  }
+
+  private async loadExerciseReferences(exerciseContainer: HTMLSpanElement) {
+    const exerciseReferenceElements = Array.from(
+      exerciseContainer.querySelectorAll('cw-exercise-reference')
+    );
+    const exerciseIds = exerciseReferenceElements
+      .map((x) => x.getAttribute('exercise-id'))
+      .filter((x) => !!x) as string[];
+    const exercises = await firstValueFrom(
+      this.exerciseService.getExercisesByIds(exerciseIds)
+    );
+    exerciseReferenceElements.forEach((el) => {
+      const referencedExerciseId = el.getAttribute('exercise-id');
+      const referencedExercise = exercises.find(
+        (x) => x.id === referencedExerciseId
+      );
+      if (referencedExercise) {
+        el.setAttribute('exercise', JSON.stringify(referencedExercise));
+      }
     });
   }
 }

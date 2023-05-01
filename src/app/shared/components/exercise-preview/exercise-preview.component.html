@@ -23,6 +23,9 @@
       </div>
     </div>
     <hr class="my-4" />
-    <app-exercise [exerciseContent]="exercise.content"></app-exercise>
+    <app-exercise
+      [exerciseContent]="exercise.content"
+      (openExercise)="openExercise.emit($event)"
+    ></app-exercise>
   </mat-card-content>
 </mat-card>
