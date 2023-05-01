@@ -2,7 +2,14 @@ import { css, html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { Exercise } from '../models/exercise';
 
+import install from '@twind/with-web-components';
+// @ts-ignore
+import config from '../../../../twind.config.js';
+
+const withTwind = install(config);
+
 @customElement('cw-exercise-reference')
+@install(config)
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 class ExerciseReferenceElement extends LitElement {
   // I have not found a way to import the CSS and let the bundler do the work.
@@ -37,8 +44,11 @@ class ExerciseReferenceElement extends LitElement {
       return html`<div>The references exercise was not loaded.</div>`;
     }
     return html`
-      <button style="display: block" @click="${this.onClick}">
-        <div style="font-size: 1.125rem;">${this.exercise.title}</div>
+      <button
+        class="rounded-lg border-2 border-blue-500 bg-blue-50 text-blue-800 px-3 py-2 hover:bg-blue-100 focus:border-blue-900 focus:rounded-2xl"
+        @click="${this.onClick}"
+      >
+        <div class="text-lg">${this.exercise.title}</div>
         <div>${this.innerHTML}</div>
       </button>
     `;
