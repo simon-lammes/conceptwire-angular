@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as _ from 'lodash';
-import { Octokit } from 'octokit';
+import { Octokit } from '@octokit/rest';
 import { SynchronisationService } from './synchronisation.service';
 import { AssetAttribution } from '../models/asset-attribution';
 
