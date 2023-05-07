@@ -46,12 +46,6 @@ export class LabelDetailComponent {
     await this.router.navigate(['..', label.id], { relativeTo: this.route });
   }
 
-  async showExercisesForLabel(label: Label) {
-    await this.router.navigate(['exercises'], {
-      queryParams: { labelId: label.id },
-    });
-  }
-
   async study() {
     await this.router.navigate(['study'], { relativeTo: this.route });
   }
