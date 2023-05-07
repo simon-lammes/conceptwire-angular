@@ -1,13 +1,30 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { StudySettingsService } from '../shared/services/study-settings.service';
 import { firstValueFrom } from 'rxjs';
+import { MatButtonModule } from '@angular/material/button';
+import { CooldownPreviewComponent } from '../shared/components/cooldown-preview/cooldown-preview.component';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { ToolbarComponent } from '../shared/components/toolbar/toolbar.component';
 
 @Component({
-  selector: 'app-settings',
-  templateUrl: './settings.component.html',
-  styleUrls: ['./settings.component.sass'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-settings',
+    templateUrl: './settings.component.html',
+    styleUrls: ['./settings.component.sass'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        ToolbarComponent,
+        ReactiveFormsModule,
+        FormsModule,
+        MatCheckboxModule,
+        MatFormFieldModule,
+        MatInputModule,
+        CooldownPreviewComponent,
+        MatButtonModule,
+    ],
 })
 export class SettingsComponent implements OnInit {
   immediatelyJumpToNextExerciseAfterGivingFeedbackControl = new FormControl<

@@ -2,11 +2,11 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import {
   BehaviorSubject,
+  combineLatest,
   map,
   Observable,
   switchMap,
   zip,
-  combineLatest,
 } from 'rxjs';
 import { ExerciseService } from '../../../shared/services/exercise.service';
 import { ExperienceService } from '../../../shared/services/experience.service';
@@ -14,12 +14,25 @@ import { ExerciseSituation } from '../../../shared/models/exercise-situation';
 import { ExerciseResult } from '../../../shared/models/exerciseResult';
 import { LabelService } from '../../../shared/services/label.service';
 import { Label } from '../../../shared/models/label';
+import { ExerciseSituationComponent } from '../../../shared/components/exercise-situation/exercise-situation.component';
+import { StudyProgressComponent } from '../../../shared/components/study-progress/study-progress.component';
+import { PaddedLayoutComponent } from '../../../shared/components/padded-layout/padded-layout.component';
+import { CommonModule } from '@angular/common';
+import { ToolbarComponent } from '../../../shared/components/toolbar/toolbar.component';
 
 @Component({
   selector: 'app-study',
   templateUrl: './study.component.html',
   styleUrls: ['./study.component.sass'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    CommonModule,
+    ToolbarComponent,
+    PaddedLayoutComponent,
+    StudyProgressComponent,
+    ExerciseSituationComponent,
+  ],
 })
 export class StudyComponent {
   nextExerciseRequested$ = new BehaviorSubject<true>(true);

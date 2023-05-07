@@ -2,12 +2,17 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { AssetService } from '../shared/services/asset.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Asset } from '../shared/models/asset';
+import { LocalAssetUrlPipe } from '../shared/pipes/local-asset-url.pipe';
+import { CommonModule } from '@angular/common';
+import { ToolbarComponent } from '../shared/components/toolbar/toolbar.component';
 
 @Component({
   selector: 'app-local-assets',
   templateUrl: './local-assets.component.html',
   styleUrls: ['./local-assets.component.sass'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [CommonModule, ToolbarComponent, LocalAssetUrlPipe],
 })
 export class LocalAssetsComponent {
   constructor(

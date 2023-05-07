@@ -1,13 +1,25 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { LabelService } from '../shared/services/label.service';
 import { Label } from '../shared/models/label';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+import { TileComponent } from '../shared/components/tile/tile.component';
+import { LabelComponent } from '../shared/components/label/label.component';
+import { CommonModule } from '@angular/common';
+import { PaddedLayoutComponent } from '../shared/components/padded-layout/padded-layout.component';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.sass'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    PaddedLayoutComponent,
+    RouterModule,
+    CommonModule,
+    LabelComponent,
+    TileComponent,
+  ],
 })
 export class HomeComponent {
   constructor(protected labelService: LabelService, protected router: Router) {}

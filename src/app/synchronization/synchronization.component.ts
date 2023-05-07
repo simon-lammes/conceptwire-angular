@@ -3,12 +3,21 @@ import { ExerciseService } from '../shared/services/exercise.service';
 import { firstValueFrom } from 'rxjs';
 import { DbService } from '../shared/services/db.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { TileComponent } from '../shared/components/tile/tile.component';
+import { PaddedLayoutComponent } from '../shared/components/padded-layout/padded-layout.component';
+import { ToolbarComponent } from '../shared/components/toolbar/toolbar.component';
 
 @Component({
-  selector: 'app-synchronization',
-  templateUrl: './synchronization.component.html',
-  styleUrls: ['./synchronization.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-synchronization',
+    templateUrl: './synchronization.component.html',
+    styleUrls: ['./synchronization.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        ToolbarComponent,
+        PaddedLayoutComponent,
+        TileComponent,
+    ],
 })
 export class SynchronizationComponent {
   constructor(
