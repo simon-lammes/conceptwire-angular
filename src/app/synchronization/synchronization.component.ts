@@ -8,16 +8,12 @@ import { PaddedLayoutComponent } from '../shared/components/padded-layout/padded
 import { ToolbarComponent } from '../shared/components/toolbar/toolbar.component';
 
 @Component({
-    selector: 'app-synchronization',
-    templateUrl: './synchronization.component.html',
-    styleUrls: ['./synchronization.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [
-        ToolbarComponent,
-        PaddedLayoutComponent,
-        TileComponent,
-    ],
+  selector: 'app-synchronization',
+  templateUrl: './synchronization.component.html',
+  styleUrls: ['./synchronization.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [ToolbarComponent, PaddedLayoutComponent, TileComponent],
 })
 export class SynchronizationComponent {
   constructor(
