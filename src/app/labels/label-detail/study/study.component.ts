@@ -6,7 +6,7 @@ import {
   map,
   Observable,
   switchMap,
-  zip,
+  take,
 } from 'rxjs';
 import { ExerciseService } from '../../../shared/services/exercise.service';
 import { ExperienceService } from '../../../shared/services/experience.service';
@@ -44,19 +44,17 @@ export class StudyComponent {
       this.experienceService.getExperienceStreamForStudying({ labelId })
     )
   );
-  exerciseSituation$ = zip(
-    this.experience$.pipe(
-      switchMap((experience) =>
-        this.exerciseService.getExerciseById(experience?.exerciseId).pipe(
-          map((exercise) => {
-            if (!exercise) return undefined;
-            return <ExerciseSituation>{ exercise, experience };
-          })
-        )
+  exerciseSituation$ = this.nextExerciseRequested$.pipe(
+    switchMap(() => this.experience$.pipe(take(1))),
+    switchMap((experience) =>
+      this.exerciseService.getExerciseById(experience?.exerciseId).pipe(
+        map((exercise) => {
+          if (!exercise) return undefined;
+          return <ExerciseSituation>{ exercise, experience };
+        })
       )
-    ),
-    this.nextExerciseRequested$
-  ).pipe(map(([x]) => x));
+    )
+  );
   label$: Observable<Label | undefined> = this.labelId$.pipe(
     switchMap((labelId) => this.labelService.getLabelById(labelId))
   );
