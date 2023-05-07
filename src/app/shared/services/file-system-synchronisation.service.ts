@@ -3,6 +3,7 @@ import { SynchronisationService } from './synchronisation.service';
 import * as _ from 'lodash-es';
 import { AssetAttribution } from '../models/asset-attribution';
 import { TemplateService } from './template.service';
+import { ExperienceService } from './experience.service';
 
 @Injectable({
   providedIn: 'root',
@@ -11,7 +12,8 @@ export class FileSystemSynchronisationService {
   private directoryHandle?: FileSystemDirectoryHandle;
   constructor(
     private synchronisationService: SynchronisationService,
-    private templateService: TemplateService
+    private templateService: TemplateService,
+    private experienceService: ExperienceService
   ) {}
 
   async uploadContent() {
@@ -66,6 +68,7 @@ export class FileSystemSynchronisationService {
       await this.synchronisationService.importAssetAttribution(
         assetAttribution
       );
+      await this.experienceService.updateExperiencesTable();
     }
 
     const conceptsDirectoryHandle =

@@ -3,6 +3,7 @@ import * as _ from 'lodash';
 import { Octokit } from '@octokit/rest';
 import { SynchronisationService } from './synchronisation.service';
 import { AssetAttribution } from '../models/asset-attribution';
+import { ExperienceService } from './experience.service';
 
 interface FilePreview {
   url: string;
@@ -16,7 +17,10 @@ interface FilePreview {
 export class GithubSynchronizationService {
   readonly octokit = new Octokit();
 
-  constructor(private synchronisationService: SynchronisationService) {}
+  constructor(
+    private synchronisationService: SynchronisationService,
+    private experienceService: ExperienceService
+  ) {}
 
   async importContent(props: { owner: string; repo: string; ref: string }) {
     await this.synchronisationService.clearModels();
@@ -115,5 +119,6 @@ export class GithubSynchronizationService {
         assetAttribution
       );
     }
+    await this.experienceService.updateExperiencesTable();
   }
 }

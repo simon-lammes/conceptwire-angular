@@ -23,8 +23,8 @@ export class ExperienceService {
     private exerciseCooldownService: ExerciseCooldownService
   ) {}
 
-  updateExperiencesTable() {
-    this.db.transaction(
+  async updateExperiencesTable() {
+    await this.db.transaction(
       'rw',
       [this.db.experiences, this.db.exercises, this.db.exerciseLabels],
       () => {

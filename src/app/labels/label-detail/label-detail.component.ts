@@ -3,7 +3,6 @@ import { LabelService } from '../../shared/services/label.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map, Observable, switchMap } from 'rxjs';
 import { Label } from '../../shared/models/label';
-import { ExperienceService } from '../../shared/services/experience.service';
 import { LocalAssetUrlPipe } from '../../shared/pipes/local-asset-url.pipe';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -32,8 +31,7 @@ export class LabelDetailComponent {
   constructor(
     private labelService: LabelService,
     private route: ActivatedRoute,
-    private router: Router,
-    private experienceService: ExperienceService
+    private router: Router
   ) {
     const labelId$ = this.route.params.pipe(map((params) => params['labelId']));
     this.label$ = labelId$.pipe(
@@ -55,7 +53,6 @@ export class LabelDetailComponent {
   }
 
   async study() {
-    await this.experienceService.updateExperiencesTable();
     await this.router.navigate(['study'], { relativeTo: this.route });
   }
 
