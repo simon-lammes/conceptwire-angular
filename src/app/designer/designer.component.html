@@ -1,8 +1,11 @@
-<app-toolbar title="Designer" [showUploadButton]="true"></app-toolbar>
-<cw-shoelace-context>
-  <div class="grid grid-cols-4">
-    <div class="row-span-3 p-2">
-      <mat-form-field appearance="outline" class="p-2">
+<div class="w-full h-[100vh] flex flex-col">
+  <app-toolbar title="Designer" [showUploadButton]="true"></app-toolbar>
+  <div class="grid grid-cols-4 h-0 flex-grow">
+    <div class="overflow-y-auto h-full px-2">
+      <mat-form-field
+        appearance="outline"
+        class="p-2 bg-white sticky top-0 border-b-2 border-neutral-100"
+      >
         <mat-label>Search</mat-label>
         <input matInput placeholder="Search..." [formControl]="searchControl" />
       </mat-form-field>
@@ -44,8 +47,25 @@
           ></app-file-button>
         </div>
       </div>
+      <div class="p-2">
+        <div class="text-lg flex items-baseline gap-2">
+          <div>Elements</div>
+        </div>
+        <div class="ml-4">
+          <app-file-button
+            *ngFor="
+              let element of customElementsService.customElements$ | async
+            "
+            [title]="element | customElementTitle"
+            [highlighted]="
+              element.tagName === (selection$ | async)?.customElementTagName
+            "
+            (clicked)="selectCustomElement(element)"
+          ></app-file-button>
+        </div>
+      </div>
     </div>
-    <div class="row-span-3 col-span-2 p-4">
+    <div class="overflow-y-auto h-full col-span-2 p-4">
       <app-exercise-preview
         *ngIf="selectedExercise$ | async as exercise"
         [exercise]="exercise"
@@ -60,8 +80,12 @@
         [subLabels]="(subLabelsOfSelectedLabel$ | async) ?? []"
         (labelClicked)="selectLabel($event)"
       ></app-label-preview>
+      <app-custom-element-documentation
+        *ngIf="selectedCustomElement$ | async as customElement"
+        [customElement]="customElement"
+      ></app-custom-element-documentation>
     </div>
-    <div class="row-span-3 p-4">
+    <div class="overflow-y-auto h-full p-4">
       <div class="text-blue-800">Labels</div>
       <ng-container *ngIf="recentlySelectedLabels$ | async as labels">
         <app-file-button
@@ -82,4 +106,4 @@
       </ng-container>
     </div>
   </div>
-</cw-shoelace-context>
+</div>

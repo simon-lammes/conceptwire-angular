@@ -3,7 +3,7 @@ import { customElement, property, state } from 'lit/decorators.js';
 
 @customElement('cw-book-reference')
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-class YoutubeVideoElement extends LitElement {
+class BookReferenceElement extends LitElement {
   // I have not found a way to import the CSS and let the bundler do the work.
   // So instead, I just copied the highlight vs code style.
   static override styles = css`
@@ -20,7 +20,7 @@ class YoutubeVideoElement extends LitElement {
   book: any;
 
   @property({ attribute: 'isbn-13' })
-  isbn13 = {};
+  isbn13 = '';
 
   @property({ attribute: 'start-page' })
   startPage: string | undefined;

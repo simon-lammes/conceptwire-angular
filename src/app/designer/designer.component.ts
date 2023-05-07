@@ -31,10 +31,15 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { FileButtonComponent } from './file-button/file-button.component';
 import { BindQueryParamsFactory } from '@ngneat/bind-query-params';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { CustomElementsService } from '../shared/services/custom-elements.service';
+import { CustomElementDeclaration } from 'custom-elements-manifest';
+import { CustomElementDocumentationComponent } from './custom-element-documentation/custom-element-documentation.component';
+import { CustomElementTitlePipe } from '../shared/pipes/custom-element-title.pipe';
 
 interface Selection {
   labelId?: string;
   exerciseId?: string;
+  customElementTagName?: string;
 }
 
 @Component({
@@ -49,6 +54,8 @@ interface Selection {
     LabelPreviewComponent,
     FileButtonComponent,
     ReactiveFormsModule,
+    CustomElementDocumentationComponent,
+    CustomElementTitlePipe,
   ],
   templateUrl: './designer.component.html',
   styleUrls: ['./designer.component.sass'],
@@ -131,6 +138,13 @@ export class DesignerComponent implements OnDestroy {
   readonly selectedLabel$ = this.selection$.pipe(
     switchMap((selection) => this.labelService.getLabelById(selection?.labelId))
   );
+  readonly selectedCustomElement$ = this.selection$.pipe(
+    switchMap((selection) =>
+      this.customElementsService.getCustomElementByTagName(
+        selection?.customElementTagName
+      )
+    )
+  );
   readonly recentlySelectedExercises$ = this.recentSelections$.pipe(
     map(
       (selections) =>
@@ -153,7 +167,8 @@ export class DesignerComponent implements OnDestroy {
     private exerciseService: ExerciseService,
     private fileSystemSynchronisationService: FileSystemSynchronisationService,
     private _snackBar: MatSnackBar,
-    private factory: BindQueryParamsFactory
+    private factory: BindQueryParamsFactory,
+    protected customElementsService: CustomElementsService
   ) {}
 
   ngOnDestroy(): void {
@@ -201,5 +216,9 @@ export class DesignerComponent implements OnDestroy {
     this.selectExercise(exercise);
     await navigator.clipboard.writeText(exerciseId);
     this._snackBar.open('ID copied', undefined, { duration: 2000 });
+  }
+
+  selectCustomElement(element: CustomElementDeclaration) {
+    this.selectionControl.patchValue({ customElementTagName: element.tagName });
   }
 }
