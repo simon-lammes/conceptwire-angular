@@ -23,6 +23,7 @@
 
   <div class="flex gap-4">
     <app-tile
+      *ngIf="lgBreakpoint$ | async"
       class="w-0 flex-grow"
       title="Designer"
       fontawesomeIconClasses="fa-solid fa-compass-drafting"

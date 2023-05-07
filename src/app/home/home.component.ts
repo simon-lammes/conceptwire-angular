@@ -6,6 +6,8 @@ import { TileComponent } from '../shared/components/tile/tile.component';
 import { LabelComponent } from '../shared/components/label/label.component';
 import { CommonModule } from '@angular/common';
 import { PaddedLayoutComponent } from '../shared/components/padded-layout/padded-layout.component';
+import { BreakpointObserver } from '@angular/cdk/layout';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -22,7 +24,15 @@ import { PaddedLayoutComponent } from '../shared/components/padded-layout/padded
   ],
 })
 export class HomeComponent {
-  constructor(protected labelService: LabelService, protected router: Router) {}
+  readonly lgBreakpoint$ = this.breakpointObserver
+    .observe('(min-width: 1024px)')
+    .pipe(map((x) => x.matches));
+
+  constructor(
+    protected labelService: LabelService,
+    protected router: Router,
+    private breakpointObserver: BreakpointObserver
+  ) {}
 
   async onLabelClicked(label: Label) {
     await this.router.navigate(['labels', label.id, 'study']);
