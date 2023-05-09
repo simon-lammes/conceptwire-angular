@@ -7,7 +7,8 @@ import { LabelComponent } from '../shared/components/label/label.component';
 import { CommonModule } from '@angular/common';
 import { PaddedLayoutComponent } from '../shared/components/padded-layout/padded-layout.component';
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { map } from 'rxjs';
+import { firstValueFrom, map } from 'rxjs';
+import { ServiceWorkerService } from '../shared/services/service-worker.service';
 
 @Component({
   selector: 'app-home',
@@ -31,10 +32,18 @@ export class HomeComponent {
   constructor(
     protected labelService: LabelService,
     protected router: Router,
-    private breakpointObserver: BreakpointObserver
+    private breakpointObserver: BreakpointObserver,
+    protected serviceWorkerService: ServiceWorkerService
   ) {}
 
   async onLabelClicked(label: Label) {
     await this.router.navigate(['labels', label.id, 'study']);
+  }
+
+  async loadNewVersionIfAvailable() {
+    const isAvailable =
+      (await firstValueFrom(this.serviceWorkerService.isUpdateAvailable$)) ||
+      (await this.serviceWorkerService.checkForUpdate());
+    if (isAvailable) this.serviceWorkerService.activateUpdate();
   }
 }

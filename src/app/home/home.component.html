@@ -45,4 +45,14 @@
     >
     </app-tile>
   </div>
+  <app-tile
+    class="my-4"
+    fontawesomeIconClasses="fa-solid fa-wand-magic-sparkles"
+    [title]="
+      (serviceWorkerService.isUpdateAvailable$ | async)
+        ? 'Load New Version'
+        : 'Check for Update'
+    "
+    (clicked)="loadNewVersionIfAvailable()"
+  ></app-tile>
 </app-padded-layout>
