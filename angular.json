@@ -33,6 +33,11 @@
                 "input": "./node_modules/@shoelace-style/shoelace/dist/assets/",
                 "output": "./shoelace/dist/assets/"
               },
+              {
+                "glob": "**/*",
+                "input": "./node_modules/@fortawesome/fontawesome-free",
+                "output": "./fontawesome/"
+              },
               "src/manifest.webmanifest"
             ],
             "styles": [
