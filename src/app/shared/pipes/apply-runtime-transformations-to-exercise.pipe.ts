@@ -1,6 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { StudySettingsService } from '../services/study-settings.service';
-import * as _ from 'lodash-es';
 import { firstValueFrom } from 'rxjs';
 import { ExerciseService } from '../services/exercise.service';
 
@@ -81,23 +80,23 @@ export class ApplyRuntimeTransformationsToExercisePipe
     exerciseContainer: HTMLSpanElement,
     originalHtmlString: string
   ) {
-    const originalHtmlLowercase = originalHtmlString.toLowerCase();
     const codeElements = exerciseContainer.querySelectorAll('cw-code');
     codeElements.forEach((codeElement) => {
-      const innerHtmlLowercase = _.unescape(
-        codeElement.innerHTML.toLowerCase()
+      const id = codeElement.id;
+      const indexOfId = originalHtmlString.indexOf(`id="${id}"`);
+      if (!indexOfId) return;
+      const indexOfLastCharacterOfOpeningTag = originalHtmlString.indexOf(
+        '>',
+        indexOfId
       );
-      const indexOfInnerHtml = originalHtmlLowercase.indexOf(
-        // By adding the closing tag to the search term,
-        // we make sure that we find exactly the corresponding match.
-        innerHtmlLowercase + '</cw-code>'
+      const indexOfBeginningOfInnerHtml = indexOfLastCharacterOfOpeningTag + 1;
+      const indexOfClosingTag = originalHtmlString.indexOf(
+        '</cw-code>',
+        indexOfBeginningOfInnerHtml
       );
       codeElement.setAttribute(
         'cw-inner-html-as-attribute',
-        originalHtmlString.slice(
-          indexOfInnerHtml,
-          indexOfInnerHtml + innerHtmlLowercase.length
-        )
+        originalHtmlString.slice(indexOfBeginningOfInnerHtml, indexOfClosingTag)
       );
     });
   }

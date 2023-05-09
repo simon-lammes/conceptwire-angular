@@ -11,6 +11,7 @@ class CodeElement extends LitElement {
   static override styles = css`
     :host {
       display: block;
+      overflow-x: auto;
     }
 
     pre code.hljs {
