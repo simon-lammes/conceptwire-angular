@@ -9,6 +9,7 @@ import { AssetAttributionService } from './asset-attribution.service';
 import { createAcyclicGraph, transitiveClosure } from 'simple-digraph';
 import { DbService } from './db.service';
 import { TemplateService } from './template.service';
+import { QualityLabels } from '../models/quality-labels';
 
 /**
  * Offers functionality for synchronizing studying content. But this service is not necessarily responsible
@@ -45,6 +46,7 @@ export class SynchronisationService {
       content: exerciseContent,
       title: this.extractTitleFromHtmlElement(exerciseElement),
       labelIds: await this.extractLabelIdsOfExercise(exerciseElement),
+      qualityLabels: await this.extractQualityLabelsOfExercise(exerciseElement),
     });
   }
 
@@ -216,5 +218,20 @@ export class SynchronisationService {
       if (!exerciseId) throw Error('Missing Exercise Id');
       await this.importExercise(exercise, exerciseId);
     }
+  }
+
+  private extractQualityLabelsOfExercise(
+    exerciseElement: HTMLElement
+  ): QualityLabels[] {
+    const qualityLabelsMetaElement = exerciseElement.querySelector(
+      'meta[name=quality-labels]'
+    );
+    if (!qualityLabelsMetaElement) return [];
+    const qualityLabelsString =
+      qualityLabelsMetaElement.getAttribute('content');
+    if (!qualityLabelsString) return [];
+    return qualityLabelsString
+      .split(';')
+      .map((x) => x.trim()) as QualityLabels[];
   }
 }

@@ -4,6 +4,7 @@ import { from, map, Observable, of, switchMap } from 'rxjs';
 import { liveQuery } from 'dexie';
 import { ExerciseLabel } from '../models/exercise-label';
 import { Exercise } from '../models/exercise';
+import { QualityLabels } from '../models/quality-labels';
 
 @Injectable({
   providedIn: 'root',
@@ -51,11 +52,13 @@ export class ExerciseService {
     content,
     labelIds,
     title,
+    qualityLabels,
   }: {
     id?: string;
     content: string;
     labelIds?: string[] | null;
     title?: string;
+    qualityLabels?: QualityLabels[];
   }) {
     await this.db.transaction(
       'rw',
@@ -65,6 +68,7 @@ export class ExerciseService {
           id: id ?? self.crypto.randomUUID(),
           content,
           title,
+          qualityLabels: qualityLabels ?? [],
         });
         if (labelIds) {
           await this.db.exerciseLabels.bulkPut(

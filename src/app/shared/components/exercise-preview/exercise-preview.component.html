@@ -1,6 +1,14 @@
 <mat-card>
   <mat-card-header>
-    <mat-card-title>{{ exercise.title }}</mat-card-title>
+    <mat-card-title
+      >{{ exercise.title }}
+      <sl-badge
+        *ngIf="exercise.qualityLabels?.includes('draft')"
+        variant="warning"
+        pill
+        >Draft</sl-badge
+      >
+    </mat-card-title>
   </mat-card-header>
   <mat-card-content>
     <div class="py-2 flex justify-between gap-4">

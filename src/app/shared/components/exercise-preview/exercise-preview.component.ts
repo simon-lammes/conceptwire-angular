@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  CUSTOM_ELEMENTS_SCHEMA,
   EventEmitter,
   Input,
   Output,
@@ -26,6 +27,7 @@ import { CopyTextButtonComponent } from '../copy-text-button/copy-text-button.co
   templateUrl: './exercise-preview.component.html',
   styleUrls: ['./exercise-preview.component.sass'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class ExercisePreviewComponent {
   @Input()
