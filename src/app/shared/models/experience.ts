@@ -1,8 +1,11 @@
+import { QualityLabels } from './quality-labels';
+
 export interface Experience {
   exerciseId: string;
   streak: number;
   lastSeen: Date;
   indexesForLabelStreakAndLastSeen: IndexForLabelStreakAndLastSeen[];
+  qualityLabels?: QualityLabels[];
 }
 
 /**

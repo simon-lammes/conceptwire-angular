@@ -29,6 +29,7 @@ export class ExperienceService {
       [this.db.experiences, this.db.exercises, this.db.exerciseLabels],
       () => {
         this.db.exercises.each(async (exercise) => {
+          if (exercise.id.startsWith('9f5e')) console.log('hello');
           const [experience, exerciseLabels] = await Promise.all([
             this.db.experiences.get(exercise.id),
             this.db.exerciseLabels
@@ -42,6 +43,7 @@ export class ExperienceService {
             exerciseId: exercise.id,
             streak,
             lastSeen,
+            qualityLabels: exercise.qualityLabels ?? [],
             indexesForLabelStreakAndLastSeen: exerciseLabels.map(
               (exerciseLabel) =>
                 <IndexForLabelStreakAndLastSeen>[
@@ -73,7 +75,8 @@ export class ExperienceService {
               .between([labelId, -Infinity], [labelId, Infinity], true, true)
               .filter(
                 (experience) =>
-                  !this.isExerciseCoolingDown({ studySettings, experience })
+                  !this.isExerciseCoolingDown({ studySettings, experience }) &&
+                  !experience.qualityLabels?.includes('draft')
               )
               .first()
           )

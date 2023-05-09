@@ -68,7 +68,6 @@ export class FileSystemSynchronisationService {
       await this.synchronisationService.importAssetAttribution(
         assetAttribution
       );
-      await this.experienceService.updateExperiencesTable();
     }
 
     const conceptsDirectoryHandle =
@@ -99,6 +98,7 @@ export class FileSystemSynchronisationService {
       const exerciseContent = await file.text();
       await this.synchronisationService.importExercise(exerciseContent, id);
     }
+    await this.experienceService.updateExperiencesTable();
   }
 
   async createLabel() {
