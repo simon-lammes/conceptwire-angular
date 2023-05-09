@@ -29,7 +29,6 @@ export class ExperienceService {
       [this.db.experiences, this.db.exercises, this.db.exerciseLabels],
       () => {
         this.db.exercises.each(async (exercise) => {
-          if (exercise.id.startsWith('9f5e')) console.log('hello');
           const [experience, exerciseLabels] = await Promise.all([
             this.db.experiences.get(exercise.id),
             this.db.exerciseLabels

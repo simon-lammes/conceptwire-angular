@@ -26,6 +26,10 @@ export class TemplateService {
     './assets/templates/find-missing-element-exercise.hbs'
   );
 
+  readonly keymapCommandExerciseTemplate$ = this.loadAndCompileTemplate(
+    './assets/templates/keymap-command-exercise.hbs'
+  );
+
   constructor(private http: HttpClient) {}
 
   async createNewExercise(args: { exerciseId: string }) {
@@ -51,6 +55,22 @@ export class TemplateService {
     const template = await firstValueFrom(
       this.findMissingElementExerciseTemplate$
     );
+    return template(args);
+  }
+
+  async createKeymapCommandExercise(args: {
+    concept: {
+      id: string;
+      title: string;
+      directLabelIds: string;
+    };
+    command: {
+      operatingSystem: string;
+      title: string;
+      key: string;
+    };
+  }) {
+    const template = await firstValueFrom(this.keymapCommandExerciseTemplate$);
     return template(args);
   }
 }

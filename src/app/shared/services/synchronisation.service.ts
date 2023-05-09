@@ -158,18 +158,28 @@ export class SynchronisationService {
 
   public async importConceptDocument(conceptContent: string, id: string) {
     const conceptDocumentElement = this.createHtmlElement(conceptContent);
-    const conceptElements = Array.from(
+    const setConceptElements = Array.from(
       conceptDocumentElement.querySelectorAll('cw-set-concept')
     );
-    await Promise.all(
-      conceptElements.map((conceptElement) =>
+    const keymapConceptElements = Array.from(
+      conceptDocumentElement.querySelectorAll('cw-keymap-concept')
+    );
+    await Promise.all([
+      ...setConceptElements.map((conceptElement) =>
         this.importSetConcept({
           setConceptElement: conceptElement,
           conceptDocument: conceptDocumentElement,
           conceptId: id,
         })
-      )
-    );
+      ),
+      ...keymapConceptElements.map((conceptElement) =>
+        this.importKeymapConcept({
+          keymapConceptElement: conceptElement,
+          conceptDocument: conceptDocumentElement,
+          conceptId: id,
+        })
+      ),
+    ]);
   }
 
   private async importSetConcept({
@@ -233,5 +243,44 @@ export class SynchronisationService {
     return qualityLabelsString
       .split(';')
       .map((x) => x.trim()) as QualityLabels[];
+  }
+
+  private async importKeymapConcept({
+    keymapConceptElement,
+    conceptDocument,
+    conceptId,
+  }: {
+    keymapConceptElement: Element;
+    conceptDocument: Element;
+    conceptId: string;
+  }) {
+    const commandElements = Array.from(
+      keymapConceptElement.querySelectorAll('cw-keymap-command')
+    );
+    await Promise.all([
+      commandElements.map(async (commandElement) => {
+        const exerciseContent =
+          await this.templateService.createKeymapCommandExercise({
+            concept: {
+              id: conceptId,
+              directLabelIds:
+                conceptDocument
+                  .querySelector('meta[name=direct-label-ids]')
+                  ?.getAttribute('content') ?? '',
+              title: conceptDocument.querySelector('title')?.innerText ?? '',
+            },
+            command: {
+              title: commandElement.getAttribute('title') ?? '',
+              key: commandElement.getAttribute('mac-key') ?? '',
+              operatingSystem: 'mac',
+            },
+          });
+        const exerciseId = commandElement.getAttribute('mac-exercise-id');
+        if (!exerciseId) {
+          throw new Error(`Concept ${conceptId} has exercise without id`);
+        }
+        await this.importExercise(exerciseContent, exerciseId);
+      }),
+    ]);
   }
 }
