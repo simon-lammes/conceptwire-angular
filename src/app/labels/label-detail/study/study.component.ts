@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import {
   BehaviorSubject,
   combineLatest,
+  firstValueFrom,
   map,
   Observable,
   switchMap,
@@ -18,7 +19,10 @@ import { ExerciseSituationComponent } from '../../../shared/components/exercise-
 import { StudyProgressComponent } from '../../../shared/components/study-progress/study-progress.component';
 import { PaddedLayoutComponent } from '../../../shared/components/padded-layout/padded-layout.component';
 import { CommonModule } from '@angular/common';
-import { ToolbarComponent } from '../../../shared/components/toolbar/toolbar.component';
+import {
+  AdditionalToolbarAction,
+  ToolbarComponent,
+} from '../../../shared/components/toolbar/toolbar.component';
 
 @Component({
   selector: 'app-study',
@@ -35,6 +39,10 @@ import { ToolbarComponent } from '../../../shared/components/toolbar/toolbar.com
   ],
 })
 export class StudyComponent {
+  readonly additionalToolbarActions: AdditionalToolbarAction[] = [
+    { icon: 'skip-end', label: 'Skip', action: () => this.skipExercise() },
+  ];
+
   nextExerciseRequested$ = new BehaviorSubject<true>(true);
   labelId$ = this.route.params.pipe(
     map((params) => params['labelId'] as string)
@@ -76,6 +84,16 @@ export class StudyComponent {
   }
 
   onNextExerciseRequested() {
+    this.nextExerciseRequested$.next(true);
+  }
+
+  private async skipExercise() {
+    const exerciseSituation = await firstValueFrom(this.exerciseSituation$);
+    if (!exerciseSituation) return;
+    await this.experienceService.onExerciseResult({
+      exerciseSituation: exerciseSituation,
+      feedback: 'skip',
+    });
     this.nextExerciseRequested$.next(true);
   }
 }

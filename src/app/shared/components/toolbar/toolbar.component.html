@@ -10,4 +10,20 @@
   >
     <mat-icon>upload</mat-icon>
   </button>
+  <sl-dropdown *ngIf="additionalActions">
+    <sl-icon-button
+      slot="trigger"
+      name="three-dots-vertical"
+      label="More"
+    ></sl-icon-button>
+    <sl-menu (sl-select)="onActionSelected($event)">
+      <sl-menu-item
+        *ngFor="let action of additionalActions"
+        [value]="action.label"
+      >
+        {{ action.label }}
+        <sl-icon slot="prefix" [name]="action.icon"></sl-icon>
+      </sl-menu-item>
+    </sl-menu>
+  </sl-dropdown>
 </mat-toolbar>

@@ -30,13 +30,8 @@
               "src/assets",
               {
                 "glob": "**/*",
-                "input": "./node_modules/@vanillawc/wc-monaco-editor/",
-                "output": "./@vanillawc/wc-monaco-editor/"
-              },
-              {
-                "glob": "**/*.ttf",
-                "input": "./node_modules/@vanillawc/wc-monaco-editor/monaco",
-                "output": "./"
+                "input": "./node_modules/@shoelace-style/shoelace/dist/assets/",
+                "output": "./shoelace/dist/assets/"
               },
               "src/manifest.webmanifest"
             ],

@@ -1,10 +1,22 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  CUSTOM_ELEMENTS_SCHEMA,
+  Input,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FileSystemSynchronisationService } from '../../services/file-system-synchronisation.service';
+import { SlMenuItem } from '@shoelace-style/shoelace';
+
+export interface AdditionalToolbarAction {
+  icon: string;
+  label: string;
+  action: () => void;
+}
 
 @Component({
   selector: 'app-toolbar',
@@ -13,6 +25,7 @@ import { FileSystemSynchronisationService } from '../../services/file-system-syn
   templateUrl: './toolbar.component.html',
   styleUrls: ['./toolbar.component.sass'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class ToolbarComponent {
   @Input()
@@ -20,6 +33,9 @@ export class ToolbarComponent {
 
   @Input()
   showUploadButton = false;
+
+  @Input()
+  additionalActions?: AdditionalToolbarAction[];
 
   constructor(
     private router: Router,
@@ -36,5 +52,13 @@ export class ToolbarComponent {
       return;
     }
     await this.router.navigate(['..'], { relativeTo: this.route });
+  }
+
+  onActionSelected(event: any) {
+    const customEvent = event as CustomEvent<{ item: SlMenuItem }>;
+    const action = this.additionalActions?.find(
+      (x) => x.label === customEvent.detail.item.value
+    );
+    if (action) action.action();
   }
 }

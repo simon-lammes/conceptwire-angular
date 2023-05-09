@@ -10,6 +10,9 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { provideRouter } from '@angular/router';
 import appRoutes from './app/app.routes';
 import { provideServiceWorker } from '@angular/service-worker';
+import { setBasePath } from '@shoelace-style/shoelace';
+
+setBasePath('/shoelace/dist/');
 
 bootstrapApplication(AppComponent, {
   providers: [

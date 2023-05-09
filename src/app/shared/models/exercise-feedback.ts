@@ -1,1 +1,1 @@
-export type ExerciseFeedback = 'success' | 'failure';
+export type ExerciseFeedback = 'success' | 'failure' | 'skip';

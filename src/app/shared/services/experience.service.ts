@@ -88,7 +88,11 @@ export class ExperienceService {
       throw Error('not yet implemented');
     }
     const streak =
-      exerciseResult.feedback === 'success' ? experience.streak + 1 : 0;
+      exerciseResult.feedback === 'success'
+        ? experience.streak + 1
+        : exerciseResult.feedback === 'skip'
+        ? experience.streak
+        : 0;
     const lastSeen = new Date();
     const updatedExperience: Experience = {
       ...experience,

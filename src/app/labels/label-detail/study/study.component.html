@@ -1,4 +1,7 @@
-<app-toolbar [title]="(label$ | async)?.title ?? ''"></app-toolbar>
+<app-toolbar
+  [title]="(label$ | async)?.title ?? ''"
+  [additionalActions]="additionalToolbarActions"
+></app-toolbar>
 <app-padded-layout
   *ngIf="
     exerciseSituation$ | async as exerciseSituation;

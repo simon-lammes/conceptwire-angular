@@ -7,9 +7,7 @@ import '@shoelace-style/shoelace/dist/components/alert/alert.js';
 import '@shoelace-style/shoelace/dist/components/details/details.js';
 import { setBasePath } from '@shoelace-style/shoelace';
 
-setBasePath(
-  'https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.3.0/dist/'
-);
+setBasePath('/shoelace/dist/');
 
 /**
  * Imports some shoelace components and some shoelace theme(s), so that
