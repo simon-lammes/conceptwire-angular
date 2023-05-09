@@ -44,6 +44,9 @@ export class ProcedureButtonComponent {
     } catch (e) {
       this.state = 'error';
       this.cd.markForCheck();
+      // The error is not handled and MUST be rethrown so that higher up in the call stack
+      // someone can do reasonable things with it like logging it or writing it in an error database.
+      throw e;
     }
   }
 }

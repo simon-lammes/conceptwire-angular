@@ -10,6 +10,20 @@ import { createAcyclicGraph, transitiveClosure } from 'simple-digraph';
 import { DbService } from './db.service';
 import { TemplateService } from './template.service';
 import { QualityLabels } from '../models/quality-labels';
+import { ExperienceService } from './experience.service';
+
+/**
+ * It is just a container for data, and it's corresponding id.
+ * This is handy for our study material because the data and the id are often separated.
+ * For example, while the data might be part of a file's content, the id might be in the file's path.
+ * This interface is just handy during the import of data where the data is just obtained from the data source,
+ * and we have the id and the data, but it is not yet transformed into our final models like exercises and labels etc.
+ * In simple terms, this is a very simple intermediate representation.
+ */
+export interface DataWithId<T> {
+  id: string;
+  content: T;
+}
 
 /**
  * Offers functionality for synchronizing studying content. But this service is not necessarily responsible
@@ -18,14 +32,15 @@ import { QualityLabels } from '../models/quality-labels';
 @Injectable({
   providedIn: 'root',
 })
-export class SynchronisationService {
+export class SynchronizationService {
   constructor(
     private exerciseService: ExerciseService,
     private labelService: LabelService,
     private assetService: AssetService,
     private assetAttributionService: AssetAttributionService,
     private db: DbService,
-    private templateService: TemplateService
+    private templateService: TemplateService,
+    private experienceService: ExperienceService
   ) {}
 
   public async clearModels() {
@@ -36,6 +51,95 @@ export class SynchronisationService {
       this.db.assetAttributions.clear(),
       this.db.exerciseLabels.clear(),
       this.db.exercises.clear(),
+    ]);
+  }
+
+  /**
+   * Imports a complete collection of learning content.
+   *
+   * This method takes care of importing content and doing so in the right order.
+   * Obtaining the data from a given source like the file system or GitHub is
+   * the caller's responsibility. I think this is a very nice separation of concerns
+   * because we potentially want to implement further data sources. This way,
+   * each new implementation for new data sources must only take care of
+   * obtaining the data while this method takes care of the rest.
+   *
+   * While I am 100 percent confident in this separation of concerns, I
+   * think there are some competing ways how the two actors (the data retriever aka. caller
+   * and the importer aka. this method) interact or pass messages around.
+   * This method uses what I call the in-memory strategy where the caller has
+   * loaded the complete data set into memory and passes it as function parameters.
+   * I think this approach works very fine so far but once the data set is so large
+   * that it does not fit into memory anymore, we have to think about different approaches.
+   * But of course, premature optimization is the root of all evil, so we should only
+   * switch to a more sophisticated strategy once we really need it.
+   * One common approach (for example quite common in NodeJS File System API) is streaming the data.
+   * I initially tried something like this with RxJS observables, but it gets complex.
+   * An idea for the future that might be easier could be to load data into IndexedDB as an "intermediate" location
+   * and then "import" it from there.
+   *
+   * @param exercises
+   * @param assets
+   * @param assetAttributions
+   * @param conceptDocuments
+   * @param labels
+   */
+  public async importContentWithImMemoryStrategy({
+    exercises,
+    assets,
+    assetAttributions,
+    conceptDocuments,
+    labels,
+  }: {
+    exercises: DataWithId<string>[];
+    assets: DataWithId<Blob>[];
+    assetAttributions: DataWithId<Partial<AssetAttribution>>[];
+    conceptDocuments: DataWithId<string>[];
+    labels: DataWithId<string>[];
+  }) {
+    await this.clearModels();
+    const importLabels = Promise.all(
+      labels.map(({ id, content }) => this.importLabel(content, id))
+    );
+    // The import of exercise only makes sense when labels are already imported.
+    const importExercises = importLabels.then(() =>
+      Promise.all(
+        exercises.map(({ id, content }) => this.importExercise(content, id))
+      )
+    );
+    // The import of concepts only makes sense when labels are already imported.
+    const importConcepts = importLabels.then(() =>
+      Promise.all(
+        conceptDocuments.map(({ id, content }) =>
+          this.importConceptDocument(content, id)
+        )
+      )
+    );
+    // Experiences can only be updated once exercises and concepts have been imported.
+    const updateExperiencesTable = Promise.all([
+      importExercises,
+      importConcepts,
+    ]).then(() => this.experienceService.updateExperiencesTable());
+    const importAssetAttributions = Promise.all(
+      assetAttributions.map(({ id, content }) =>
+        this.importAssetAttribution({
+          ...(content as AssetAttribution),
+          assetId: id,
+        })
+      )
+    );
+    const importAssets = Promise.all(
+      assets.map(({ id, content }) => this.importAsset(content, id))
+    );
+    // It might not be necessary, but for readability and explicitness I think it makes sense
+    // to *explicitly* wait for all promises to finish.
+    await Promise.all([
+      importLabels,
+      importExercises,
+      importConcepts,
+      updateExperiencesTable,
+      importAssetAttributions,
+      importAssets,
     ]);
   }
 
@@ -74,7 +178,7 @@ export class SynchronisationService {
    * When A implicated B and B implicates C, then we can also say that A implicated C.
    * For our application to properly work, we should add all implication to the database.
    */
-  public async generateTransitiveClosureForLabelImplications() {
+  private async generateTransitiveClosureForLabelImplications() {
     const labelIds = await this.db.labels
       .toArray()
       .then((x) => x.map((y) => y.id));

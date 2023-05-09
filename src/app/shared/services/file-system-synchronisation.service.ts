@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { SynchronisationService } from './synchronisation.service';
+import { DataWithId, SynchronizationService } from './synchronization.service';
 import * as _ from 'lodash-es';
-import { AssetAttribution } from '../models/asset-attribution';
 import { TemplateService } from './template.service';
 import { ExperienceService } from './experience.service';
 
@@ -11,94 +10,59 @@ import { ExperienceService } from './experience.service';
 export class FileSystemSynchronisationService {
   private directoryHandle?: FileSystemDirectoryHandle;
   constructor(
-    private synchronisationService: SynchronisationService,
+    private synchronisationService: SynchronizationService,
     private templateService: TemplateService,
     private experienceService: ExperienceService
   ) {}
 
   async uploadContent() {
-    await this.getExistingOrNewDirectoryHandle();
-    const labelsDirectoryHandle =
-      await this.directoryHandle!.getDirectoryHandle('labels', {
-        create: false,
-      });
-    await this.synchronisationService.clearModels();
-    // @ts-ignore
-    for await (const [key, value] of labelsDirectoryHandle.entries()) {
-      if (!(key as string).endsWith('.html')) continue;
-      const id = (key as string).slice(0, (key as string).length - 5);
-      const file = (await value.getFile()) as File;
-      const labelContent = await file.text();
-      await this.synchronisationService.importLabel(labelContent, id);
-    }
-    await this.synchronisationService.generateTransitiveClosureForLabelImplications();
-    const assetsDirectoryHandle =
-      await this.directoryHandle!.getDirectoryHandle('assets', {
-        create: false,
-      });
-    // @ts-ignore
-    for await (const [key, value] of assetsDirectoryHandle.entries()) {
-      const fileExtension = _.last((key as string).split('.'));
-      if (!fileExtension || !['svg', 'png', 'jpg'].includes(fileExtension))
-        continue;
-      const id = _.first((key as string).split('.'));
-      if (!id) return;
-      const file = (await value.getFile()) as File;
-      await this.synchronisationService.importAsset(file, id);
-    }
-
-    const assetsAttributionsDirectoryHandle =
-      await this.directoryHandle!.getDirectoryHandle('asset-attributions', {
-        create: false,
-      });
-    for await (const [
-      key,
-      value,
-      // @ts-ignore
-    ] of assetsAttributionsDirectoryHandle.entries()) {
-      const fileExtension = _.last((key as string).split('.'));
-      if (!fileExtension || fileExtension !== 'json') continue;
-      const id = _.first((key as string).split('.'));
-      if (!id) return;
-      const file = (await value.getFile()) as File;
-      const assetAttribution = {
-        assetId: id,
-        ...JSON.parse(await file.text()),
-      } as AssetAttribution;
-      await this.synchronisationService.importAssetAttribution(
-        assetAttribution
-      );
-    }
-
-    const conceptsDirectoryHandle =
-      await this.directoryHandle!.getDirectoryHandle('concepts', {
-        create: false,
-      });
-    // @ts-ignore
-    for await (const [key, value] of conceptsDirectoryHandle.entries()) {
-      if (!(key as string).endsWith('.html')) continue;
-      const id = (key as string).slice(0, (key as string).length - 5);
-      const file = (await value.getFile()) as File;
-      const conceptContent = await file.text();
-      await this.synchronisationService.importConceptDocument(
-        conceptContent,
-        id
-      );
-    }
-
-    const exercisesDirectoryHandle =
-      await this.directoryHandle!.getDirectoryHandle('exercises', {
-        create: false,
-      });
-    // @ts-ignore
-    for await (const [key, value] of exercisesDirectoryHandle.entries()) {
-      if (!(key as string).endsWith('.html')) continue;
-      const id = (key as string).slice(0, (key as string).length - 5);
-      const file = (await value.getFile()) as File;
-      const exerciseContent = await file.text();
-      await this.synchronisationService.importExercise(exerciseContent, id);
-    }
-    await this.experienceService.updateExperiencesTable();
+    const rootDirectoryHandle = await this.getExistingOrNewDirectoryHandle();
+    if (!rootDirectoryHandle) return;
+    const labelsPromise = this.loadFromFileSystem({
+      rootDirectoryHandle,
+      path: 'labels',
+      fileExtensions: ['html'],
+      dataExtractor: (file) => file.text(),
+    });
+    const assetsPromise = this.loadFromFileSystem({
+      rootDirectoryHandle,
+      path: 'assets',
+      fileExtensions: ['svg', 'png', 'jpg'],
+      dataExtractor: (file) => file,
+    });
+    const assetAttributionsPromise = this.loadFromFileSystem({
+      rootDirectoryHandle,
+      path: 'asset-attributions',
+      fileExtensions: ['json'],
+      dataExtractor: async (file) => JSON.parse(await file.text()),
+    });
+    const conceptDocumentsPromise = this.loadFromFileSystem({
+      rootDirectoryHandle,
+      path: 'concepts',
+      fileExtensions: ['html'],
+      dataExtractor: (file) => file.text(),
+    });
+    const exercisesPromise = this.loadFromFileSystem({
+      rootDirectoryHandle,
+      path: 'exercises',
+      fileExtensions: ['html'],
+      dataExtractor: (file) => file.text(),
+    });
+    const [labels, assets, assetAttributions, conceptDocuments, exercises] =
+      await Promise.all([
+        labelsPromise,
+        assetsPromise,
+        assetAttributionsPromise,
+        conceptDocumentsPromise,
+        exercisesPromise,
+      ]);
+    await this.synchronisationService.importContentWithImMemoryStrategy({
+      assets,
+      assetAttributions,
+      exercises,
+      labels,
+      conceptDocuments,
+    });
   }
 
   async createLabel() {
@@ -160,5 +124,38 @@ export class FileSystemSynchronisationService {
       });
     }
     return this.directoryHandle;
+  }
+
+  private async loadFromFileSystem<T>({
+    rootDirectoryHandle,
+    path,
+    fileExtensions,
+    dataExtractor,
+  }: {
+    rootDirectoryHandle: FileSystemDirectoryHandle;
+    path: string;
+    fileExtensions: string[];
+    dataExtractor: (file: File) => T | Promise<T>;
+  }): Promise<DataWithId<T>[]> {
+    const directoryHandle = await rootDirectoryHandle!.getDirectoryHandle(
+      path,
+      {
+        create: false,
+      }
+    );
+
+    const dataPoints: DataWithId<T>[] = [];
+
+    // @ts-ignore
+    for await (const [key, value] of directoryHandle.entries()) {
+      const fileExtension = _.last((key as string).split('.'));
+      if (!fileExtension || !fileExtensions.includes(fileExtension)) continue;
+      const id = _.first((key as string).split('.'));
+      if (!id) continue;
+      const file = (await value.getFile()) as File;
+      const content: T = await dataExtractor(file);
+      dataPoints.push({ id, content });
+    }
+    return dataPoints;
   }
 }
