@@ -72,10 +72,11 @@ export class ExperienceService {
               // The nature of the index already guarantees that they are ordered by streak and last seen - just as we like it.
               // Inspired by: https://github.com/dexie/Dexie.js/issues/368
               .between([labelId, -Infinity], [labelId, Infinity], true, true)
-              .filter(
-                (experience) =>
-                  !this.isExerciseCoolingDown({ studySettings, experience }) &&
-                  !experience.qualityLabels?.includes('draft')
+              .filter((experience) =>
+                this.isExerciseCurrentlySuitableForStudying({
+                  studySettings,
+                  experience,
+                })
               )
               .first()
           )
@@ -127,14 +128,15 @@ export class ExperienceService {
                 // Inspired by: https://github.com/dexie/Dexie.js/issues/368
                 .between([labelId, -Infinity], [labelId, Infinity], true, true)
                 .each((experience) => {
-                  const isExerciseCoolingDown = this.isExerciseCoolingDown({
-                    studySettings,
-                    experience,
-                  });
-                  if (isExerciseCoolingDown) {
-                    finishedExercises += 1;
-                  } else {
+                  const exerciseCurrentlySuitableForStudying =
+                    this.isExerciseCurrentlySuitableForStudying({
+                      studySettings,
+                      experience,
+                    });
+                  if (exerciseCurrentlySuitableForStudying) {
                     upcomingExercises += 1;
+                  } else {
+                    finishedExercises += 1;
                   }
                 })
             );
@@ -151,6 +153,19 @@ export class ExperienceService {
           )
         );
       })
+    );
+  }
+
+  private isExerciseCurrentlySuitableForStudying({
+    studySettings,
+    experience,
+  }: {
+    studySettings?: StudySettings;
+    experience: Experience;
+  }) {
+    return (
+      !this.isExerciseCoolingDown({ studySettings, experience }) &&
+      !experience.qualityLabels?.includes('draft')
     );
   }
 
