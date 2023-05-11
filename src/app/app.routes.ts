@@ -25,6 +25,11 @@ const routes: Routes = [
     path: 'designer',
     loadChildren: () => import('./designer/designer.routes'),
   },
+  {
+    path: 'resource-possessions',
+    loadChildren: () =>
+      import('./resource-possessions/resource-possessions.routes'),
+  },
   { path: '**', redirectTo: 'home' },
 ];
 

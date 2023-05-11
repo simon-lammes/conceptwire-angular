@@ -47,6 +47,12 @@
   </div>
   <app-tile
     class="my-4"
+    fontawesomeIconClasses="fa-solid fa-briefcase"
+    title="Resource Possessions"
+    (clicked)="router.navigate(['resource-possessions'])"
+  ></app-tile>
+  <app-tile
+    class="my-4"
     fontawesomeIconClasses="fa-solid fa-wand-magic-sparkles"
     [title]="
       (serviceWorkerService.isUpdateAvailable$ | async)
