@@ -1,1 +1,9 @@
 <app-toolbar title="Resource Possessions"></app-toolbar>
+<app-padded-layout>
+  <sl-checkbox
+    *ngFor="let vm of bookPossessionsViewModels$ | async"
+    [attr.checked]="vm.bookPossession.isInPossession || undefined"
+    (sl-change)="onChange($event, vm)"
+    >{{ vm.book.title }}</sl-checkbox
+  >
+</app-padded-layout>
