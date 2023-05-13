@@ -12,6 +12,7 @@ import { StudySettingsService } from './study-settings.service';
 import { ExerciseCooldownService } from './exercise-cooldown.service';
 import { StudyProgress } from '../models/study-progress';
 import { StudySettings } from '../models/study-settings';
+import { ExerciseService } from './exercise.service';
 
 @Injectable({
   providedIn: 'root',
@@ -20,15 +21,16 @@ export class ExperienceService {
   constructor(
     private db: DbService,
     private studySettingsService: StudySettingsService,
-    private exerciseCooldownService: ExerciseCooldownService
+    private exerciseCooldownService: ExerciseCooldownService,
+    private exerciseService: ExerciseService
   ) {}
 
   async updateExperiencesTable() {
     await this.db.transaction(
       'rw',
       [this.db.experiences, this.db.exercises, this.db.exerciseLabels],
-      () => {
-        this.db.exercises.each(async (exercise) => {
+      async () => {
+        await this.db.exercises.each(async (exercise) => {
           const [experience, exerciseLabels] = await Promise.all([
             this.db.experiences.get(exercise.id),
             this.db.exerciseLabels
@@ -38,19 +40,23 @@ export class ExperienceService {
           ]);
           const streak = experience?.streak ?? 0;
           const lastSeen = experience?.lastSeen ?? new Date(0);
+          const requiredReferencedBooksByIsbn13 =
+            this.exerciseService.getReferencedBooksByIsbn13(exercise);
+          const indexesForLabelStreakAndLastSeen = exerciseLabels.map(
+            (exerciseLabel) =>
+              <IndexForLabelStreakAndLastSeen>[
+                exerciseLabel.labelId,
+                streak,
+                lastSeen,
+              ]
+          );
           await this.db.experiences.put({
             exerciseId: exercise.id,
             streak,
             lastSeen,
             qualityLabels: exercise.qualityLabels ?? [],
-            indexesForLabelStreakAndLastSeen: exerciseLabels.map(
-              (exerciseLabel) =>
-                <IndexForLabelStreakAndLastSeen>[
-                  exerciseLabel.labelId,
-                  streak,
-                  lastSeen,
-                ]
-            ),
+            indexesForLabelStreakAndLastSeen,
+            requiredReferencedBooksByIsbn13,
           });
         });
       }

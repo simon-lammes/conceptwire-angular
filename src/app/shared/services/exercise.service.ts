@@ -91,4 +91,15 @@ export class ExerciseService {
       map((exercises) => exercises.filter((x) => !!x) as Exercise[])
     );
   }
+
+  getReferencedBooksByIsbn13(exercise: Exercise): string[] {
+    const exerciseElement = document.createElement('span');
+    exerciseElement.innerHTML = exercise.content;
+    const bookReferences = Array.from(
+      exerciseElement.querySelectorAll('cw-book-reference')
+    );
+    return bookReferences
+      .map((x) => x.getAttribute('isbn-13'))
+      .filter((x) => !!x) as string[];
+  }
 }

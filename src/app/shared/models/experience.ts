@@ -6,6 +6,7 @@ export interface Experience {
   lastSeen: Date;
   indexesForLabelStreakAndLastSeen: IndexForLabelStreakAndLastSeen[];
   qualityLabels?: QualityLabels[];
+  requiredReferencedBooksByIsbn13: string[];
 }
 
 /**
