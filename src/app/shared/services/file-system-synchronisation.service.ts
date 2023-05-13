@@ -3,6 +3,7 @@ import { DataWithId, SynchronizationService } from './synchronization.service';
 import * as _ from 'lodash-es';
 import { TemplateService } from './template.service';
 import { ExperienceService } from './experience.service';
+import { Book } from '../models/book';
 
 @Injectable({
   providedIn: 'root',
@@ -48,20 +49,34 @@ export class FileSystemSynchronisationService {
       fileExtensions: ['html'],
       dataExtractor: (file) => file.text(),
     });
-    const [labels, assets, assetAttributions, conceptDocuments, exercises] =
-      await Promise.all([
-        labelsPromise,
-        assetsPromise,
-        assetAttributionsPromise,
-        conceptDocumentsPromise,
-        exercisesPromise,
-      ]);
+    const booksPromise = this.loadFromFileSystem({
+      rootDirectoryHandle,
+      path: 'books',
+      fileExtensions: ['json'],
+      dataExtractor: (file) => file.text().then((x) => JSON.parse(x)),
+    }).then((x) => x.map((y) => y.content as Book));
+    const [
+      labels,
+      assets,
+      assetAttributions,
+      conceptDocuments,
+      exercises,
+      books,
+    ] = await Promise.all([
+      labelsPromise,
+      assetsPromise,
+      assetAttributionsPromise,
+      conceptDocumentsPromise,
+      exercisesPromise,
+      booksPromise,
+    ]);
     await this.synchronisationService.importContentWithImMemoryStrategy({
       assets,
       assetAttributions,
       exercises,
       labels,
       conceptDocuments,
+      books,
     });
   }
 

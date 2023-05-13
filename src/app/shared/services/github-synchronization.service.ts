@@ -3,6 +3,7 @@ import * as _ from 'lodash';
 import { Octokit } from '@octokit/rest';
 import { DataWithId, SynchronizationService } from './synchronization.service';
 import { AssetAttribution } from '../models/asset-attribution';
+import { Book } from '../models/book';
 
 interface FilePreview {
   url: string;
@@ -47,21 +48,37 @@ export class GithubSynchronizationService {
           ...JSON.parse(await response.text()),
         } as AssetAttribution),
     });
+    const booksPromise = this.loadFiles({
+      path: 'books',
+      source: repo,
+      responseParser: async (response) =>
+        ({
+          ...(await response.json()),
+        } as Book),
+    }).then((x) => x.map((y) => y.content));
 
-    const [labels, conceptDocuments, exercises, assets, assetAttributions] =
-      await Promise.all([
-        labelsPromise,
-        conceptDocumentsPromise,
-        exercisesPromise,
-        assetsPromise,
-        assetAttributionsPromise,
-      ]);
+    const [
+      labels,
+      conceptDocuments,
+      exercises,
+      assets,
+      assetAttributions,
+      books,
+    ] = await Promise.all([
+      labelsPromise,
+      conceptDocumentsPromise,
+      exercisesPromise,
+      assetsPromise,
+      assetAttributionsPromise,
+      booksPromise,
+    ]);
     await this.synchronisationService.importContentWithImMemoryStrategy({
       labels,
       conceptDocuments,
       exercises,
       assets,
       assetAttributions,
+      books,
     });
   }
 

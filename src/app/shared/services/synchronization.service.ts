@@ -11,6 +11,7 @@ import { DbService } from './db.service';
 import { TemplateService } from './template.service';
 import { QualityLabels } from '../models/quality-labels';
 import { ExperienceService } from './experience.service';
+import { Book } from '../models/book';
 
 /**
  * It is just a container for data, and it's corresponding id.
@@ -51,6 +52,7 @@ export class SynchronizationService {
       this.db.assetAttributions.clear(),
       this.db.exerciseLabels.clear(),
       this.db.exercises.clear(),
+      this.db.books.clear(),
     ]);
   }
 
@@ -90,14 +92,17 @@ export class SynchronizationService {
     assetAttributions,
     conceptDocuments,
     labels,
+    books,
   }: {
     exercises: DataWithId<string>[];
     assets: DataWithId<Blob>[];
     assetAttributions: DataWithId<Partial<AssetAttribution>>[];
     conceptDocuments: DataWithId<string>[];
     labels: DataWithId<string>[];
+    books: Book[];
   }) {
     await this.clearModels();
+    const importBooks = this.db.books.bulkPut(books);
     const importLabels = Promise.all(
       labels.map(({ id, content }) => this.importLabel(content, id))
     );
@@ -140,6 +145,7 @@ export class SynchronizationService {
       updateExperiencesTable,
       importAssetAttributions,
       importAssets,
+      importBooks,
     ]);
   }
 

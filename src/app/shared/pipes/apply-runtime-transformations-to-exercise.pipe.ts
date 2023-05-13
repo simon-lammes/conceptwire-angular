@@ -2,6 +2,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { StudySettingsService } from '../services/study-settings.service';
 import { firstValueFrom } from 'rxjs';
 import { ExerciseService } from '../services/exercise.service';
+import { DbService } from '../services/db.service';
 
 @Pipe({
   name: 'applyRuntimeTransformationsToExercise',
@@ -12,7 +13,8 @@ export class ApplyRuntimeTransformationsToExercisePipe
 {
   constructor(
     private studySettingsService: StudySettingsService,
-    private exerciseService: ExerciseService
+    private exerciseService: ExerciseService,
+    private db: DbService
   ) {}
 
   /**
@@ -29,6 +31,7 @@ export class ApplyRuntimeTransformationsToExercisePipe
     this.writeCodeContentIntoAttribute(exerciseContainer, exerciseContent);
     await this.applySettings(exerciseContainer);
     await this.loadExerciseReferences(exerciseContainer);
+    await this.loadBookReferences(exerciseContainer);
     return exerciseContainer.innerHTML;
   }
 
@@ -120,5 +123,20 @@ export class ApplyRuntimeTransformationsToExercisePipe
         el.setAttribute('exercise', JSON.stringify(referencedExercise));
       }
     });
+  }
+
+  private async loadBookReferences(exerciseContent: HTMLSpanElement) {
+    const bookReferences = Array.from(
+      exerciseContent.querySelectorAll('cw-book-reference')
+    );
+    for (const bookReference of bookReferences) {
+      const isbn13 = bookReference.getAttribute('isbn-13');
+      if (isbn13) {
+        const book = await this.db.books.get(isbn13);
+        if (book) {
+          bookReference.setAttribute('book', JSON.stringify(book));
+        }
+      }
+    }
   }
 }

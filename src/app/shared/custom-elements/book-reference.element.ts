@@ -1,5 +1,6 @@
-import { css, html, LitElement, PropertyValues } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { css, html, LitElement } from 'lit';
+import { customElement, property } from 'lit/decorators.js';
+import { Book } from '../models/book';
 
 @customElement('cw-book-reference')
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -16,8 +17,8 @@ class BookReferenceElement extends LitElement {
     super();
   }
 
-  @state()
-  book: any;
+  @property({ type: Object })
+  book!: Book;
 
   @property({ attribute: 'isbn-13' })
   isbn13 = '';
@@ -27,15 +28,6 @@ class BookReferenceElement extends LitElement {
 
   @property({ attribute: 'end-page' })
   endPage: string | undefined;
-
-  protected override update(changedProperties: PropertyValues) {
-    super.update(changedProperties);
-    if (changedProperties.has('isbn13')) {
-      fetch(`https://openlibrary.org/isbn/${this.isbn13}.json`)
-        .then((x) => x.json())
-        .then((res) => (this.book = res));
-    }
-  }
 
   override render() {
     if (!this.book) {
