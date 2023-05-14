@@ -183,7 +183,7 @@ export class ExperienceService {
     experience: Experience;
   }) {
     const cooldownDurationMillis =
-      this.exerciseCooldownService.calculateCooldown({
+      this.exerciseCooldownService.calculateCooldownMillis({
         formula: studySettings?.cooldownFormula,
         correctStreak: experience.streak,
       });

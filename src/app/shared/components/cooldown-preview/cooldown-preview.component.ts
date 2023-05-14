@@ -35,7 +35,7 @@ export class CooldownPreviewComponent implements OnChanges {
       this.cooldownPreviews = [...Array(this.depth).keys()].map(
         (correctStreak) => {
           const cooldownTimeMillis =
-            this.exerciseCooldownService.calculateCooldown({
+            this.exerciseCooldownService.calculateCooldownMillis({
               formula: this.formula,
               correctStreak,
             });
