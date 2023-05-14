@@ -65,16 +65,19 @@ export class ExperienceService {
 
   getExperienceStreamForStudying({
     labelId,
+    availableBooksByIsbn13,
   }: {
     labelId: string;
+    availableBooksByIsbn13: string[];
   }): Observable<Experience | undefined> {
     return this.studySettingsService.studySettings$.pipe(
       switchMap((studySettings) => {
         const experienceWithStreakOf0ThatShouldBeRetried$ =
-          this.getExperienceWithStreakOf0ThatShouldAlreadyBeRetried(
+          this.getExperienceWithStreakOf0ThatShouldAlreadyBeRetried({
             studySettings,
-            labelId
-          );
+            labelId,
+            availableBooksByIsbn13,
+          });
         return combineLatest([
           experienceWithStreakOf0ThatShouldBeRetried$,
           from(
@@ -89,6 +92,7 @@ export class ExperienceService {
                   this.isExerciseCurrentlySuitableForStudying({
                     studySettings,
                     experience,
+                    availableBooksByIsbn13,
                   })
                 )
                 .first()
@@ -116,11 +120,17 @@ export class ExperienceService {
    *
    * @param studySettings
    * @param labelId
+   * @param availableBooksByIsbn13
    */
-  private getExperienceWithStreakOf0ThatShouldAlreadyBeRetried(
-    studySettings: StudySettings,
-    labelId: string
-  ) {
+  private getExperienceWithStreakOf0ThatShouldAlreadyBeRetried({
+    studySettings,
+    labelId,
+    availableBooksByIsbn13,
+  }: {
+    studySettings: StudySettings;
+    labelId: string;
+    availableBooksByIsbn13: string[];
+  }) {
     const maxLastSeenDate = addMilliseconds(
       new Date(),
       this.exerciseCooldownService.calculateCooldownMillis({
@@ -141,6 +151,7 @@ export class ExperienceService {
             this.isExerciseCurrentlySuitableForStudying({
               studySettings,
               experience,
+              availableBooksByIsbn13,
             })
           )
           .first()
@@ -184,7 +195,11 @@ export class ExperienceService {
     });
   }
 
-  getStudyProgress(labelId: string, experience: Experience | undefined) {
+  getStudyProgress(
+    labelId: string,
+    experience: Experience | undefined,
+    availableBooksByIsbn13: string[]
+  ) {
     return this.studySettingsService.studySettings$.pipe(
       switchMap((studySettings) => {
         let finishedExercises = 0;
@@ -205,6 +220,7 @@ export class ExperienceService {
                     this.isExerciseCurrentlySuitableForStudying({
                       studySettings,
                       experience,
+                      availableBooksByIsbn13,
                     });
                   if (exerciseCurrentlySuitableForStudying) {
                     upcomingExercises += 1;
@@ -232,13 +248,18 @@ export class ExperienceService {
   private isExerciseCurrentlySuitableForStudying({
     studySettings,
     experience,
+    availableBooksByIsbn13,
   }: {
     studySettings?: StudySettings;
     experience: Experience;
+    availableBooksByIsbn13: string[];
   }) {
     return (
       !this.isExerciseCoolingDown({ studySettings, experience }) &&
-      !experience.qualityLabels?.includes('draft')
+      !experience.qualityLabels?.includes('draft') &&
+      experience.requiredReferencedBooksByIsbn13.every((x) =>
+        availableBooksByIsbn13.includes(x)
+      )
     );
   }
 

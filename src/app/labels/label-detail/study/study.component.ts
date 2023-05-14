@@ -23,6 +23,7 @@ import {
   AdditionalToolbarAction,
   ToolbarComponent,
 } from '../../../shared/components/toolbar/toolbar.component';
+import { BookPossessionService } from '../../../shared/services/book-possession.service';
 
 @Component({
   selector: 'app-study',
@@ -47,9 +48,15 @@ export class StudyComponent {
   labelId$ = this.route.params.pipe(
     map((params) => params['labelId'] as string)
   );
-  experience$ = this.labelId$.pipe(
-    switchMap((labelId) =>
-      this.experienceService.getExperienceStreamForStudying({ labelId })
+  experience$ = combineLatest([
+    this.labelId$,
+    this.bookPossessionService.booksInPossessionByIsbn13$,
+  ]).pipe(
+    switchMap(([labelId, availableBooksByIsbn13]) =>
+      this.experienceService.getExperienceStreamForStudying({
+        labelId,
+        availableBooksByIsbn13,
+      })
     )
   );
   exerciseSituation$ = this.nextExerciseRequested$.pipe(
@@ -66,9 +73,17 @@ export class StudyComponent {
   label$: Observable<Label | undefined> = this.labelId$.pipe(
     switchMap((labelId) => this.labelService.getLabelById(labelId))
   );
-  studyProgress$ = combineLatest([this.labelId$, this.experience$]).pipe(
-    switchMap(([labelId, experience]) =>
-      this.experienceService.getStudyProgress(labelId, experience)
+  studyProgress$ = combineLatest([
+    this.labelId$,
+    this.experience$,
+    this.bookPossessionService.booksInPossessionByIsbn13$,
+  ]).pipe(
+    switchMap(([labelId, experience, booksInPossessionByIsbn13]) =>
+      this.experienceService.getStudyProgress(
+        labelId,
+        experience,
+        booksInPossessionByIsbn13
+      )
     )
   );
 
@@ -76,7 +91,8 @@ export class StudyComponent {
     private route: ActivatedRoute,
     private experienceService: ExperienceService,
     private exerciseService: ExerciseService,
-    private labelService: LabelService
+    private labelService: LabelService,
+    private bookPossessionService: BookPossessionService
   ) {}
 
   async onExerciseResult(exerciseResult: ExerciseResult) {
