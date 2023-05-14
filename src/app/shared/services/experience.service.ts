@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { DbService } from './db.service';
-import { from, map, Observable, switchMap } from 'rxjs';
+import { combineLatest, from, map, Observable, switchMap } from 'rxjs';
 import { liveQuery } from 'dexie';
 import {
   Experience,
   IndexForLabelStreakAndLastSeen,
 } from '../models/experience';
 import { ExerciseResult } from '../models/exerciseResult';
-import { sub } from 'date-fns';
+import { addMilliseconds, sub } from 'date-fns';
 import { StudySettingsService } from './study-settings.service';
 import { ExerciseCooldownService } from './exercise-cooldown.service';
 import { StudyProgress } from '../models/study-progress';
@@ -69,24 +69,81 @@ export class ExperienceService {
     labelId: string;
   }): Observable<Experience | undefined> {
     return this.studySettingsService.studySettings$.pipe(
-      switchMap((studySettings) =>
-        from(
-          liveQuery(() =>
-            this.db.experiences
-              .where('indexesForLabelStreakAndLastSeen')
-              // We basically want to look at all experiences with the given label.
-              // The nature of the index already guarantees that they are ordered by streak and last seen - just as we like it.
-              // Inspired by: https://github.com/dexie/Dexie.js/issues/368
-              .between([labelId, -Infinity], [labelId, Infinity], true, true)
-              .filter((experience) =>
-                this.isExerciseCurrentlySuitableForStudying({
-                  studySettings,
-                  experience,
-                })
-              )
-              .first()
+      switchMap((studySettings) => {
+        const experienceWithStreakOf0ThatShouldBeRetried$ =
+          this.getExperienceWithStreakOf0ThatShouldAlreadyBeRetried(
+            studySettings,
+            labelId
+          );
+        return combineLatest([
+          experienceWithStreakOf0ThatShouldBeRetried$,
+          from(
+            liveQuery(() =>
+              this.db.experiences
+                .where('indexesForLabelStreakAndLastSeen')
+                // We basically want to look at all experiences with the given label.
+                // The nature of the index already guarantees that they are ordered by streak and last seen - just as we like it.
+                // Inspired by: https://github.com/dexie/Dexie.js/issues/368
+                .between([labelId, -Infinity], [labelId, Infinity], true, true)
+                .filter((experience) =>
+                  this.isExerciseCurrentlySuitableForStudying({
+                    studySettings,
+                    experience,
+                  })
+                )
+                .first()
+            )
+          ),
+        ]).pipe(
+          map(
+            ([
+              experienceWithStreakOf0ThatShouldBeRetried,
+              regularNextExercise,
+            ]) =>
+              experienceWithStreakOf0ThatShouldBeRetried ?? regularNextExercise
           )
-        )
+        );
+      })
+    );
+  }
+
+  /**
+   * If available, returns an exercise that has an exercise streak of 0 and the lastSeen is old enough to be retried.
+   * This is helpful because we want a special "strategy" for exercises with a streak of 0. For exercises that you are
+   * successful at, we pick the oldest exercises first (lowest lastSeen) because the probability that you forgot
+   * about them is the highest. For exercises that you failed at, we want a different strategy: There it makes sense
+   * to retry very soon so that your new memory gets hardened before you already forgot everything.
+   *
+   * @param studySettings
+   * @param labelId
+   */
+  private getExperienceWithStreakOf0ThatShouldAlreadyBeRetried(
+    studySettings: StudySettings,
+    labelId: string
+  ) {
+    const maxLastSeenDate = addMilliseconds(
+      new Date(),
+      this.exerciseCooldownService.calculateCooldownMillis({
+        formula: studySettings.cooldownFormula,
+        correctStreak: 0,
+      }) ?? Infinity
+    );
+    return from(
+      liveQuery(() =>
+        this.db.experiences
+          .where('indexesForLabelStreakAndLastSeen')
+          // We basically want to look at all experiences with the given label.
+          // The nature of the index already guarantees that they are ordered by streak and last seen - just as we like it.
+          // Inspired by: https://github.com/dexie/Dexie.js/issues/368
+          .between([labelId, -Infinity], [labelId, maxLastSeenDate], true, true)
+          .reverse()
+          .filter((experience) =>
+            this.isExerciseCurrentlySuitableForStudying({
+              studySettings,
+              experience,
+            })
+          )
+          .first()
       )
     );
   }
