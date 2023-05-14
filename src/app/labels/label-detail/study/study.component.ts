@@ -80,7 +80,8 @@ export class StudyComponent {
   ) {}
 
   async onExerciseResult(exerciseResult: ExerciseResult) {
-    await this.experienceService.onExerciseResult(exerciseResult);
+    const labelId = await firstValueFrom(this.labelId$);
+    await this.experienceService.onExerciseResult(exerciseResult, labelId);
   }
 
   onNextExerciseRequested() {
@@ -88,12 +89,16 @@ export class StudyComponent {
   }
 
   private async skipExercise() {
+    const labelId = await firstValueFrom(this.labelId$);
     const exerciseSituation = await firstValueFrom(this.exerciseSituation$);
     if (!exerciseSituation) return;
-    await this.experienceService.onExerciseResult({
-      exerciseSituation: exerciseSituation,
-      feedback: 'skip',
-    });
+    await this.experienceService.onExerciseResult(
+      {
+        exerciseSituation: exerciseSituation,
+        feedback: 'skip',
+      },
+      labelId
+    );
     this.nextExerciseRequested$.next(true);
   }
 }

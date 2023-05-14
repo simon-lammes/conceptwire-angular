@@ -10,6 +10,7 @@ import { Asset } from '../models/asset';
 import { AssetAttribution } from '../models/asset-attribution';
 import { Book } from '../models/book';
 import { BookPossession } from '../models/book-possession';
+import { StudyEvent } from '../models/study-event';
 
 @Injectable({
   providedIn: 'root',
@@ -25,10 +26,11 @@ export class DbService extends Dexie {
   assetAttributions!: Table<AssetAttribution, string>;
   books!: Table<Book, string>;
   bookPossessions!: Table<BookPossession, string>;
+  studyEvents!: Table<StudyEvent, string>;
 
   constructor() {
     super('conceptwire_db');
-    this.version(15).stores({
+    this.version(16).stores({
       exercises: 'id',
       experiences: 'exerciseId,*indexesForLabelStreakAndLastSeen',
       labels: 'id,&title',
@@ -39,6 +41,7 @@ export class DbService extends Dexie {
       assetAttributions: 'assetId',
       books: 'isbn13',
       bookPossessions: 'isbn13',
+      studyEvents: 'id,dateTime',
     });
   }
 

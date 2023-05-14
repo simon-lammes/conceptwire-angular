@@ -91,7 +91,10 @@ export class ExperienceService {
     );
   }
 
-  async onExerciseResult(exerciseResult: ExerciseResult) {
+  async onExerciseResult(
+    exerciseResult: ExerciseResult,
+    studiedLabelId: string
+  ) {
     const experience = exerciseResult.exerciseSituation.experience;
     if (!experience) {
       throw Error('not yet implemented');
@@ -115,6 +118,13 @@ export class ExperienceService {
         ]),
     };
     this.db.experiences.put(updatedExperience);
+    this.db.studyEvents.put({
+      id: crypto.randomUUID(),
+      exerciseId: exerciseResult.exerciseSituation.exercise.id,
+      exerciseFeedback: exerciseResult.feedback,
+      dateTime: new Date(),
+      studiedLabelId,
+    });
   }
 
   getStudyProgress(labelId: string, experience: Experience | undefined) {
