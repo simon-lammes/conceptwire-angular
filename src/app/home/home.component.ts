@@ -9,6 +9,7 @@ import { PaddedLayoutComponent } from '../shared/components/padded-layout/padded
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { firstValueFrom, map } from 'rxjs';
 import { ServiceWorkerService } from '../shared/services/service-worker.service';
+import { IonicModule } from '@ionic/angular';
 
 @Component({
   selector: 'app-home',
@@ -22,6 +23,7 @@ import { ServiceWorkerService } from '../shared/services/service-worker.service'
     CommonModule,
     LabelComponent,
     TileComponent,
+    IonicModule,
   ],
 })
 export class HomeComponent {

@@ -24,6 +24,7 @@ import {
   ToolbarComponent,
 } from '../../../shared/components/toolbar/toolbar.component';
 import { BookPossessionService } from '../../../shared/services/book-possession.service';
+import { IonicModule } from '@ionic/angular';
 
 @Component({
   selector: 'app-study',
@@ -37,11 +38,16 @@ import { BookPossessionService } from '../../../shared/services/book-possession.
     PaddedLayoutComponent,
     StudyProgressComponent,
     ExerciseSituationComponent,
+    IonicModule,
   ],
 })
 export class StudyComponent {
   readonly additionalToolbarActions: AdditionalToolbarAction[] = [
-    { icon: 'skip-end', label: 'Skip', action: () => this.skipExercise() },
+    {
+      icon: 'play-skip-forward-outline',
+      label: 'Skip',
+      action: () => this.skipExercise(),
+    },
   ];
 
   nextExerciseRequested$ = new BehaviorSubject<true>(true);

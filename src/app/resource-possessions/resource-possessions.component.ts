@@ -11,6 +11,7 @@ import { PaddedLayoutComponent } from '../shared/components/padded-layout/padded
 import { BookPossession } from '../shared/models/book-possession';
 import { Book } from '../shared/models/book';
 import { combineLatest, from, map, Observable } from 'rxjs';
+import { IonicModule } from '@ionic/angular';
 
 interface BookPossessionViewModel {
   bookPossession: BookPossession;
@@ -20,7 +21,7 @@ interface BookPossessionViewModel {
 @Component({
   selector: 'app-resource-possessions',
   standalone: true,
-  imports: [CommonModule, ToolbarComponent, PaddedLayoutComponent],
+  imports: [CommonModule, ToolbarComponent, PaddedLayoutComponent, IonicModule],
   templateUrl: './resource-possessions.component.html',
   styleUrls: ['./resource-possessions.component.sass'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

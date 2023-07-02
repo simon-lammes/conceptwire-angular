@@ -12,6 +12,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { PaddedLayoutComponent } from '../../shared/components/padded-layout/padded-layout.component';
 import { ToolbarComponent } from '../../shared/components/toolbar/toolbar.component';
+import { IonicModule } from '@ionic/angular';
 
 @Component({
   selector: 'app-github-synchronization',
@@ -29,6 +30,7 @@ import { ToolbarComponent } from '../../shared/components/toolbar/toolbar.compon
     MatSelectModule,
     MatOptionModule,
     ProcedureButtonComponent,
+    IonicModule,
   ],
 })
 export class GithubSynchronizationComponent {

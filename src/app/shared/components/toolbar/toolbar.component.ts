@@ -9,8 +9,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FileSystemSynchronisationService } from '../../services/file-system-synchronisation.service';
-import { SlMenuItem } from '@shoelace-style/shoelace';
+import { IonicModule } from '@ionic/angular';
 
 export interface AdditionalToolbarAction {
   icon: string;
@@ -21,7 +20,13 @@ export interface AdditionalToolbarAction {
 @Component({
   selector: 'app-toolbar',
   standalone: true,
-  imports: [CommonModule, MatToolbarModule, MatIconModule, MatButtonModule],
+  imports: [
+    CommonModule,
+    MatToolbarModule,
+    MatIconModule,
+    MatButtonModule,
+    IonicModule,
+  ],
   templateUrl: './toolbar.component.html',
   styleUrls: ['./toolbar.component.sass'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -37,11 +42,7 @@ export class ToolbarComponent {
   @Input()
   additionalActions?: AdditionalToolbarAction[];
 
-  constructor(
-    private router: Router,
-    private route: ActivatedRoute,
-    protected fileSystemSynchronisationService: FileSystemSynchronisationService
-  ) {}
+  constructor(private router: Router, private route: ActivatedRoute) {}
 
   async goBack() {
     // We prefer using the supreme navigation api.
@@ -52,13 +53,5 @@ export class ToolbarComponent {
       return;
     }
     await this.router.navigate(['..'], { relativeTo: this.route });
-  }
-
-  onActionSelected(event: any) {
-    const customEvent = event as CustomEvent<{ item: SlMenuItem }>;
-    const action = this.additionalActions?.find(
-      (x) => x.label === customEvent.detail.item.value
-    );
-    if (action) action.action();
   }
 }

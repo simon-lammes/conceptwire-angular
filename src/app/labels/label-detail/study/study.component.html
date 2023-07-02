@@ -1,26 +1,31 @@
-<app-toolbar
-  [title]="(label$ | async)?.title ?? ''"
-  [additionalActions]="additionalToolbarActions"
-></app-toolbar>
-<app-padded-layout
-  *ngIf="
-    exerciseSituation$ | async as exerciseSituation;
-    else templateNoExercise
-  "
->
-  <div class="flex justify-center mb-4">
-    <app-study-progress
-      [studyProgress]="studyProgress$ | async"
-    ></app-study-progress>
-  </div>
+<ion-header>
+  <app-toolbar
+    [title]="(label$ | async)?.title ?? ''"
+    [additionalActions]="additionalToolbarActions"
+  ></app-toolbar>
+</ion-header>
 
-  <app-exercise-situation
-    [exerciseSituation]="exerciseSituation"
-    (exerciseResult)="onExerciseResult($event)"
-    (nextExerciseRequested)="onNextExerciseRequested()"
-  ></app-exercise-situation>
-</app-padded-layout>
+<ion-content>
+  <app-padded-layout
+    *ngIf="
+      exerciseSituation$ | async as exerciseSituation;
+      else templateNoExercise
+    "
+  >
+    <div class="flex justify-center mb-4">
+      <app-study-progress
+        [studyProgress]="studyProgress$ | async"
+      ></app-study-progress>
+    </div>
 
-<ng-template #templateNoExercise>
-  <div>There is no exercise</div>
-</ng-template>
+    <app-exercise-situation
+      [exerciseSituation]="exerciseSituation"
+      (exerciseResult)="onExerciseResult($event)"
+      (nextExerciseRequested)="onNextExerciseRequested()"
+    ></app-exercise-situation>
+  </app-padded-layout>
+
+  <ng-template #templateNoExercise>
+    <div>There is no exercise</div>
+  </ng-template>
+</ion-content>

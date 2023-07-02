@@ -5,6 +5,7 @@ import { AssetAttributionService } from '../../shared/services/asset-attribution
 import { LocalAssetUrlPipe } from '../../shared/pipes/local-asset-url.pipe';
 import { CommonModule } from '@angular/common';
 import { ToolbarComponent } from '../../shared/components/toolbar/toolbar.component';
+import { IonicModule } from '@ionic/angular';
 
 @Component({
   selector: 'app-local-asset-detail',
@@ -12,7 +13,7 @@ import { ToolbarComponent } from '../../shared/components/toolbar/toolbar.compon
   styleUrls: ['./local-asset-detail.component.sass'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [CommonModule, ToolbarComponent, LocalAssetUrlPipe],
+  imports: [CommonModule, ToolbarComponent, LocalAssetUrlPipe, IonicModule],
 })
 export class LocalAssetDetailComponent {
   assetId$: Observable<string> = this.route.params.pipe(

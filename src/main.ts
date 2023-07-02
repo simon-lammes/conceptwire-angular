@@ -11,12 +11,13 @@ import { provideRouter } from '@angular/router';
 import appRoutes from './app/app.routes';
 import { provideServiceWorker } from '@angular/service-worker';
 import { setBasePath } from '@shoelace-style/shoelace';
+import { IonicModule } from '@ionic/angular';
 
 setBasePath('/shoelace/dist/');
 
 bootstrapApplication(AppComponent, {
   providers: [
-    importProvidersFrom(BrowserModule),
+    importProvidersFrom(BrowserModule, IonicModule.forRoot()),
     MatSnackBar,
     provideAnimations(),
     provideHttpClient(withInterceptorsFromDi()),

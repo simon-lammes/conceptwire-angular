@@ -2,8 +2,8 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import {
   FormControl,
   FormGroup,
-  ReactiveFormsModule,
   FormsModule,
+  ReactiveFormsModule,
 } from '@angular/forms';
 import { StudySettingsService } from '../shared/services/study-settings.service';
 import { firstValueFrom } from 'rxjs';
@@ -13,6 +13,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { ToolbarComponent } from '../shared/components/toolbar/toolbar.component';
+import { IonicModule } from '@ionic/angular';
 
 @Component({
   selector: 'app-settings',
@@ -29,6 +30,7 @@ import { ToolbarComponent } from '../shared/components/toolbar/toolbar.component
     MatInputModule,
     CooldownPreviewComponent,
     MatButtonModule,
+    IonicModule,
   ],
 })
 export class SettingsComponent implements OnInit {

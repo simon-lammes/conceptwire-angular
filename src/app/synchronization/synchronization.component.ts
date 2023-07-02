@@ -6,6 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TileComponent } from '../shared/components/tile/tile.component';
 import { PaddedLayoutComponent } from '../shared/components/padded-layout/padded-layout.component';
 import { ToolbarComponent } from '../shared/components/toolbar/toolbar.component';
+import { IonicModule } from '@ionic/angular';
 
 @Component({
   selector: 'app-synchronization',
@@ -13,7 +14,12 @@ import { ToolbarComponent } from '../shared/components/toolbar/toolbar.component
   styleUrls: ['./synchronization.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [ToolbarComponent, PaddedLayoutComponent, TileComponent],
+  imports: [
+    ToolbarComponent,
+    PaddedLayoutComponent,
+    TileComponent,
+    IonicModule,
+  ],
 })
 export class SynchronizationComponent {
   constructor(

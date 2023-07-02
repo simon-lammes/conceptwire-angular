@@ -7,6 +7,7 @@ import { lab } from 'd3';
 import { LabelComponent } from '../shared/components/label/label.component';
 import { CommonModule } from '@angular/common';
 import { ToolbarComponent } from '../shared/components/toolbar/toolbar.component';
+import { IonicModule } from '@ionic/angular';
 
 @Component({
   selector: 'app-labels',
@@ -14,7 +15,7 @@ import { ToolbarComponent } from '../shared/components/toolbar/toolbar.component
   styleUrls: ['./labels.component.sass'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [CommonModule, ToolbarComponent, LabelComponent],
+  imports: [CommonModule, ToolbarComponent, LabelComponent, IonicModule],
 })
 export class LabelsComponent {
   readonly labels$: Observable<Label[]>;

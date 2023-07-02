@@ -9,6 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
 import { PaddedLayoutComponent } from '../../shared/components/padded-layout/padded-layout.component';
 import { ToolbarComponent } from '../../shared/components/toolbar/toolbar.component';
+import { IonicModule } from '@ionic/angular';
 
 @Component({
   templateUrl: './label-detail.component.html',
@@ -22,6 +23,7 @@ import { ToolbarComponent } from '../../shared/components/toolbar/toolbar.compon
     MatButtonModule,
     MatCardModule,
     LocalAssetUrlPipe,
+    IonicModule,
   ],
 })
 export class LabelDetailComponent {

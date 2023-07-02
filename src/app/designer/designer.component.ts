@@ -24,7 +24,10 @@ import { Exercise } from '../shared/models/exercise';
 import { Label } from '../shared/models/label';
 import { ExercisePreviewComponent } from '../shared/components/exercise-preview/exercise-preview.component';
 import { LabelComponent } from '../shared/components/label/label.component';
-import { ToolbarComponent } from '../shared/components/toolbar/toolbar.component';
+import {
+  AdditionalToolbarAction,
+  ToolbarComponent,
+} from '../shared/components/toolbar/toolbar.component';
 import { LabelPreviewComponent } from '../shared/components/label-preview/label-preview.component';
 import { FileSystemSynchronisationService } from '../shared/services/file-system-synchronisation.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -35,6 +38,7 @@ import { CustomElementsService } from '../shared/services/custom-elements.servic
 import { CustomElementDeclaration } from 'custom-elements-manifest';
 import { CustomElementDocumentationComponent } from './custom-element-documentation/custom-element-documentation.component';
 import { CustomElementTitlePipe } from '../shared/pipes/custom-element-title.pipe';
+import { IonicModule } from '@ionic/angular';
 
 interface Selection {
   labelId?: string;
@@ -56,6 +60,7 @@ interface Selection {
     ReactiveFormsModule,
     CustomElementDocumentationComponent,
     CustomElementTitlePipe,
+    IonicModule,
   ],
   templateUrl: './designer.component.html',
   styleUrls: ['./designer.component.sass'],
@@ -161,6 +166,14 @@ export class DesignerComponent implements OnDestroy {
     ),
     switchMap((labelIds) => this.labelService.getLabelsByIds(labelIds))
   );
+
+  readonly additionalActions: AdditionalToolbarAction[] = [
+    {
+      label: 'upload from filesystem',
+      action: () => this.fileSystemSynchronisationService.uploadContent(),
+      icon: 'arrow-up-outline',
+    },
+  ];
 
   constructor(
     private labelService: LabelService,

@@ -5,6 +5,7 @@ import { Asset } from '../shared/models/asset';
 import { LocalAssetUrlPipe } from '../shared/pipes/local-asset-url.pipe';
 import { CommonModule } from '@angular/common';
 import { ToolbarComponent } from '../shared/components/toolbar/toolbar.component';
+import { IonicModule } from '@ionic/angular';
 
 @Component({
   selector: 'app-local-assets',
@@ -12,7 +13,7 @@ import { ToolbarComponent } from '../shared/components/toolbar/toolbar.component
   styleUrls: ['./local-assets.component.sass'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [CommonModule, ToolbarComponent, LocalAssetUrlPipe],
+  imports: [CommonModule, ToolbarComponent, LocalAssetUrlPipe, IonicModule],
 })
 export class LocalAssetsComponent {
   constructor(

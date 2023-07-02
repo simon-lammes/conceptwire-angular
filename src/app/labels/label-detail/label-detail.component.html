@@ -1,52 +1,57 @@
-<app-toolbar [title]="(label$ | async)?.title ?? ''"></app-toolbar>
-<app-padded-layout>
-  <div class="p-2 md:p-8 gap-4 flex flex-col">
-    <ng-container *ngIf="label$ | async as label">
-      <div
-        class="block w-full rounded-lg border-neutral-200 border-2 overflow-hidden"
-      >
-        <button
-          class="w-full h-20 bg-neutral-200"
-          (click)="onLabelImageClicked(label)"
+<ion-header>
+  <app-toolbar [title]="(label$ | async)?.title ?? ''"></app-toolbar>
+</ion-header>
+
+<ion-content>
+  <app-padded-layout>
+    <div class="p-2 md:p-8 gap-4 flex flex-col">
+      <ng-container *ngIf="label$ | async as label">
+        <div
+          class="block w-full rounded-lg border-neutral-200 border-2 overflow-hidden"
         >
-          <img
-            *ngIf="label.localImageId | localAssetUrl | async as url"
-            [src]="url"
-            class="h-full w-full object-contain"
-          />
-        </button>
-        <div class="px-3 py-2">
-          <div class="text-lg">
-            {{ label.title }}
-          </div>
-          <div class="text-neutral-700">{{ label.description }}</div>
-          <div class="mt-4">
-            <button
-              mat-raised-button
-              color="primary"
-              (click)="study()"
-              class="ml-4"
-            >
-              Study
-            </button>
+          <button
+            class="w-full h-20 bg-neutral-200"
+            (click)="onLabelImageClicked(label)"
+          >
+            <img
+              *ngIf="label.localImageId | localAssetUrl | async as url"
+              [src]="url"
+              class="h-full w-full object-contain"
+            />
+          </button>
+          <div class="px-3 py-2">
+            <div class="text-lg">
+              {{ label.title }}
+            </div>
+            <div class="text-neutral-700">{{ label.description }}</div>
+            <div class="mt-4">
+              <button
+                mat-raised-button
+                color="primary"
+                (click)="study()"
+                class="ml-4"
+              >
+                Study
+              </button>
+            </div>
           </div>
         </div>
-      </div>
 
-      <mat-card>
-        <mat-card-header>
-          <mat-card-title>Child Labels</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <ng-container *ngIf="childLabels$ | async as childLabels">
-            <ng-container *ngFor="let label of childLabels">
-              <button mat-button (click)="onSubLabelClicked(label)">
-                {{ label.title }}
-              </button>
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title>Child Labels</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <ng-container *ngIf="childLabels$ | async as childLabels">
+              <ng-container *ngFor="let label of childLabels">
+                <button mat-button (click)="onSubLabelClicked(label)">
+                  {{ label.title }}
+                </button>
+              </ng-container>
             </ng-container>
-          </ng-container>
-        </mat-card-content>
-      </mat-card>
-    </ng-container>
-  </div>
-</app-padded-layout>
+          </mat-card-content>
+        </mat-card>
+      </ng-container>
+    </div>
+  </app-padded-layout>
+</ion-content>
