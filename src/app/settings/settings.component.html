@@ -12,6 +12,22 @@
           >Immediately jump to next exercise after giving feedback</mat-checkbox
         >
       </div>
+      <ion-select
+        label="Internet Connection Evaluation Strategy"
+        placeholder="Internet Connection Evaluation Strategy"
+        [formControl]="internetConnectionEvaluationStrategyControl"
+        interface="action-sheet"
+      >
+        <ion-select-option value="considerInternetUnavailable"
+          >Consider Internet Unavailable</ion-select-option
+        >
+        <ion-select-option value="considerInternetAvailableWhenUsingWlan"
+          >Consider Internet Available When Using WLAN</ion-select-option
+        >
+        <ion-select-option value="considerInternetAvailable"
+          >Consider Internet Available</ion-select-option
+        >
+      </ion-select>
       <div>
         <mat-form-field>
           <mat-label>Cooldown Formula</mat-label>

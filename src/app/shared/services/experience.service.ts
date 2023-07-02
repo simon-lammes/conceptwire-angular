@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { DbService } from './db.service';
 import { combineLatest, from, map, Observable, switchMap } from 'rxjs';
 import { liveQuery } from 'dexie';
@@ -13,17 +13,21 @@ import { ExerciseCooldownService } from './exercise-cooldown.service';
 import { StudyProgress } from '../models/study-progress';
 import { StudySettings } from '../models/study-settings';
 import { ExerciseService } from './exercise.service';
+import { InternetConnectionService } from './internet-connection.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ExperienceService {
-  constructor(
-    private db: DbService,
-    private studySettingsService: StudySettingsService,
-    private exerciseCooldownService: ExerciseCooldownService,
-    private exerciseService: ExerciseService
-  ) {}
+  readonly db = inject(DbService);
+
+  readonly studySettingsService = inject(StudySettingsService);
+
+  readonly exerciseCooldownService = inject(ExerciseCooldownService);
+
+  readonly exerciseService = inject(ExerciseService);
+
+  readonly internetConnectionService = inject(InternetConnectionService);
 
   async updateExperiencesTable() {
     await this.db.transaction(
@@ -42,6 +46,10 @@ export class ExperienceService {
           const lastSeen = experience?.lastSeen ?? new Date(0);
           const requiredReferencedBooksByIsbn13 =
             this.exerciseService.getReferencedBooksByIsbn13(exercise);
+          const requiresInternetConnection =
+            this.exerciseService.doesExerciseRequireInternetConnection(
+              exercise
+            );
           const indexesForLabelStreakAndLastSeen = exerciseLabels.map(
             (exerciseLabel) =>
               <IndexForLabelStreakAndLastSeen>[
@@ -57,6 +65,7 @@ export class ExperienceService {
             qualityLabels: exercise.qualityLabels ?? [],
             indexesForLabelStreakAndLastSeen,
             requiredReferencedBooksByIsbn13,
+            requiresInternetConnection,
           });
         });
       }
@@ -70,13 +79,17 @@ export class ExperienceService {
     labelId: string;
     availableBooksByIsbn13: string[];
   }): Observable<Experience | undefined> {
-    return this.studySettingsService.studySettings$.pipe(
-      switchMap((studySettings) => {
+    return combineLatest([
+      this.studySettingsService.studySettings$,
+      this.internetConnectionService.hasInternetConnection$,
+    ]).pipe(
+      switchMap(([studySettings, hasInternetConnection]) => {
         const experienceWithStreakOf0ThatShouldBeRetried$ =
           this.getExperienceWithStreakOf0ThatShouldAlreadyBeRetried({
             studySettings,
             labelId,
             availableBooksByIsbn13,
+            hasInternetConnection,
           });
         return combineLatest([
           experienceWithStreakOf0ThatShouldBeRetried$,
@@ -93,6 +106,7 @@ export class ExperienceService {
                     studySettings,
                     experience,
                     availableBooksByIsbn13,
+                    hasInternetConnection,
                   })
                 )
                 .first()
@@ -121,15 +135,18 @@ export class ExperienceService {
    * @param studySettings
    * @param labelId
    * @param availableBooksByIsbn13
+   * @param hasInternetConnection
    */
   private getExperienceWithStreakOf0ThatShouldAlreadyBeRetried({
     studySettings,
     labelId,
     availableBooksByIsbn13,
+    hasInternetConnection,
   }: {
     studySettings: StudySettings;
     labelId: string;
     availableBooksByIsbn13: string[];
+    hasInternetConnection: boolean;
   }) {
     const maxLastSeenDate = addMilliseconds(
       new Date(),
@@ -152,6 +169,7 @@ export class ExperienceService {
               studySettings,
               experience,
               availableBooksByIsbn13,
+              hasInternetConnection,
             })
           )
           .first()
@@ -200,8 +218,11 @@ export class ExperienceService {
     experience: Experience | undefined,
     availableBooksByIsbn13: string[]
   ) {
-    return this.studySettingsService.studySettings$.pipe(
-      switchMap((studySettings) => {
+    return combineLatest([
+      this.studySettingsService.studySettings$,
+      this.internetConnectionService.hasInternetConnection$,
+    ]).pipe(
+      switchMap(([studySettings, hasInternetConnection]) => {
         let finishedExercises = 0;
         let upcomingExercises = 0;
         return from(
@@ -221,6 +242,7 @@ export class ExperienceService {
                       studySettings,
                       experience,
                       availableBooksByIsbn13,
+                      hasInternetConnection,
                     });
                   if (exerciseCurrentlySuitableForStudying) {
                     upcomingExercises += 1;
@@ -249,17 +271,20 @@ export class ExperienceService {
     studySettings,
     experience,
     availableBooksByIsbn13,
+    hasInternetConnection,
   }: {
     studySettings?: StudySettings;
     experience: Experience;
     availableBooksByIsbn13: string[];
+    hasInternetConnection: boolean;
   }) {
     return (
       !this.isExerciseCoolingDown({ studySettings, experience }) &&
       !experience.qualityLabels?.includes('draft') &&
       experience.requiredReferencedBooksByIsbn13.every((x) =>
         availableBooksByIsbn13.includes(x)
-      )
+      ) &&
+      (hasInternetConnection || !experience.requiresInternetConnection)
     );
   }
 

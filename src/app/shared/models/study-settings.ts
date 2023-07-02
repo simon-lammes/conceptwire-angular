@@ -1,8 +1,11 @@
+import { InternetConnectionEvaluationStrategy } from './internet-connection-evaluation-strategy';
+
 export type StudySettingsId = 'my-study-settings';
 
 export interface StudySettings {
   id: StudySettingsId;
   immediatelyJumpToNextExerciseAfterGivingFeedback: boolean;
+  internetConnectionEvaluationStrategy?: InternetConnectionEvaluationStrategy;
   /**
    * A formula that calculates the amount of seconds an exercise needs to cool down until it can
    * be presented to the user again.

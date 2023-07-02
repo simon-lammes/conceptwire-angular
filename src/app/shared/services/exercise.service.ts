@@ -102,4 +102,13 @@ export class ExerciseService {
       .map((x) => x.getAttribute('isbn-13'))
       .filter((x) => !!x) as string[];
   }
+
+  doesExerciseRequireInternetConnection(exercise: Exercise) {
+    const exerciseElement = document.createElement('span');
+    exerciseElement.innerHTML = exercise.content;
+    const elementsThatRequireInternetConnection = Array.from(
+      exerciseElement.querySelectorAll('cw-youtube-video')
+    );
+    return elementsThatRequireInternetConnection.length > 0;
+  }
 }

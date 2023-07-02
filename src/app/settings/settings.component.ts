@@ -14,6 +14,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { ToolbarComponent } from '../shared/components/toolbar/toolbar.component';
 import { IonicModule } from '@ionic/angular';
+import { InternetConnectionEvaluationStrategy } from '../shared/models/internet-connection-evaluation-strategy';
 
 @Component({
   selector: 'app-settings',
@@ -38,11 +39,17 @@ export class SettingsComponent implements OnInit {
     boolean | undefined
   >(undefined);
 
+  internetConnectionEvaluationStrategyControl = new FormControl<
+    InternetConnectionEvaluationStrategy | undefined
+  >(undefined);
+
   cooldownFormulaControl = new FormControl<string>('');
 
   form = new FormGroup({
     immediatelyJumpToNextExerciseAfterGivingFeedback:
       this.immediatelyJumpToNextExerciseAfterGivingFeedbackControl,
+    internetConnectionEvaluationStrategy:
+      this.internetConnectionEvaluationStrategyControl,
     cooldownFormula: this.cooldownFormulaControl,
   });
 
@@ -62,6 +69,8 @@ export class SettingsComponent implements OnInit {
       immediatelyJumpToNextExerciseAfterGivingFeedback:
         this.immediatelyJumpToNextExerciseAfterGivingFeedbackControl.value ??
         false,
+      internetConnectionEvaluationStrategy:
+        this.internetConnectionEvaluationStrategyControl.value ?? undefined,
       cooldownFormula: this.cooldownFormulaControl.value ?? '',
       id: 'my-study-settings',
     });

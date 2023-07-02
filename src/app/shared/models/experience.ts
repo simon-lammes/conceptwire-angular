@@ -7,6 +7,7 @@ export interface Experience {
   indexesForLabelStreakAndLastSeen: IndexForLabelStreakAndLastSeen[];
   qualityLabels?: QualityLabels[];
   requiredReferencedBooksByIsbn13: string[];
+  requiresInternetConnection: boolean;
 }
 
 /**
