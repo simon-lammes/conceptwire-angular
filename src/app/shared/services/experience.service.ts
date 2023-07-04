@@ -118,7 +118,6 @@ export class ExperienceService {
               experienceWithStreakOf0ThatShouldBeRetried,
               regularNextExercise,
             ]) => {
-              console.log(experienceWithStreakOf0ThatShouldBeRetried);
               return (
                 experienceWithStreakOf0ThatShouldBeRetried ??
                 regularNextExercise

@@ -25,6 +25,7 @@ import {
 } from '../../../shared/components/toolbar/toolbar.component';
 import { BookPossessionService } from '../../../shared/services/book-possession.service';
 import { IonicModule } from '@ionic/angular';
+import { ExercisePreviewComponent } from '../../../shared/components/exercise-preview/exercise-preview.component';
 
 @Component({
   selector: 'app-study',
@@ -39,6 +40,7 @@ import { IonicModule } from '@ionic/angular';
     StudyProgressComponent,
     ExerciseSituationComponent,
     IonicModule,
+    ExercisePreviewComponent,
   ],
 })
 export class StudyComponent {
@@ -48,8 +50,15 @@ export class StudyComponent {
       label: 'Skip',
       action: () => this.skipExercise(),
     },
+    {
+      icon: 'information-circle-outline',
+      label: 'Details',
+      action: () => {
+        this.showExerciseDetails$.next(true);
+      },
+    },
   ];
-
+  showExerciseDetails$ = new BehaviorSubject(false);
   nextExerciseRequested$ = new BehaviorSubject<true>(true);
   labelId$ = this.route.params.pipe(
     map((params) => params['labelId'] as string)
@@ -90,6 +99,11 @@ export class StudyComponent {
         experience,
         booksInPossessionByIsbn13
       )
+    )
+  );
+  readonly labelsOfExercise$ = this.experience$.pipe(
+    switchMap((experience) =>
+      this.labelService.getLabelsOfExercise(experience?.exerciseId)
     )
   );
 
