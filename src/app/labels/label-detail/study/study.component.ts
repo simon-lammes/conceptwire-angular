@@ -51,6 +51,13 @@ export class StudyComponent {
       action: () => this.skipExercise(),
     },
     {
+      icon: 'refresh-outline',
+      label: 'Restart Exercise',
+      action: () => {
+        alert('not yet implemented');
+      },
+    },
+    {
       icon: 'information-circle-outline',
       label: 'Details',
       action: () => {
