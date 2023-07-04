@@ -117,8 +117,13 @@ export class ExperienceService {
             ([
               experienceWithStreakOf0ThatShouldBeRetried,
               regularNextExercise,
-            ]) =>
-              experienceWithStreakOf0ThatShouldBeRetried ?? regularNextExercise
+            ]) => {
+              console.log(experienceWithStreakOf0ThatShouldBeRetried);
+              return (
+                experienceWithStreakOf0ThatShouldBeRetried ??
+                regularNextExercise
+              );
+            }
           )
         );
       })
@@ -162,7 +167,12 @@ export class ExperienceService {
           // We basically want to look at all experiences with the given label.
           // The nature of the index already guarantees that they are ordered by streak and last seen - just as we like it.
           // Inspired by: https://github.com/dexie/Dexie.js/issues/368
-          .between([labelId, -Infinity], [labelId, maxLastSeenDate], true, true)
+          .between(
+            [labelId, 0, -Infinity],
+            [labelId, 0, maxLastSeenDate],
+            true,
+            true
+          )
           .reverse()
           .filter((experience) =>
             this.isExerciseCurrentlySuitableForStudying({
