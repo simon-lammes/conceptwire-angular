@@ -5,11 +5,11 @@
   ></app-toolbar>
 </ion-header>
 <ion-content>
-  <div class="grid grid-cols-4">
+  <div class="flex h-full">
     <div class="overflow-y-auto h-full px-2">
       <mat-form-field
         appearance="outline"
-        class="p-2 bg-white sticky top-0 border-b-2 border-neutral-100"
+        class="p-2 w-full bg-white sticky top-0 border-b-2 border-neutral-100"
       >
         <mat-label>Search</mat-label>
         <input matInput placeholder="Search..." [formControl]="searchControl" />
