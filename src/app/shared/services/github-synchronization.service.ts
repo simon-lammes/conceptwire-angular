@@ -46,7 +46,7 @@ export class GithubSynchronizationService {
       responseParser: async (response) =>
         ({
           ...JSON.parse(await response.text()),
-        } as AssetAttribution),
+        }) as AssetAttribution,
     });
     const booksPromise = this.loadFiles({
       path: 'books',
@@ -54,7 +54,7 @@ export class GithubSynchronizationService {
       responseParser: async (response) =>
         ({
           ...(await response.json()),
-        } as Book),
+        }) as Book,
     }).then((x) => x.map((y) => y.content));
 
     const [
@@ -103,11 +103,11 @@ export class GithubSynchronizationService {
           filePreviews.map(async (filePreview) => {
             const id = _.first(filePreview.name.split('.'))!;
             const content: T = await fetch(filePreview.download_url).then((x) =>
-              responseParser(x)
+              responseParser(x),
             );
             return { id, content };
-          })
-        )
+          }),
+        ),
       );
   }
 }

@@ -48,7 +48,7 @@ export class ExperienceService {
             this.exerciseService.getReferencedBooksByIsbn13(exercise);
           const requiresInternetConnection =
             this.exerciseService.doesExerciseRequireInternetConnection(
-              exercise
+              exercise,
             );
           const indexesForLabelStreakAndLastSeen = exerciseLabels.map(
             (exerciseLabel) =>
@@ -56,7 +56,7 @@ export class ExperienceService {
                 exerciseLabel.labelId,
                 streak,
                 lastSeen,
-              ]
+              ],
           );
           await this.db.experiences.put({
             exerciseId: exercise.id,
@@ -68,7 +68,7 @@ export class ExperienceService {
             requiresInternetConnection,
           });
         });
-      }
+      },
     );
   }
 
@@ -107,10 +107,10 @@ export class ExperienceService {
                     experience,
                     availableBooksByIsbn13,
                     hasInternetConnection,
-                  })
+                  }),
                 )
-                .first()
-            )
+                .first(),
+            ),
           ),
         ]).pipe(
           map(
@@ -122,10 +122,10 @@ export class ExperienceService {
                 experienceWithStreakOf0ThatShouldBeRetried ??
                 regularNextExercise
               );
-            }
-          )
+            },
+          ),
         );
-      })
+      }),
     );
   }
 
@@ -157,7 +157,7 @@ export class ExperienceService {
       this.exerciseCooldownService.calculateCooldownMillis({
         formula: studySettings.cooldownFormula,
         correctStreak: 0,
-      }) ?? Infinity
+      }) ?? Infinity,
     );
     return from(
       liveQuery(() =>
@@ -170,7 +170,7 @@ export class ExperienceService {
             [labelId, 0, -Infinity],
             [labelId, 0, maxLastSeenDate],
             true,
-            true
+            true,
           )
           .reverse()
           .filter((experience) =>
@@ -179,16 +179,16 @@ export class ExperienceService {
               experience,
               availableBooksByIsbn13,
               hasInternetConnection,
-            })
+            }),
           )
-          .first()
-      )
+          .first(),
+      ),
     );
   }
 
   async onExerciseResult(
     exerciseResult: ExerciseResult,
-    studiedLabelId: string
+    studiedLabelId: string,
   ) {
     const experience = exerciseResult.exerciseSituation.experience;
     if (!experience) {
@@ -225,7 +225,7 @@ export class ExperienceService {
   getStudyProgress(
     labelId: string,
     experience: Experience | undefined,
-    availableBooksByIsbn13: string[]
+    availableBooksByIsbn13: string[],
   ) {
     return combineLatest([
       this.studySettingsService.studySettings$,
@@ -260,7 +260,7 @@ export class ExperienceService {
                   }
                 })
             );
-          })
+          }),
         ).pipe(
           map(
             () =>
@@ -269,10 +269,10 @@ export class ExperienceService {
                 upcomingExercises,
                 totalExercises: finishedExercises + upcomingExercises,
                 correctStreakOfCurrentExercise: experience?.streak,
-              } as StudyProgress)
-          )
+              }) as StudyProgress,
+          ),
         );
-      })
+      }),
     );
   }
 
@@ -291,7 +291,7 @@ export class ExperienceService {
       !this.isExerciseCoolingDown({ studySettings, experience }) &&
       !experience.qualityLabels?.includes('draft') &&
       experience.requiredReferencedBooksByIsbn13.every((x) =>
-        availableBooksByIsbn13.includes(x)
+        availableBooksByIsbn13.includes(x),
       ) &&
       (hasInternetConnection || !experience.requiresInternetConnection)
     );
@@ -311,7 +311,7 @@ export class ExperienceService {
       });
     const cooldownDuration = cooldownDurationMillis
       ? this.exerciseCooldownService.durationMillisToDuration(
-          cooldownDurationMillis
+          cooldownDurationMillis,
         )
       : { seconds: 30 };
     return experience.lastSeen >= sub(new Date(), cooldownDuration);

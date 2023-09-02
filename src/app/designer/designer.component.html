@@ -6,19 +6,19 @@
 </ion-header>
 <ion-content>
   <div class="flex h-full">
-    <div class="overflow-y-auto h-full px-2">
+    <div class="h-full overflow-y-auto px-2">
       <mat-form-field
         appearance="outline"
-        class="p-2 w-full bg-white sticky top-0 border-b-2 border-neutral-100"
+        class="sticky top-0 w-full border-b-2 border-neutral-100 bg-white p-2"
       >
         <mat-label>Search</mat-label>
         <input matInput placeholder="Search..." [formControl]="searchControl" />
       </mat-form-field>
       <div class="p-2">
-        <div class="text-lg flex items-baseline gap-2">
+        <div class="flex items-baseline gap-2 text-lg">
           <div>Labels</div>
           <button
-            class="bg-blue-100 rounded-full w-5 h-5 flex items-center justify-center hover:bg-blue-200"
+            class="flex h-5 w-5 items-center justify-center rounded-full bg-blue-100 hover:bg-blue-200"
             (click)="createLabel()"
           >
             <i class="fa-plus not-italic text-blue-800"></i>
@@ -34,10 +34,10 @@
         </div>
       </div>
       <div class="p-2">
-        <div class="text-lg flex items-baseline gap-2">
+        <div class="flex items-baseline gap-2 text-lg">
           <div>Exercises</div>
           <button
-            class="bg-blue-100 rounded-full w-5 h-5 flex items-center justify-center hover:bg-blue-200"
+            class="flex h-5 w-5 items-center justify-center rounded-full bg-blue-100 hover:bg-blue-200"
             (click)="createExercise()"
           >
             <i class="fa-plus not-italic text-blue-800"></i>
@@ -53,7 +53,7 @@
         </div>
       </div>
       <div class="p-2">
-        <div class="text-lg flex items-baseline gap-2">
+        <div class="flex items-baseline gap-2 text-lg">
           <div>Elements</div>
         </div>
         <div class="ml-4">
@@ -70,7 +70,7 @@
         </div>
       </div>
     </div>
-    <div class="overflow-y-auto h-full col-span-2 p-4">
+    <div class="col-span-2 h-full overflow-y-auto p-4">
       <app-exercise-preview
         *ngIf="selectedExercise$ | async as exercise"
         [exercise]="exercise"
@@ -90,7 +90,7 @@
         [customElement]="customElement"
       ></app-custom-element-documentation>
     </div>
-    <div class="overflow-y-auto h-full p-4">
+    <div class="h-full overflow-y-auto p-4">
       <div class="text-blue-800">Labels</div>
       <ng-container *ngIf="recentlySelectedLabels$ | async as labels">
         <app-file-button

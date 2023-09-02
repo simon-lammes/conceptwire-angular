@@ -104,7 +104,7 @@ export class SolutionFeedbackElement extends withTwind(LitElement) {
         : html`
             <button
               @click="${this.showAnswer}"
-              class="bg-blue-50 rounded-lg border-2 border-blue-200 text-blue-800 hover:bg-blue-100 focus:border-blue-800 focus:rounded-2xl px-3 py-2"
+              class="rounded-lg border-2 border-blue-200 bg-blue-50 px-3 py-2 text-blue-800 hover:bg-blue-100 focus:rounded-2xl focus:border-blue-800"
             >
               show solution
             </button>

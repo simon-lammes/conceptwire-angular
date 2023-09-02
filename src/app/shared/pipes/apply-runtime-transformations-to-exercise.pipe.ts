@@ -14,7 +14,7 @@ export class ApplyRuntimeTransformationsToExercisePipe
   constructor(
     private studySettingsService: StudySettingsService,
     private exerciseService: ExerciseService,
-    private db: DbService
+    private db: DbService,
   ) {}
 
   /**
@@ -44,27 +44,27 @@ export class ApplyRuntimeTransformationsToExercisePipe
    */
   private async applySettings(exerciseContainer: HTMLSpanElement) {
     const studySettings = await firstValueFrom(
-      this.studySettingsService.studySettings$
+      this.studySettingsService.studySettings$,
     );
     this.applySettingImmediatelyJumpToNextExerciseAfterGivingFeedback(
       exerciseContainer,
-      studySettings?.immediatelyJumpToNextExerciseAfterGivingFeedback ?? false
+      studySettings?.immediatelyJumpToNextExerciseAfterGivingFeedback ?? false,
     );
   }
 
   private applySettingImmediatelyJumpToNextExerciseAfterGivingFeedback(
     exerciseContainer: HTMLSpanElement,
-    immediatelyJumpToNextExerciseAfterGivingFeedback: boolean
+    immediatelyJumpToNextExerciseAfterGivingFeedback: boolean,
   ) {
     if (!immediatelyJumpToNextExerciseAfterGivingFeedback) return;
     const affectedElements = exerciseContainer.querySelectorAll(
-      'cw-svg-occlusion-exercise, cw-question-answer-exercise, cw-opinion-exercise'
+      'cw-svg-occlusion-exercise, cw-question-answer-exercise, cw-opinion-exercise',
     );
     affectedElements.forEach((element) =>
       element.setAttribute(
         'cw-immediately-jump-to-next-exercise-after-giving-feedback',
-        ''
-      )
+        '',
+      ),
     );
   }
 
@@ -81,7 +81,7 @@ export class ApplyRuntimeTransformationsToExercisePipe
    */
   private writeCodeContentIntoAttribute(
     exerciseContainer: HTMLSpanElement,
-    originalHtmlString: string
+    originalHtmlString: string,
   ) {
     const codeElements = exerciseContainer.querySelectorAll('cw-code');
     codeElements.forEach((codeElement) => {
@@ -90,34 +90,37 @@ export class ApplyRuntimeTransformationsToExercisePipe
       if (!indexOfId) return;
       const indexOfLastCharacterOfOpeningTag = originalHtmlString.indexOf(
         '>',
-        indexOfId
+        indexOfId,
       );
       const indexOfBeginningOfInnerHtml = indexOfLastCharacterOfOpeningTag + 1;
       const indexOfClosingTag = originalHtmlString.indexOf(
         '</cw-code>',
-        indexOfBeginningOfInnerHtml
+        indexOfBeginningOfInnerHtml,
       );
       codeElement.setAttribute(
         'cw-inner-html-as-attribute',
-        originalHtmlString.slice(indexOfBeginningOfInnerHtml, indexOfClosingTag)
+        originalHtmlString.slice(
+          indexOfBeginningOfInnerHtml,
+          indexOfClosingTag,
+        ),
       );
     });
   }
 
   private async loadExerciseReferences(exerciseContainer: HTMLSpanElement) {
     const exerciseReferenceElements = Array.from(
-      exerciseContainer.querySelectorAll('cw-exercise-reference')
+      exerciseContainer.querySelectorAll('cw-exercise-reference'),
     );
     const exerciseIds = exerciseReferenceElements
       .map((x) => x.getAttribute('exercise-id'))
       .filter((x) => !!x) as string[];
     const exercises = await firstValueFrom(
-      this.exerciseService.getExercisesByIds(exerciseIds)
+      this.exerciseService.getExercisesByIds(exerciseIds),
     );
     exerciseReferenceElements.forEach((el) => {
       const referencedExerciseId = el.getAttribute('exercise-id');
       const referencedExercise = exercises.find(
-        (x) => x.id === referencedExerciseId
+        (x) => x.id === referencedExerciseId,
       );
       if (referencedExercise) {
         el.setAttribute('exercise', JSON.stringify(referencedExercise));
@@ -127,7 +130,7 @@ export class ApplyRuntimeTransformationsToExercisePipe
 
   private async loadBookReferences(exerciseContent: HTMLSpanElement) {
     const bookReferences = Array.from(
-      exerciseContent.querySelectorAll('cw-book-reference')
+      exerciseContent.querySelectorAll('cw-book-reference'),
     );
     for (const bookReference of bookReferences) {
       const isbn13 = bookReference.getAttribute('isbn-13');

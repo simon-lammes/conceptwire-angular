@@ -46,9 +46,9 @@ export class GithubSynchronizationComponent {
             owner: user,
             repo,
           })
-        : of(undefined)
+        : of(undefined),
     ),
-    map((response) => response?.data.map((x) => x.name))
+    map((response) => response?.data.map((x) => x.name)),
   );
   readonly importProcedure: Procedure = {
     name: 'Import',
@@ -57,7 +57,7 @@ export class GithubSynchronizationComponent {
   };
 
   constructor(
-    protected githubSynchronizationService: GithubSynchronizationService
+    protected githubSynchronizationService: GithubSynchronizationService,
   ) {}
 
   async onSubmit() {

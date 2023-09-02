@@ -11,21 +11,21 @@ import * as _ from 'lodash';
 })
 export class LabelService {
   readonly labels$: Observable<Label[]> = from(
-    liveQuery(() => this.db.labels.toArray())
+    liveQuery(() => this.db.labels.toArray()),
   );
 
   readonly recentlyStudiedLabels$ = from(
     liveQuery(() =>
-      this.db.studyEvents.orderBy('dateTime').reverse().limit(100).toArray()
-    )
+      this.db.studyEvents.orderBy('dateTime').reverse().limit(100).toArray(),
+    ),
   ).pipe(
     map((studyEvents) => _.uniq(studyEvents.map((x) => x.studiedLabelId))),
     switchMap((labelIds) =>
       labelIds.length
         ? combineLatest(labelIds.map((labelId) => this.getLabelById(labelId)))
-        : of([])
+        : of([]),
     ),
-    map((labels) => labels.filter((x) => !!x) as Label[])
+    map((labels) => labels.filter((x) => !!x) as Label[]),
   );
 
   constructor(private db: DbService) {}
@@ -56,7 +56,7 @@ export class LabelService {
         if (labelImplications?.length) {
           await this.db.labelImplications.bulkPut(labelImplications);
         }
-      }
+      },
     );
   }
 
@@ -64,8 +64,8 @@ export class LabelService {
     const queryLowercase = query.toLowerCase();
     return this.labels$.pipe(
       map((labels) =>
-        labels.filter((x) => x.title.toLowerCase().includes(queryLowercase))
-      )
+        labels.filter((x) => x.title.toLowerCase().includes(queryLowercase)),
+      ),
     );
   }
 
@@ -84,15 +84,17 @@ export class LabelService {
         this.db.labelImplications
           .where('implicatedLabelId')
           .equals(labelId)
-          .toArray()
-      )
+          .toArray(),
+      ),
     ).pipe(
       switchMap((labelImplications) =>
         liveQuery(() =>
-          this.db.labels.bulkGet(labelImplications.map((x) => x.causingLabelId))
-        )
+          this.db.labels.bulkGet(
+            labelImplications.map((x) => x.causingLabelId),
+          ),
+        ),
       ),
-      map((labels) => labels.filter((x) => !!x) as Array<Label>)
+      map((labels) => labels.filter((x) => !!x) as Array<Label>),
     );
   }
 
@@ -100,13 +102,13 @@ export class LabelService {
     if (!exerciseId) return of(undefined);
     return from(
       liveQuery(() =>
-        this.db.exerciseLabels.where('exerciseId').equals(exerciseId).toArray()
-      )
+        this.db.exerciseLabels.where('exerciseId').equals(exerciseId).toArray(),
+      ),
     ).pipe(
       switchMap((exerciseLabels) =>
-        this.db.labels.bulkGet(exerciseLabels.map((x) => x.labelId))
+        this.db.labels.bulkGet(exerciseLabels.map((x) => x.labelId)),
       ),
-      map((labels) => labels.filter((x) => !!x) as Array<Label>)
+      map((labels) => labels.filter((x) => !!x) as Array<Label>),
     );
   }
 
@@ -117,7 +119,7 @@ export class LabelService {
       const currentLabelId = breathFirstSearchQueueOfLabelIds.pop()!;
       if (visitedLabelIds.includes(currentLabelId)) continue;
       const implicatedLabelIds = await this.getImplicatedParentLabels(
-        currentLabelId
+        currentLabelId,
       ).then((x) => x.map((y) => y.implicatedLabelId));
       breathFirstSearchQueueOfLabelIds.push(...implicatedLabelIds);
       visitedLabelIds.push(currentLabelId);
@@ -145,7 +147,7 @@ export class LabelService {
 
   getLabelsByIds(labelIds: string[]) {
     return from(liveQuery(() => this.db.labels.bulkGet(labelIds))).pipe(
-      map((exercises) => exercises.filter((x) => !!x) as Label[])
+      map((exercises) => exercises.filter((x) => !!x) as Label[]),
     );
   }
 }

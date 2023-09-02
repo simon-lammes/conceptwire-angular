@@ -35,7 +35,7 @@ export class HomeComponent {
     protected labelService: LabelService,
     protected router: Router,
     private breakpointObserver: BreakpointObserver,
-    protected serviceWorkerService: ServiceWorkerService
+    protected serviceWorkerService: ServiceWorkerService,
   ) {}
 
   async onLabelClicked(label: Label) {

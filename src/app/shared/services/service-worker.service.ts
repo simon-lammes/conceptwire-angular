@@ -11,7 +11,7 @@ export class ServiceWorkerService {
     filter((event) => event.type === 'VERSION_READY'),
     map(() => true),
     startWith(false),
-    shareSingleton()
+    shareSingleton(),
   );
 
   constructor(private swUpdate: SwUpdate) {}

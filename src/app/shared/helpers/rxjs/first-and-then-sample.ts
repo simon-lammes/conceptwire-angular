@@ -5,7 +5,7 @@ import { first, merge, Observable, ObservableInput, sample, skip } from 'rxjs';
  * the source observable is emitted directly - irrespective of the notifier/sample.
  */
 export const firstAndThenSample: (
-  notifier: ObservableInput<unknown>
+  notifier: ObservableInput<unknown>,
 ) => <T>(source: Observable<T>) => Observable<T> =
   (notifier: ObservableInput<unknown>) =>
   <T>(source: Observable<T>) =>

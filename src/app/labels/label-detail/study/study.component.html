@@ -27,7 +27,7 @@
       ></app-exercise-preview>
     </ng-container>
     <ng-container *ngIf="(showExerciseDetails$ | async) === false">
-      <div class="flex justify-center mb-4">
+      <div class="mb-4 flex justify-center">
         <app-study-progress
           [studyProgress]="studyProgress$ | async"
         ></app-study-progress>

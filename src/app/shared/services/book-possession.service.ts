@@ -9,8 +9,8 @@ import { DbService } from './db.service';
 export class BookPossessionService {
   readonly booksInPossessionByIsbn13$ = from(
     liveQuery(() =>
-      this.db.bookPossessions.filter((x) => x.isInPossession).toArray()
-    )
+      this.db.bookPossessions.filter((x) => x.isInPossession).toArray(),
+    ),
   ).pipe(map((x) => x.map((y) => y.isbn13)));
 
   constructor(private db: DbService) {}

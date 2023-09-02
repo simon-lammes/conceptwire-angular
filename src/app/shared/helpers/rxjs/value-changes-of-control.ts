@@ -10,6 +10,6 @@ export const valueChangesOfControl = <T>(control: FormControl<T>) =>
   defer(() =>
     control.valueChanges.pipe(
       startWith(control.value),
-      shareReplay({ bufferSize: 1, refCount: true })
-    )
+      shareReplay({ bufferSize: 1, refCount: true }),
+    ),
   );

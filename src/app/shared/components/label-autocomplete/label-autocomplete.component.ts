@@ -56,7 +56,7 @@ export class LabelAutocompleteComponent implements ControlValueAccessor {
           return hasLabelBeenSelected ? value : undefined;
         }),
         distinctUntilChanged(),
-        untilDestroyed(this)
+        untilDestroyed(this),
       )
       .subscribe((value) => {
         if (this.onChange) {

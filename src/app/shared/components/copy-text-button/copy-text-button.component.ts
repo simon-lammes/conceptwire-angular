@@ -26,7 +26,7 @@ export class CopyTextButtonComponent {
   indicateCopied$ = this.successfullyCopied.pipe(
     switchMap(() => merge(of(true), of(false).pipe(delay(3000)))),
     startWith(false),
-    shareReplay({ bufferSize: 1, refCount: true })
+    shareReplay({ bufferSize: 1, refCount: true }),
   );
 
   async onClick() {

@@ -92,21 +92,21 @@ export class DesignerComponent implements OnDestroy {
     .connect(this.controls$);
   readonly searchValue$ = this.searchControl.valueChanges.pipe(
     startWith(this.searchControl.value),
-    shareReplay({ bufferSize: 1, refCount: true })
+    shareReplay({ bufferSize: 1, refCount: true }),
   ) as unknown as Observable<string>;
   debouncedSearchValue$ = this.searchValue$.pipe(
     debounceTime(50),
-    shareReplay({ bufferSize: 1, refCount: true })
+    shareReplay({ bufferSize: 1, refCount: true }),
   );
   readonly labels$ = this.debouncedSearchValue$.pipe(
-    switchMap((query) => this.labelService.searchLabels(query))
+    switchMap((query) => this.labelService.searchLabels(query)),
   );
   readonly exercises$: Observable<Exercise[]> = this.debouncedSearchValue$.pipe(
-    switchMap((query) => this.exerciseService.searchExercises({ query }))
+    switchMap((query) => this.exerciseService.searchExercises({ query })),
   );
   readonly selection$ = this.selectionControl.valueChanges.pipe(
     startWith(this.selectionControl.value),
-    shareReplay({ refCount: true, bufferSize: 1 })
+    shareReplay({ refCount: true, bufferSize: 1 }),
   );
   readonly recentSelections$ = this.selection$.pipe(
     scan((recentSelections, currentSelection) => {
@@ -114,57 +114,59 @@ export class DesignerComponent implements OnDestroy {
       const isAlreadyIncluded =
         (currentSelection.exerciseId &&
           recentSelections.some(
-            (x) => x.exerciseId === currentSelection.exerciseId
+            (x) => x.exerciseId === currentSelection.exerciseId,
           )) ||
         (currentSelection.labelId &&
           recentSelections.some((x) => x.labelId === currentSelection.labelId));
       if (isAlreadyIncluded) return recentSelections;
       return [currentSelection, ...recentSelections];
-    }, [] as Selection[])
+    }, [] as Selection[]),
   );
   readonly labelsOfSelectedExercise$ = this.selection$.pipe(
     switchMap((selection) => {
       if (!selection?.exerciseId) of(undefined);
       return this.labelService.getLabelsOfExercise(selection?.exerciseId);
-    })
+    }),
   );
   readonly subLabelsOfSelectedLabel$ = this.selection$.pipe(
     switchMap((selection) => {
       const labelId = selection?.labelId;
       if (!labelId) return of(undefined);
       return this.labelService.getChildLabels(labelId);
-    })
+    }),
   );
   readonly selectedExercise$ = this.selection$.pipe(
     switchMap((selection) =>
-      this.exerciseService.getExerciseById(selection?.exerciseId)
-    )
+      this.exerciseService.getExerciseById(selection?.exerciseId),
+    ),
   );
   readonly selectedLabel$ = this.selection$.pipe(
-    switchMap((selection) => this.labelService.getLabelById(selection?.labelId))
+    switchMap((selection) =>
+      this.labelService.getLabelById(selection?.labelId),
+    ),
   );
   readonly selectedCustomElement$ = this.selection$.pipe(
     switchMap((selection) =>
       this.customElementsService.getCustomElementByTagName(
-        selection?.customElementTagName
-      )
-    )
+        selection?.customElementTagName,
+      ),
+    ),
   );
   readonly recentlySelectedExercises$ = this.recentSelections$.pipe(
     map(
       (selections) =>
-        selections.map((x) => x.exerciseId).filter((x) => !!x) as string[]
+        selections.map((x) => x.exerciseId).filter((x) => !!x) as string[],
     ),
     switchMap((exerciseIds) =>
-      this.exerciseService.getExercisesByIds(exerciseIds)
-    )
+      this.exerciseService.getExercisesByIds(exerciseIds),
+    ),
   );
   readonly recentlySelectedLabels$ = this.recentSelections$.pipe(
     map(
       (selections) =>
-        selections.map((x) => x.labelId).filter((x) => !!x) as string[]
+        selections.map((x) => x.labelId).filter((x) => !!x) as string[],
     ),
-    switchMap((labelIds) => this.labelService.getLabelsByIds(labelIds))
+    switchMap((labelIds) => this.labelService.getLabelsByIds(labelIds)),
   );
 
   readonly additionalActions: AdditionalToolbarAction[] = [
@@ -181,7 +183,7 @@ export class DesignerComponent implements OnDestroy {
     private fileSystemSynchronisationService: FileSystemSynchronisationService,
     private _snackBar: MatSnackBar,
     private factory: BindQueryParamsFactory,
-    protected customElementsService: CustomElementsService
+    protected customElementsService: CustomElementsService,
   ) {}
 
   ngOnDestroy(): void {
@@ -201,7 +203,7 @@ export class DesignerComponent implements OnDestroy {
     const exerciseId =
       await this.fileSystemSynchronisationService.createExercise();
     const exercise = await firstValueFrom(
-      this.exerciseService.getExerciseById(exerciseId)
+      this.exerciseService.getExerciseById(exerciseId),
     );
     if (!exercise) throw Error();
     this.selectExercise(exercise);
@@ -223,7 +225,7 @@ export class DesignerComponent implements OnDestroy {
         initialExerciseContent: duplicatedExercise.content,
       });
     const exercise = await firstValueFrom(
-      this.exerciseService.getExerciseById(exerciseId)
+      this.exerciseService.getExerciseById(exerciseId),
     );
     if (!exercise) throw Error();
     this.selectExercise(exercise);

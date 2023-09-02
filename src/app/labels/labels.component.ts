@@ -23,7 +23,7 @@ export class LabelsComponent {
   constructor(
     private labelService: LabelService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
   ) {
     this.labels$ = this.labelService.labels$;
   }

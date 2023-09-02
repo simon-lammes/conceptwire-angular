@@ -19,7 +19,7 @@ export class LocalAssetsComponent {
   constructor(
     protected assetService: AssetService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
   ) {}
 
   onAssetClicked(asset: Asset) {

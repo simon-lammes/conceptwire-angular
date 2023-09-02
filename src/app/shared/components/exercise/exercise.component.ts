@@ -67,19 +67,19 @@ export class ExerciseComponent {
     this.elementRef.nativeElement.addEventListener(
       'cw-exercise-feedback',
       (ev: CustomEvent<ExerciseFeedback>) =>
-        this.exerciseFeedback.emit(ev.detail)
+        this.exerciseFeedback.emit(ev.detail),
     );
     this.elementRef.nativeElement.addEventListener(
       'cw-request-next-exercise',
       () => {
         this.nextExerciseRequested.emit();
-      }
+      },
     );
     this.elementRef.nativeElement.addEventListener(
       'cw-open-exercise',
       (event: CustomEvent<Exercise>) => {
         this.openExercise.emit(event.detail);
-      }
+      },
     );
   }
 }

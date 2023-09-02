@@ -97,7 +97,7 @@ class CodeElement extends LitElement {
       this.innerHtmlAsAttribute ?? this.innerHTML,
       {
         language: this.language,
-      }
+      },
     ).value;
     return html`<pre><code>${unsafeHTML(highlightedHtml)}</code></pre>`;
   }

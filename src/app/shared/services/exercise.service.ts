@@ -22,8 +22,8 @@ export class ExerciseService {
     const exerciseLabels$: Observable<ExerciseLabel[] | undefined> = labelId
       ? from(
           liveQuery(() =>
-            this.db.exerciseLabels.where('labelId').equals(labelId).toArray()
-          )
+            this.db.exerciseLabels.where('labelId').equals(labelId).toArray(),
+          ),
         )
       : of(undefined);
     return exerciseLabels$.pipe(
@@ -38,12 +38,12 @@ export class ExerciseService {
           return lowerCaseQuery
             ? collectionFilteredByLabel
                 .filter((exercise) =>
-                  exercise.content.toLowerCase().includes(lowerCaseQuery)
+                  exercise.content.toLowerCase().includes(lowerCaseQuery),
                 )
                 .toArray()
             : collectionFilteredByLabel.toArray();
-        })
-      )
+        }),
+      ),
     );
   }
 
@@ -72,10 +72,10 @@ export class ExerciseService {
         });
         if (labelIds) {
           await this.db.exerciseLabels.bulkPut(
-            labelIds.map((labelId) => ({ exerciseId, labelId }))
+            labelIds.map((labelId) => ({ exerciseId, labelId })),
           );
         }
-      }
+      },
     );
   }
 
@@ -88,7 +88,7 @@ export class ExerciseService {
 
   getExercisesByIds(exerciseIds: string[]) {
     return from(liveQuery(() => this.db.exercises.bulkGet(exerciseIds))).pipe(
-      map((exercises) => exercises.filter((x) => !!x) as Exercise[])
+      map((exercises) => exercises.filter((x) => !!x) as Exercise[]),
     );
   }
 
@@ -96,7 +96,7 @@ export class ExerciseService {
     const exerciseElement = document.createElement('span');
     exerciseElement.innerHTML = exercise.content;
     const bookReferences = Array.from(
-      exerciseElement.querySelectorAll('cw-book-reference')
+      exerciseElement.querySelectorAll('cw-book-reference'),
     );
     return bookReferences
       .map((x) => x.getAttribute('isbn-13'))
@@ -107,7 +107,7 @@ export class ExerciseService {
     const exerciseElement = document.createElement('span');
     exerciseElement.innerHTML = exercise.content;
     const elementsThatRequireInternetConnection = Array.from(
-      exerciseElement.querySelectorAll('cw-youtube-video')
+      exerciseElement.querySelectorAll('cw-youtube-video'),
     );
     return elementsThatRequireInternetConnection.length > 0;
   }

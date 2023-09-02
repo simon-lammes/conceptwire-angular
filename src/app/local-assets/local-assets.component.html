@@ -5,17 +5,17 @@
   <div class="px-2 md:px-8">
     <ng-container *ngIf="assetService.assets$ | async as assets">
       <div
-        class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-x-4 gap-y-2 my-8"
+        class="my-8 grid grid-cols-2 gap-x-4 gap-y-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8"
       >
         <button
           *ngFor="let asset of assets"
-          class="bg-neutral-100 rounded-lg overflow-hidden hover:bg-neutral-200 block"
+          class="block overflow-hidden rounded-lg bg-neutral-100 hover:bg-neutral-200"
           (click)="onAssetClicked(asset)"
         >
           <img
             *ngIf="asset.id | localAssetUrl | async as url"
             [src]="url"
-            class="h-full w-full max-h-64 object-contain"
+            class="h-full max-h-64 w-full object-contain"
           />
         </button>
       </div>

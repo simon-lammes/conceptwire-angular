@@ -9,17 +9,17 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 export class LocalAssetUrlPipe implements PipeTransform {
   constructor(
     private assetService: AssetService,
-    private domSanitizer: DomSanitizer
+    private domSanitizer: DomSanitizer,
   ) {}
 
   async transform(
-    assetId?: string | null
+    assetId?: string | null,
   ): Promise<SafeResourceUrl | undefined> {
     if (!assetId) return undefined;
     const asset = await this.assetService.getAsset(assetId);
     if (!asset) return undefined;
     return this.domSanitizer.bypassSecurityTrustResourceUrl(
-      URL.createObjectURL(asset.blob)
+      URL.createObjectURL(asset.blob),
     );
   }
 }

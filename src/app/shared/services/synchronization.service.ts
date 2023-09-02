@@ -41,7 +41,7 @@ export class SynchronizationService {
     private assetAttributionService: AssetAttributionService,
     private db: DbService,
     private templateService: TemplateService,
-    private experienceService: ExperienceService
+    private experienceService: ExperienceService,
   ) {}
 
   public async clearModels() {
@@ -104,21 +104,21 @@ export class SynchronizationService {
     await this.clearModels();
     const importBooks = this.db.books.bulkPut(books);
     const importLabels = Promise.all(
-      labels.map(({ id, content }) => this.importLabel(content, id))
+      labels.map(({ id, content }) => this.importLabel(content, id)),
     );
     // The import of exercise only makes sense when labels are already imported.
     const importExercises = importLabels.then(() =>
       Promise.all(
-        exercises.map(({ id, content }) => this.importExercise(content, id))
-      )
+        exercises.map(({ id, content }) => this.importExercise(content, id)),
+      ),
     );
     // The import of concepts only makes sense when labels are already imported.
     const importConcepts = importLabels.then(() =>
       Promise.all(
         conceptDocuments.map(({ id, content }) =>
-          this.importConceptDocument(content, id)
-        )
-      )
+          this.importConceptDocument(content, id),
+        ),
+      ),
     );
     // Experiences can only be updated once exercises and concepts have been imported.
     const updateExperiencesTable = Promise.all([
@@ -130,11 +130,11 @@ export class SynchronizationService {
         this.importAssetAttribution({
           ...(content as AssetAttribution),
           assetId: id,
-        })
-      )
+        }),
+      ),
     );
     const importAssets = Promise.all(
-      assets.map(({ id, content }) => this.importAsset(content, id))
+      assets.map(({ id, content }) => this.importAsset(content, id)),
     );
     // It might not be necessary, but for readability and explicitness I think it makes sense
     // to *explicitly* wait for all promises to finish.
@@ -193,21 +193,21 @@ export class SynchronizationService {
       (labelImplication) => [
         labelIds.indexOf(labelImplication.causingLabelId),
         labelIds.indexOf(labelImplication.implicatedLabelId),
-      ]
+      ],
     );
     const graph = createAcyclicGraph(originalEdges);
     const closure = transitiveClosure(graph);
     const neededAdditionalEdges = _.differenceWith(
       [...closure[1].values()],
       originalEdges,
-      _.isEqual
+      _.isEqual,
     );
     const needAdditionalLabelImplications = neededAdditionalEdges.map(
       ([source, target]) =>
         ({
           causingLabelId: labelIds[source],
           implicatedLabelId: labelIds[target],
-        } as LabelImplication)
+        }) as LabelImplication,
     );
     await this.db.labelImplications.bulkPut(needAdditionalLabelImplications);
   }
@@ -230,25 +230,25 @@ export class SynchronizationService {
 
   private extractLabelImplications(
     sourceLabelId: string,
-    labelElement: HTMLElement
+    labelElement: HTMLElement,
   ) {
     const labelImplicationElements = Array.from(
-      labelElement.querySelectorAll('cw-label-implication')
+      labelElement.querySelectorAll('cw-label-implication'),
     );
     return labelImplicationElements.map(
       (labelImplicationElement) =>
         ({
           implicatedLabelId: labelImplicationElement.getAttribute(
-            'cw-implicated-label-id'
+            'cw-implicated-label-id',
           ),
           causingLabelId: sourceLabelId,
-        } as LabelImplication)
+        }) as LabelImplication,
     );
   }
 
   private extractLabelIdsOfExercise(exerciseElement: HTMLElement) {
     const directLabelIdsElement = exerciseElement.querySelector(
-      'meta[name=direct-label-ids]'
+      'meta[name=direct-label-ids]',
     );
     const directLabelIds =
       directLabelIdsElement
@@ -256,7 +256,7 @@ export class SynchronizationService {
         ?.split(',')
         .map((x) => x.trim()) ?? [];
     return this.labelService.getAllTransitiveLabelIdsByBreathFirstSearch(
-      directLabelIds
+      directLabelIds,
     );
   }
 
@@ -269,10 +269,10 @@ export class SynchronizationService {
   public async importConceptDocument(conceptContent: string, id: string) {
     const conceptDocumentElement = this.createHtmlElement(conceptContent);
     const setConceptElements = Array.from(
-      conceptDocumentElement.querySelectorAll('cw-set-concept')
+      conceptDocumentElement.querySelectorAll('cw-set-concept'),
     );
     const keymapConceptElements = Array.from(
-      conceptDocumentElement.querySelectorAll('cw-keymap-concept')
+      conceptDocumentElement.querySelectorAll('cw-keymap-concept'),
     );
     await Promise.all([
       ...setConceptElements.map((conceptElement) =>
@@ -280,14 +280,14 @@ export class SynchronizationService {
           setConceptElement: conceptElement,
           conceptDocument: conceptDocumentElement,
           conceptId: id,
-        })
+        }),
       ),
       ...keymapConceptElements.map((conceptElement) =>
         this.importKeymapConcept({
           keymapConceptElement: conceptElement,
           conceptDocument: conceptDocumentElement,
           conceptId: id,
-        })
+        }),
       ),
     ]);
   }
@@ -302,11 +302,11 @@ export class SynchronizationService {
     conceptId: string;
   }) {
     const setElements = Array.from(
-      setConceptElement.querySelectorAll('cw-element')
+      setConceptElement.querySelectorAll('cw-element'),
     );
     const setElementsThatCanBeUsedForFindMissingElementExercises =
       setElements.filter((x) =>
-        x.getAttribute('cw-find-missing-element-exercise-id')
+        x.getAttribute('cw-find-missing-element-exercise-id'),
       );
     for (const missingElement of setElementsThatCanBeUsedForFindMissingElementExercises) {
       const existingElements = setElements.filter((x) => x !== missingElement);
@@ -317,7 +317,7 @@ export class SynchronizationService {
             title: conceptDocument.querySelector('title')?.innerText ?? '',
             setDescription:
               conceptDocument.querySelector(
-                'cw-set-concept > *[slot=description]'
+                'cw-set-concept > *[slot=description]',
               )?.innerHTML ?? '',
             directLabelIds:
               conceptDocument
@@ -333,7 +333,7 @@ export class SynchronizationService {
           },
         });
       const exerciseId = missingElement.getAttribute(
-        'cw-find-missing-element-exercise-id'
+        'cw-find-missing-element-exercise-id',
       );
       if (!exerciseId) throw Error('Missing Exercise Id');
       await this.importExercise(exercise, exerciseId);
@@ -341,10 +341,10 @@ export class SynchronizationService {
   }
 
   private extractQualityLabelsOfExercise(
-    exerciseElement: HTMLElement
+    exerciseElement: HTMLElement,
   ): QualityLabels[] {
     const qualityLabelsMetaElement = exerciseElement.querySelector(
-      'meta[name=quality-labels]'
+      'meta[name=quality-labels]',
     );
     if (!qualityLabelsMetaElement) return [];
     const qualityLabelsString =
@@ -365,7 +365,7 @@ export class SynchronizationService {
     conceptId: string;
   }) {
     const commandElements = Array.from(
-      keymapConceptElement.querySelectorAll('cw-keymap-command')
+      keymapConceptElement.querySelectorAll('cw-keymap-command'),
     );
     await Promise.all([
       commandElements.map(async (commandElement) => {

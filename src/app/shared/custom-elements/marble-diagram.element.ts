@@ -33,7 +33,7 @@ class MarbleDiagramElement extends LitElement {
   override connectedCallback() {
     super.connectedCallback();
     this.resizeObserver = new ResizeObserver(
-      _.debounce(() => (this._width = this.offsetWidth), 300)
+      _.debounce(() => (this._width = this.offsetWidth), 300),
     );
     this.resizeObserver.observe(this);
   }
@@ -46,11 +46,11 @@ class MarbleDiagramElement extends LitElement {
   override attributeChangedCallback(
     name: string,
     _old: string | null,
-    value: string | null
+    value: string | null,
   ) {
     super.attributeChangedCallback(name, _old, value);
     this._commands = [...this.source.matchAll(/(\(\S*\))|\S/g)].map(
-      (x) => x[0]
+      (x) => x[0],
     );
   }
 
@@ -84,7 +84,7 @@ class MarbleDiagramElement extends LitElement {
         'points',
         `${this.offsetWidth},${20} ${this.offsetWidth - 8},${14} ${
           this.offsetWidth - 8
-        },${26}`
+        },${26}`,
       );
 
     const scalePoint = d3

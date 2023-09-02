@@ -33,14 +33,14 @@ export class LabelDetailComponent {
   constructor(
     private labelService: LabelService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
   ) {
     const labelId$ = this.route.params.pipe(map((params) => params['labelId']));
     this.label$ = labelId$.pipe(
-      switchMap((labelId) => this.labelService.getLabelById(labelId))
+      switchMap((labelId) => this.labelService.getLabelById(labelId)),
     );
     this.childLabels$ = labelId$.pipe(
-      switchMap((labelId) => this.labelService.getChildLabels(labelId))
+      switchMap((labelId) => this.labelService.getChildLabels(labelId)),
     );
   }
 

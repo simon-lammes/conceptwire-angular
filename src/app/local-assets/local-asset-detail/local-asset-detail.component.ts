@@ -17,16 +17,16 @@ import { IonicModule } from '@ionic/angular';
 })
 export class LocalAssetDetailComponent {
   assetId$: Observable<string> = this.route.params.pipe(
-    map((params) => params['assetId'])
+    map((params) => params['assetId']),
   );
   assetAttribution$ = this.assetId$.pipe(
     switchMap((assetId) =>
-      this.assetAttributionService.getAssetAttribution(assetId)
-    )
+      this.assetAttributionService.getAssetAttribution(assetId),
+    ),
   );
 
   constructor(
     private route: ActivatedRoute,
-    private assetAttributionService: AssetAttributionService
+    private assetAttributionService: AssetAttributionService,
   ) {}
 }

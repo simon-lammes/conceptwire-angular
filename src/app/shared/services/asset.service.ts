@@ -9,7 +9,7 @@ import { liveQuery } from 'dexie';
 })
 export class AssetService {
   assets$: Observable<Asset[]> = from(
-    liveQuery(() => this.db.assets.toArray())
+    liveQuery(() => this.db.assets.toArray()),
   );
 
   constructor(private db: DbService) {}

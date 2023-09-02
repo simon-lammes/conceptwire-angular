@@ -74,7 +74,7 @@ export class MultiLabelInputComponent implements ControlValueAccessor {
 
   constructor(
     private labelService: LabelService,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
   ) {
     this.filteredLabels = this.searchControl.valueChanges.pipe(
       switchMap((query) => this.labelService.searchLabels(query ?? '')),
@@ -82,10 +82,10 @@ export class MultiLabelInputComponent implements ControlValueAccessor {
         labels.filter(
           (label) =>
             !this.selectedLabels.some(
-              (implicatedLabel) => implicatedLabel.id === label.id
-            )
-        )
-      )
+              (implicatedLabel) => implicatedLabel.id === label.id,
+            ),
+        ),
+      ),
     );
   }
 
@@ -121,7 +121,7 @@ export class MultiLabelInputComponent implements ControlValueAccessor {
 
   async selected(event: MatAutocompleteSelectedEvent): Promise<void> {
     const label = await this.labelService.getLabelByTitle(
-      event.option.viewValue
+      event.option.viewValue,
     );
     if (label) {
       this.selectedLabels.push(label);

@@ -1,8 +1,8 @@
 <button
-  class="block w-full rounded-lg border-neutral-200 border-2 group overflow-hidden border-solid"
+  class="group block w-full overflow-hidden rounded-lg border-2 border-solid border-neutral-200"
   (click)="onClicked($event)"
 >
-  <div class="w-full h-20 bg-neutral-200">
+  <div class="h-20 w-full bg-neutral-200">
     <img
       *ngIf="label.localImageId | localAssetUrl | async as url"
       [src]="url"
@@ -10,7 +10,7 @@
     />
   </div>
   <div
-    class="text-lg px-3 py-2 text-center group-hover:bg-neutral-50 overflow-hidden whitespace-nowrap overflow-ellipsis"
+    class="overflow-hidden overflow-ellipsis whitespace-nowrap px-3 py-2 text-center text-lg group-hover:bg-neutral-50"
   >
     {{ label.title }}
   </div>

@@ -1,7 +1,7 @@
 <div
-  class="block w-full rounded-lg border-neutral-200 border-2 overflow-hidden"
+  class="block w-full overflow-hidden rounded-lg border-2 border-neutral-200"
 >
-  <div class="w-full h-20 bg-neutral-200">
+  <div class="h-20 w-full bg-neutral-200">
     <img
       *ngIf="label.localImageId | localAssetUrl | async as url"
       [src]="url"
@@ -9,7 +9,7 @@
     />
   </div>
   <div
-    class="text-lg px-3 py-2 text-center overflow-hidden whitespace-nowrap overflow-ellipsis"
+    class="overflow-hidden overflow-ellipsis whitespace-nowrap px-3 py-2 text-center text-lg"
   >
     {{ label.title }}
   </div>
@@ -17,7 +17,7 @@
     <app-copy-text-button [text]="label.id"></app-copy-text-button>
   </div>
   <div class="px-3 py-2">
-    <div class="text-neutral-400 text-sm">Sub Labels</div>
+    <div class="text-sm text-neutral-400">Sub Labels</div>
     <div>
       <button
         *ngFor="let label of subLabels"

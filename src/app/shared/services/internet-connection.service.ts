@@ -22,6 +22,6 @@ export class InternetConnectionService {
           default:
             return true;
         }
-      })
+      }),
     );
 }

@@ -26,7 +26,7 @@ export class SynchronizationComponent {
     private exerciseService: ExerciseService,
     protected route: ActivatedRoute,
     protected dbService: DbService,
-    protected router: Router
+    protected router: Router,
   ) {}
 
   async exportIntoDirectory() {
@@ -39,15 +39,15 @@ export class SynchronizationComponent {
       'exercises',
       {
         create: true,
-      }
+      },
     );
     const exercises = await firstValueFrom(
-      this.exerciseService.searchExercises({})
+      this.exerciseService.searchExercises({}),
     );
     exercises.map(async (exercise) => {
       const fileHandle = await exercisesDirectoryHandle.getFileHandle(
         `${exercise.id}.html`,
-        { create: true }
+        { create: true },
       );
       const writable = await fileHandle.createWritable();
       await writable.write(exercise.content);

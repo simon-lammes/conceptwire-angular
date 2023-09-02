@@ -13,7 +13,7 @@ export class FileSystemSynchronisationService {
   constructor(
     private synchronisationService: SynchronizationService,
     private templateService: TemplateService,
-    private experienceService: ExperienceService
+    private experienceService: ExperienceService,
   ) {}
 
   async uploadContent() {
@@ -86,12 +86,12 @@ export class FileSystemSynchronisationService {
       'labels',
       {
         create: false,
-      }
+      },
     );
     const labelId = self.crypto.randomUUID();
     const fileHandle = (await labelsDirectoryHandle.getFileHandle(
       `${labelId}.html`,
-      { create: true }
+      { create: true },
     )) as any;
     const writable = await fileHandle.createWritable();
     const labelContent = await this.templateService.createNewLabel({ labelId });
@@ -109,12 +109,12 @@ export class FileSystemSynchronisationService {
       'exercises',
       {
         create: false,
-      }
+      },
     );
     const exerciseId = self.crypto.randomUUID();
     const fileHandle = (await exercisesDirectoryHandle.getFileHandle(
       `${exerciseId}.html`,
-      { create: true }
+      { create: true },
     )) as any;
     const writable = await fileHandle.createWritable();
     const exerciseContent = initialExerciseContent
@@ -126,7 +126,7 @@ export class FileSystemSynchronisationService {
     await writable.close();
     await this.synchronisationService.importExercise(
       exerciseContent,
-      exerciseId
+      exerciseId,
     );
     return exerciseId;
   }
@@ -156,7 +156,7 @@ export class FileSystemSynchronisationService {
       path,
       {
         create: false,
-      }
+      },
     );
 
     const dataPoints: DataWithId<T>[] = [];

@@ -60,7 +60,7 @@ export class SettingsComponent implements OnInit {
       (studySettings) => {
         if (!studySettings) return;
         this.form.patchValue(studySettings);
-      }
+      },
     );
   }
 

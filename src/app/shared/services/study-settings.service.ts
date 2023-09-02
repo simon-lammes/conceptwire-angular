@@ -15,9 +15,9 @@ export class StudySettingsService {
   };
 
   studySettings$: Observable<StudySettings> = from(
-    liveQuery(() => this.db.studySettings.get('my-study-settings'))
+    liveQuery(() => this.db.studySettings.get('my-study-settings')),
   ).pipe(
-    map((studySettings) => studySettings ?? this.defaultStudySettings)
+    map((studySettings) => studySettings ?? this.defaultStudySettings),
   ) as Observable<StudySettings>;
 
   constructor(private db: DbService) {}

@@ -42,13 +42,13 @@ export class CooldownPreviewComponent implements OnChanges {
           if (!cooldownTimeMillis) throw Error();
           const duration =
             this.exerciseCooldownService.durationMillisToDuration(
-              cooldownTimeMillis
+              cooldownTimeMillis,
             );
           return {
             durationFormatted: formatDuration(duration),
             correctStreak,
           };
-        }
+        },
       );
     } catch (e) {
       this.cooldownPreviews = undefined;

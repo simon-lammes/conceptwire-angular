@@ -14,9 +14,9 @@ export class CustomElementsService {
         (x) =>
           (x as Package).modules
             .flatMap((x) => x.declarations)
-            .filter((x) => !!x) as CustomElementDeclaration[]
+            .filter((x) => !!x) as CustomElementDeclaration[],
       ),
-      shareReplay(1)
+      shareReplay(1),
     );
 
   constructor(private http: HttpClient) {}
@@ -24,8 +24,8 @@ export class CustomElementsService {
   getCustomElementByTagName(customElementTagName: string | undefined) {
     return this.customElements$.pipe(
       map((customElements) =>
-        customElements.find((x) => x.tagName === customElementTagName)
-      )
+        customElements.find((x) => x.tagName === customElementTagName),
+      ),
     );
   }
 }

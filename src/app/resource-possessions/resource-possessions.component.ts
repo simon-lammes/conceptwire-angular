@@ -39,11 +39,11 @@ export class ResourcePossessionsComponent {
             ({
               book,
               bookPossession: bookPossessions.find(
-                (x) => x.isbn13 === book.isbn13
+                (x) => x.isbn13 === book.isbn13,
               ) ?? { isbn13: book.isbn13, isInPossession: false },
-            } as BookPossessionViewModel)
-        )
-      )
+            }) as BookPossessionViewModel,
+        ),
+      ),
     );
 
   constructor(private db: DbService) {}

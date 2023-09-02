@@ -11,23 +11,23 @@ export class TemplateService {
   readonly loadAndCompileTemplate = (location: string) =>
     this.http.get(location, { responseType: 'text' }).pipe(
       map((template) => Handlebars.compile(template)),
-      shareReplay()
+      shareReplay(),
     );
 
   readonly exerciseTemplate$ = this.loadAndCompileTemplate(
-    './assets/templates/new-exercise.hbs'
+    './assets/templates/new-exercise.hbs',
   );
 
   readonly newLabelTemplate$ = this.loadAndCompileTemplate(
-    './assets/templates/new-label.hbs'
+    './assets/templates/new-label.hbs',
   );
 
   readonly findMissingElementExerciseTemplate$ = this.loadAndCompileTemplate(
-    './assets/templates/find-missing-element-exercise.hbs'
+    './assets/templates/find-missing-element-exercise.hbs',
   );
 
   readonly keymapCommandExerciseTemplate$ = this.loadAndCompileTemplate(
-    './assets/templates/keymap-command-exercise.hbs'
+    './assets/templates/keymap-command-exercise.hbs',
   );
 
   constructor(private http: HttpClient) {}
@@ -53,7 +53,7 @@ export class TemplateService {
     existingElements: { rawContent: string }[];
   }) {
     const template = await firstValueFrom(
-      this.findMissingElementExerciseTemplate$
+      this.findMissingElementExerciseTemplate$,
     );
     return template(args);
   }

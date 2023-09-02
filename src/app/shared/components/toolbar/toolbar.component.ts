@@ -42,7 +42,10 @@ export class ToolbarComponent {
   @Input()
   additionalActions?: AdditionalToolbarAction[];
 
-  constructor(private router: Router, private route: ActivatedRoute) {}
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+  ) {}
 
   async goBack() {
     // We prefer using the supreme navigation api.

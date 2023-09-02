@@ -68,7 +68,7 @@ export class StudyComponent {
   showExerciseDetails$ = new BehaviorSubject(false);
   nextExerciseRequested$ = new BehaviorSubject<true>(true);
   labelId$ = this.route.params.pipe(
-    map((params) => params['labelId'] as string)
+    map((params) => params['labelId'] as string),
   );
   experience$ = combineLatest([
     this.labelId$,
@@ -78,8 +78,8 @@ export class StudyComponent {
       this.experienceService.getExperienceStreamForStudying({
         labelId,
         availableBooksByIsbn13,
-      })
-    )
+      }),
+    ),
   );
   exerciseSituation$ = this.nextExerciseRequested$.pipe(
     switchMap(() => this.experience$.pipe(take(1))),
@@ -88,12 +88,12 @@ export class StudyComponent {
         map((exercise) => {
           if (!exercise) return undefined;
           return <ExerciseSituation>{ exercise, experience };
-        })
-      )
-    )
+        }),
+      ),
+    ),
   );
   label$: Observable<Label | undefined> = this.labelId$.pipe(
-    switchMap((labelId) => this.labelService.getLabelById(labelId))
+    switchMap((labelId) => this.labelService.getLabelById(labelId)),
   );
   studyProgress$ = combineLatest([
     this.labelId$,
@@ -104,14 +104,14 @@ export class StudyComponent {
       this.experienceService.getStudyProgress(
         labelId,
         experience,
-        booksInPossessionByIsbn13
-      )
-    )
+        booksInPossessionByIsbn13,
+      ),
+    ),
   );
   readonly labelsOfExercise$ = this.experience$.pipe(
     switchMap((experience) =>
-      this.labelService.getLabelsOfExercise(experience?.exerciseId)
-    )
+      this.labelService.getLabelsOfExercise(experience?.exerciseId),
+    ),
   );
 
   constructor(
@@ -119,7 +119,7 @@ export class StudyComponent {
     private experienceService: ExperienceService,
     private exerciseService: ExerciseService,
     private labelService: LabelService,
-    private bookPossessionService: BookPossessionService
+    private bookPossessionService: BookPossessionService,
   ) {}
 
   async onExerciseResult(exerciseResult: ExerciseResult) {
@@ -140,7 +140,7 @@ export class StudyComponent {
         exerciseSituation: exerciseSituation,
         feedback: 'skip',
       },
-      labelId
+      labelId,
     );
     this.nextExerciseRequested$.next(true);
   }
