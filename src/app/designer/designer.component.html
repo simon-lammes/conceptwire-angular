@@ -1,0 +1,114 @@
+<ion-header>
+  <app-toolbar
+    title="Designer"
+    [additionalActions]="additionalActions"
+  ></app-toolbar>
+</ion-header>
+<ion-content>
+  <div class="grid grid-cols-4">
+    <div class="overflow-y-auto h-full px-2">
+      <mat-form-field
+        appearance="outline"
+        class="p-2 bg-white sticky top-0 border-b-2 border-neutral-100"
+      >
+        <mat-label>Search</mat-label>
+        <input matInput placeholder="Search..." [formControl]="searchControl" />
+      </mat-form-field>
+      <div class="p-2">
+        <div class="text-lg flex items-baseline gap-2">
+          <div>Labels</div>
+          <button
+            class="bg-blue-100 rounded-full w-5 h-5 flex items-center justify-center hover:bg-blue-200"
+            (click)="createLabel()"
+          >
+            <i class="fa-plus not-italic text-blue-800"></i>
+          </button>
+        </div>
+        <div class="ml-4">
+          <app-file-button
+            *ngFor="let label of labels$ | async"
+            [title]="label.title"
+            [highlighted]="label.id === (selection$ | async)?.labelId"
+            (clicked)="selectLabel(label)"
+          ></app-file-button>
+        </div>
+      </div>
+      <div class="p-2">
+        <div class="text-lg flex items-baseline gap-2">
+          <div>Exercises</div>
+          <button
+            class="bg-blue-100 rounded-full w-5 h-5 flex items-center justify-center hover:bg-blue-200"
+            (click)="createExercise()"
+          >
+            <i class="fa-plus not-italic text-blue-800"></i>
+          </button>
+        </div>
+        <div class="ml-4">
+          <app-file-button
+            *ngFor="let exercise of exercises$ | async"
+            [title]="exercise?.title ?? ''"
+            [highlighted]="exercise.id === (selection$ | async)?.exerciseId"
+            (clicked)="selectExercise(exercise)"
+          ></app-file-button>
+        </div>
+      </div>
+      <div class="p-2">
+        <div class="text-lg flex items-baseline gap-2">
+          <div>Elements</div>
+        </div>
+        <div class="ml-4">
+          <app-file-button
+            *ngFor="
+              let element of customElementsService.customElements$ | async
+            "
+            [title]="element | customElementTitle"
+            [highlighted]="
+              element.tagName === (selection$ | async)?.customElementTagName
+            "
+            (clicked)="selectCustomElement(element)"
+          ></app-file-button>
+        </div>
+      </div>
+    </div>
+    <div class="overflow-y-auto h-full col-span-2 p-4">
+      <app-exercise-preview
+        *ngIf="selectedExercise$ | async as exercise"
+        [exercise]="exercise"
+        [labels]="(labelsOfSelectedExercise$ | async) ?? []"
+        (labelClicked)="selectLabel($event)"
+        (duplicated)="duplicateExercise(exercise)"
+        (openExercise)="selectExercise($event)"
+      ></app-exercise-preview>
+      <app-label-preview
+        *ngIf="selectedLabel$ | async as label"
+        [label]="label"
+        [subLabels]="(subLabelsOfSelectedLabel$ | async) ?? []"
+        (labelClicked)="selectLabel($event)"
+      ></app-label-preview>
+      <app-custom-element-documentation
+        *ngIf="selectedCustomElement$ | async as customElement"
+        [customElement]="customElement"
+      ></app-custom-element-documentation>
+    </div>
+    <div class="overflow-y-auto h-full p-4">
+      <div class="text-blue-800">Labels</div>
+      <ng-container *ngIf="recentlySelectedLabels$ | async as labels">
+        <app-file-button
+          *ngFor="let label of labels"
+          [title]="label.title"
+          [highlighted]="label.id === (selection$ | async)?.labelId"
+          (clicked)="selectLabel(label)"
+        ></app-file-button>
+      </ng-container>
+      <div class="mt-4 text-blue-800">Exercises</div>
+      <ng-container *ngIf="recentlySelectedExercises$ | async as exercises">
+        <app-file-button
+          *ngFor="let exercise of exercises"
+          [title]="exercise.title ?? ''"
+          [highlighted]="exercise.id === (selection$ | async)?.exerciseId"
+          (clicked)="selectExercise(exercise)"
+        ></app-file-button>
+      </ng-container>
+    </div>
+  </div>
+</ion-content>

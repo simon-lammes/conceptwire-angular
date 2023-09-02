@@ -2,12 +2,14 @@ import { css, html, LitElement } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import katex from 'katex';
 import { unsafeHTML } from 'lit/directives/unsafe-html.js';
+import * as _ from 'lodash';
 
 @customElement('cw-math')
 export class MathElement extends LitElement {
   static override styles = css`
     :host {
       display: block;
+      font-size: 1.5rem;
     }
   `;
 
@@ -17,10 +19,11 @@ export class MathElement extends LitElement {
 
   override render() {
     try {
-      const renderedMath = katex.renderToString(this.innerHTML, {
+      const renderedMath = katex.renderToString(_.unescape(this.innerHTML), {
         macros: {
           '\\f': '#1f(#2)',
         },
+        displayMode: true,
       });
       return html` <link
           rel="stylesheet"

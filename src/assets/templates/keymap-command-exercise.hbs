@@ -1,0 +1,26 @@
+<html>
+  <head>
+    <title>{{concept.title}}
+      -
+      {{command.operatingSystem}}
+      -
+      {{command.title}}</title>
+    <meta name="direct-label-ids" content="{{concept.directLabelIds}}" />
+    <meta name="source-concept-id" content="{{concept.id}}" />
+  </head>
+  <body>
+    <cw-question-answer-exercise>
+      <div slot="question">
+        <div>What is the shortcut in
+          {{concept.title}}
+          on
+          {{command.operatingSystem}}
+          for the following action?</div>
+        <div>{{command.title}}</div>
+      </div>
+      <div slot="answer">
+        {{command.key}}
+      </div>
+    </cw-question-answer-exercise>
+  </body>
+</html>

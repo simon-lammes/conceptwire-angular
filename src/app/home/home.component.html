@@ -1,14 +1,71 @@
-<div class="p-8">
-  <button mat-raised-button color="primary" [routerLink]="'/labels'">
-    Labels
-  </button>
-  <button mat-raised-button color="primary" [routerLink]="'/exercises'">
-    Exercises
-  </button>
-  <button mat-raised-button color="primary" [routerLink]="'/synchronization'">
-    Synchronization
-  </button>
-  <button mat-raised-button color="primary" [routerLink]="'/settings'">
-    Settings
-  </button>
-</div>
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Conceptwire</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <app-padded-layout>
+    <div class="flex items-end text-xl text-blue-800 py-2">
+      <div class="flex-grow">Continue Studying...</div>
+      <button class="hover:underline" [routerLink]="'/labels'">
+        all labels <i class="fa-solid fa-arrow-right text-base"></i>
+      </button>
+    </div>
+
+    <ng-container *ngIf="labelService.recentlyStudiedLabels$ | async as labels">
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-4">
+        <ng-container *ngFor="let label of labels">
+          <app-label
+            [label]="label"
+            (clicked)="onLabelClicked(label)"
+          ></app-label>
+        </ng-container>
+      </div>
+    </ng-container>
+
+    <div class="flex items-end text-xl text-blue-800 pb-2 pt-8">
+      Further Functionality
+    </div>
+
+    <div class="flex gap-4">
+      <app-tile
+        *ngIf="lgBreakpoint$ | async"
+        class="w-0 flex-grow"
+        title="Designer"
+        fontawesomeIconClasses="fa-solid fa-compass-drafting"
+        (clicked)="router.navigate(['designer'])"
+      >
+      </app-tile>
+      <app-tile
+        class="w-0 flex-grow"
+        title="Synchronization"
+        fontawesomeIconClasses="fa-solid fa-rotate"
+        (clicked)="router.navigate(['synchronization'])"
+      >
+      </app-tile>
+      <app-tile
+        class="w-0 flex-grow"
+        title="Settings"
+        fontawesomeIconClasses="fa-solid fa-gear"
+        (clicked)="router.navigate(['settings'])"
+      >
+      </app-tile>
+    </div>
+    <app-tile
+      class="my-4"
+      fontawesomeIconClasses="fa-solid fa-briefcase"
+      title="Resource Possessions"
+      (clicked)="router.navigate(['resource-possessions'])"
+    ></app-tile>
+    <app-tile
+      class="my-4"
+      fontawesomeIconClasses="fa-solid fa-wand-magic-sparkles"
+      [title]="
+        (serviceWorkerService.isUpdateAvailable$ | async)
+          ? 'Load New Version'
+          : 'Check for Update'
+      "
+      (clicked)="loadNewVersionIfAvailable()"
+    ></app-tile>
+  </app-padded-layout>
+</ion-content>

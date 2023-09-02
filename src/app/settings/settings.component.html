@@ -1,23 +1,45 @@
-<app-toolbar title="Settings"></app-toolbar>
-<div class="p-8">
-  <form (ngSubmit)="onSubmit()">
-    <div>
-      <mat-checkbox
-        [formControl]="immediatelyJumpToNextExerciseAfterGivingFeedbackControl"
-        >Immediately jump to next exercise after giving feedback</mat-checkbox
+<ion-header>
+  <app-toolbar title="Settings"></app-toolbar>
+</ion-header>
+<ion-content>
+  <div class="p-8">
+    <form (ngSubmit)="onSubmit()">
+      <div>
+        <mat-checkbox
+          [formControl]="
+            immediatelyJumpToNextExerciseAfterGivingFeedbackControl
+          "
+          >Immediately jump to next exercise after giving feedback</mat-checkbox
+        >
+      </div>
+      <ion-select
+        label="Internet Connection Evaluation Strategy"
+        placeholder="Internet Connection Evaluation Strategy"
+        [formControl]="internetConnectionEvaluationStrategyControl"
+        interface="action-sheet"
       >
-    </div>
-    <div>
-      <mat-form-field>
-        <mat-label>Cooldown Formula</mat-label>
-        <input matInput [formControl]="cooldownFormulaControl" />
-      </mat-form-field>
-      <app-cooldown-preview
-        [formula]="cooldownFormulaControl.value ?? ''"
-      ></app-cooldown-preview>
-    </div>
-    <div>
-      <button mat-raised-button color="primary" type="submit">Save</button>
-    </div>
-  </form>
-</div>
+        <ion-select-option value="considerInternetUnavailable"
+          >Consider Internet Unavailable</ion-select-option
+        >
+        <ion-select-option value="considerInternetAvailableWhenUsingWlan"
+          >Consider Internet Available When Using WLAN</ion-select-option
+        >
+        <ion-select-option value="considerInternetAvailable"
+          >Consider Internet Available</ion-select-option
+        >
+      </ion-select>
+      <div>
+        <mat-form-field>
+          <mat-label>Cooldown Formula</mat-label>
+          <input matInput [formControl]="cooldownFormulaControl" />
+        </mat-form-field>
+        <app-cooldown-preview
+          [formula]="cooldownFormulaControl.value ?? ''"
+        ></app-cooldown-preview>
+      </div>
+      <div>
+        <button mat-raised-button color="primary" type="submit">Save</button>
+      </div>
+    </form>
+  </div>
+</ion-content>

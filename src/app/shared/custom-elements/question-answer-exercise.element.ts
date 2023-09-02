@@ -1,6 +1,10 @@
 import { css, html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 
+/**
+ * @slot question - The part of the exercise that is shown to the user.
+ * @slot answer - The solution to the exercise.
+ */
 @customElement('cw-question-answer-exercise')
 export class QuestionAnswerExerciseElement extends LitElement {
   static override styles = css`

@@ -6,7 +6,7 @@ import { Duration, intervalToDuration } from 'date-fns';
   providedIn: 'root',
 })
 export class ExerciseCooldownService {
-  calculateCooldown({
+  calculateCooldownMillis({
     formula,
     correctStreak,
   }: {

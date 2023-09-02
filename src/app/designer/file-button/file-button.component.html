@@ -1,0 +1,9 @@
+<button
+  class="block overflow-ellipsis overflow-hidden whitespace-nowrap max-w-full px-1 py-0.5 rounded-md"
+  [ngClass]="{
+    'bg-blue-100': highlighted
+  }"
+  (click)="onClick($event)"
+>
+  {{ title }}
+</button>

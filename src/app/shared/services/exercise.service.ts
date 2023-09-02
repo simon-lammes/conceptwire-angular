@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import { DbService } from './db.service';
-import { from, Observable, of, switchMap } from 'rxjs';
+import { from, map, Observable, of, switchMap } from 'rxjs';
 import { liveQuery } from 'dexie';
 import { ExerciseLabel } from '../models/exercise-label';
+import { Exercise } from '../models/exercise';
+import { QualityLabels } from '../models/quality-labels';
 
 @Injectable({
   providedIn: 'root',
@@ -50,11 +52,13 @@ export class ExerciseService {
     content,
     labelIds,
     title,
+    qualityLabels,
   }: {
     id?: string;
     content: string;
     labelIds?: string[] | null;
     title?: string;
+    qualityLabels?: QualityLabels[];
   }) {
     await this.db.transaction(
       'rw',
@@ -64,6 +68,7 @@ export class ExerciseService {
           id: id ?? self.crypto.randomUUID(),
           content,
           title,
+          qualityLabels: qualityLabels ?? [],
         });
         if (labelIds) {
           await this.db.exerciseLabels.bulkPut(
@@ -79,5 +84,31 @@ export class ExerciseService {
       return of(undefined);
     }
     return from(liveQuery(() => this.db.exercises.get(exerciseId)));
+  }
+
+  getExercisesByIds(exerciseIds: string[]) {
+    return from(liveQuery(() => this.db.exercises.bulkGet(exerciseIds))).pipe(
+      map((exercises) => exercises.filter((x) => !!x) as Exercise[])
+    );
+  }
+
+  getReferencedBooksByIsbn13(exercise: Exercise): string[] {
+    const exerciseElement = document.createElement('span');
+    exerciseElement.innerHTML = exercise.content;
+    const bookReferences = Array.from(
+      exerciseElement.querySelectorAll('cw-book-reference')
+    );
+    return bookReferences
+      .map((x) => x.getAttribute('isbn-13'))
+      .filter((x) => !!x) as string[];
+  }
+
+  doesExerciseRequireInternetConnection(exercise: Exercise) {
+    const exerciseElement = document.createElement('span');
+    exerciseElement.innerHTML = exercise.content;
+    const elementsThatRequireInternetConnection = Array.from(
+      exerciseElement.querySelectorAll('cw-youtube-video')
+    );
+    return elementsThatRequireInternetConnection.length > 0;
   }
 }

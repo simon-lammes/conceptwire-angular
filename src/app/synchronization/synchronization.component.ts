@@ -2,19 +2,31 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ExerciseService } from '../shared/services/exercise.service';
 import { firstValueFrom } from 'rxjs';
 import { DbService } from '../shared/services/db.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { TileComponent } from '../shared/components/tile/tile.component';
+import { PaddedLayoutComponent } from '../shared/components/padded-layout/padded-layout.component';
+import { ToolbarComponent } from '../shared/components/toolbar/toolbar.component';
+import { IonicModule } from '@ionic/angular';
 
 @Component({
   selector: 'app-synchronization',
   templateUrl: './synchronization.component.html',
-  styleUrls: ['./synchronization.component.sass'],
+  styleUrls: ['./synchronization.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    ToolbarComponent,
+    PaddedLayoutComponent,
+    TileComponent,
+    IonicModule,
+  ],
 })
 export class SynchronizationComponent {
   constructor(
     private exerciseService: ExerciseService,
     protected route: ActivatedRoute,
-    protected dbService: DbService
+    protected dbService: DbService,
+    protected router: Router
   ) {}
 
   async exportIntoDirectory() {

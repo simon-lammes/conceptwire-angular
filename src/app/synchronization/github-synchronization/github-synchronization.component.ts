@@ -1,15 +1,37 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { combineLatest, map, of, switchMap } from 'rxjs';
 import { GithubSynchronizationService } from '../../shared/services/github-synchronization.service';
 import { valueChangesOfControl } from '../../shared/helpers/rxjs/value-changes-of-control';
 import { Procedure } from '../../shared/models/procedure';
+import { ProcedureButtonComponent } from '../../shared/components/procedure-button/procedure-button.component';
+import { MatOptionModule } from '@angular/material/core';
+import { CommonModule } from '@angular/common';
+import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { PaddedLayoutComponent } from '../../shared/components/padded-layout/padded-layout.component';
+import { ToolbarComponent } from '../../shared/components/toolbar/toolbar.component';
+import { IonicModule } from '@ionic/angular';
 
 @Component({
   selector: 'app-github-synchronization',
   templateUrl: './github-synchronization.component.html',
   styleUrls: ['./github-synchronization.component.sass'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    CommonModule,
+    ToolbarComponent,
+    PaddedLayoutComponent,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatOptionModule,
+    ProcedureButtonComponent,
+    IonicModule,
+  ],
 })
 export class GithubSynchronizationComponent {
   readonly userControl = new FormControl('simon-lammes');

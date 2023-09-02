@@ -3,7 +3,7 @@ import { customElement, property } from 'lit/decorators.js';
 
 @customElement('cw-external-reference')
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-class CodeElement extends LitElement {
+class ExternalReferenceElement extends LitElement {
   static override styles = css``;
 
   @property({ attribute: 'cw-href' })

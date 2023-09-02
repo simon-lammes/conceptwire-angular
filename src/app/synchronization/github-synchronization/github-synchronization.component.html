@@ -1,22 +1,28 @@
-<app-toolbar title="Import from GitHub"> </app-toolbar>
-<app-padded-layout>
-  <form>
-    <mat-form-field>
-      <mat-label>GitHub User</mat-label>
-      <input matInput [formControl]="userControl" />
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>Repository Name</mat-label>
-      <input matInput [formControl]="repoControl" />
-    </mat-form-field>
-    <mat-form-field appearance="fill">
-      <mat-label>Branch</mat-label>
-      <mat-select [formControl]="branchControl">
-        <mat-option *ngFor="let branch of branches$ | async" [value]="branch">
-          {{ branch }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-    <app-procedure-button [procedure]="importProcedure"></app-procedure-button>
-  </form>
-</app-padded-layout>
+<ion-header>
+  <app-toolbar title="Import from GitHub"> </app-toolbar>
+</ion-header>
+<ion-content>
+  <app-padded-layout>
+    <form>
+      <mat-form-field>
+        <mat-label>GitHub User</mat-label>
+        <input matInput [formControl]="userControl" />
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Repository Name</mat-label>
+        <input matInput [formControl]="repoControl" />
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Branch</mat-label>
+        <mat-select [formControl]="branchControl">
+          <mat-option *ngFor="let branch of branches$ | async" [value]="branch">
+            {{ branch }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <app-procedure-button
+        [procedure]="importProcedure"
+      ></app-procedure-button>
+    </form>
+  </app-padded-layout>
+</ion-content>

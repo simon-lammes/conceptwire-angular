@@ -1,24 +1,19 @@
 import { css, html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { ExerciseFeedback } from '../models/exercise-feedback';
-import { classMap } from 'lit/directives/class-map.js';
+
+import install from '@twind/with-web-components';
+// @ts-ignore
+import config from '../../../../twind.config.js';
+
+const withTwind = install(config);
 
 @customElement('cw-solution-feedback')
-export class SolutionFeedbackElement extends LitElement {
+@install(config)
+export class SolutionFeedbackElement extends withTwind(LitElement) {
   static override styles = css`
     :host {
       display: block;
-    }
-
-    button {
-      cursor: pointer;
-    }
-
-    .feedback-row {
-      display: flex;
-      flex-direction: row;
-      gap: 4rem;
-      padding-top: 1rem;
     }
   `;
 
@@ -73,7 +68,7 @@ export class SolutionFeedbackElement extends LitElement {
     return html` <cw-shoelace-context>
       ${this.isAnswerShown
         ? html`
-            <div class="feedback-row">
+            <div class="flex flex-row gap-8 pt-4">
               <sl-button
                 variant="${this.feedback === 'failure' ? 'danger' : 'default'}"
                 size="large"
@@ -106,7 +101,14 @@ export class SolutionFeedbackElement extends LitElement {
                 : ''}
             </div>
           `
-        : html` <button @click="${this.showAnswer}">show solution</button> `}
+        : html`
+            <button
+              @click="${this.showAnswer}"
+              class="bg-blue-50 rounded-lg border-2 border-blue-200 text-blue-800 hover:bg-blue-100 focus:border-blue-800 focus:rounded-2xl px-3 py-2"
+            >
+              show solution
+            </button>
+          `}
     </cw-shoelace-context>`;
   }
 }

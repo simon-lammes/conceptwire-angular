@@ -3,6 +3,9 @@ import { customElement, property, state } from 'lit/decorators.js';
 import * as d3 from 'd3';
 import * as _ from 'lodash-es';
 
+/**
+ * A marble diagram known from RxJS or other ReactiveX implementations.
+ */
 @customElement('cw-marble-diagram')
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 class MarbleDiagramElement extends LitElement {

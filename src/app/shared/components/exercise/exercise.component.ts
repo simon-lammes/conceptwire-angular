@@ -4,7 +4,6 @@ import {
   ElementRef,
   EventEmitter,
   Input,
-  OnDestroy,
   Output,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -12,7 +11,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { ExerciseFeedback } from '../../models/exercise-feedback';
-import { ApplyRuntimeTransformationsToExercisePipe } from '../../pipes/apply-study-settings-to-exercise.pipe';
+import { ApplyRuntimeTransformationsToExercisePipe } from '../../pipes/apply-runtime-transformations-to-exercise.pipe';
 import { TrustHtmlPipe } from '../../pipes/trust-html.pipe';
 import '../../../shared/custom-elements/question-answer-exercise.element';
 import '../../../shared/custom-elements/math.element';
@@ -30,6 +29,12 @@ import '../../../shared/custom-elements/external-reference.element';
 import '../../../shared/custom-elements/opinion-exercise.element';
 import '../../custom-elements/opinion.element';
 import '../../custom-elements/cw-example.element';
+import '../../custom-elements/element.element';
+import '../../custom-elements/personal-note.element';
+import '../../custom-elements/youtube-video.element';
+import '../../custom-elements/book-reference.element';
+import '../../custom-elements/exercise-reference.element';
+import { Exercise } from '../../models/exercise';
 
 @Component({
   selector: 'app-exercise',
@@ -55,6 +60,9 @@ export class ExerciseComponent {
   @Output()
   nextExerciseRequested = new EventEmitter();
 
+  @Output()
+  openExercise = new EventEmitter<Exercise>();
+
   constructor(private elementRef: ElementRef) {
     this.elementRef.nativeElement.addEventListener(
       'cw-exercise-feedback',
@@ -63,8 +71,14 @@ export class ExerciseComponent {
     );
     this.elementRef.nativeElement.addEventListener(
       'cw-request-next-exercise',
-      (ev: CustomEvent) => {
+      () => {
         this.nextExerciseRequested.emit();
+      }
+    );
+    this.elementRef.nativeElement.addEventListener(
+      'cw-open-exercise',
+      (event: CustomEvent<Exercise>) => {
+        this.openExercise.emit(event.detail);
       }
     );
   }

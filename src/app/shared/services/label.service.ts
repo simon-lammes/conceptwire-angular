@@ -1,19 +1,34 @@
 import { Injectable } from '@angular/core';
 import { DbService } from './db.service';
-import { from, map, Observable, of, switchMap } from 'rxjs';
+import { combineLatest, from, map, Observable, of, switchMap } from 'rxjs';
 import { Label } from '../models/label';
 import { liveQuery } from 'dexie';
 import { LabelImplication } from '../models/label-implication';
-import { Exercise } from '../models/exercise';
+import * as _ from 'lodash';
 
 @Injectable({
   providedIn: 'root',
 })
 export class LabelService {
-  labels$: Observable<Label[]>;
-  constructor(private db: DbService) {
-    this.labels$ = from(liveQuery(() => this.db.labels.toArray()));
-  }
+  readonly labels$: Observable<Label[]> = from(
+    liveQuery(() => this.db.labels.toArray())
+  );
+
+  readonly recentlyStudiedLabels$ = from(
+    liveQuery(() =>
+      this.db.studyEvents.orderBy('dateTime').reverse().limit(100).toArray()
+    )
+  ).pipe(
+    map((studyEvents) => _.uniq(studyEvents.map((x) => x.studiedLabelId))),
+    switchMap((labelIds) =>
+      labelIds.length
+        ? combineLatest(labelIds.map((labelId) => this.getLabelById(labelId)))
+        : of([])
+    ),
+    map((labels) => labels.filter((x) => !!x) as Label[])
+  );
+
+  constructor(private db: DbService) {}
 
   async saveLabel({
     id,
@@ -46,8 +61,11 @@ export class LabelService {
   }
 
   searchLabels(query: string) {
+    const queryLowercase = query.toLowerCase();
     return this.labels$.pipe(
-      map((labels) => labels.filter((x) => x.title.includes(query)))
+      map((labels) =>
+        labels.filter((x) => x.title.toLowerCase().includes(queryLowercase))
+      )
     );
   }
 
@@ -55,7 +73,7 @@ export class LabelService {
     return this.db.labels.where('title').equals(title).first();
   }
 
-  getLabelById(labelId: string) {
+  getLabelById(labelId?: string) {
     if (!labelId) return of(undefined);
     return from(liveQuery(() => this.db.labels.get(labelId)));
   }
@@ -78,11 +96,11 @@ export class LabelService {
     );
   }
 
-  getLabelsOfExercise(exercise?: Exercise): Observable<Label[] | undefined> {
-    if (!exercise) return of(undefined);
+  getLabelsOfExercise(exerciseId?: string): Observable<Label[] | undefined> {
+    if (!exerciseId) return of(undefined);
     return from(
       liveQuery(() =>
-        this.db.exerciseLabels.where('exerciseId').equals(exercise.id).toArray()
+        this.db.exerciseLabels.where('exerciseId').equals(exerciseId).toArray()
       )
     ).pipe(
       switchMap((exerciseLabels) =>
@@ -123,5 +141,11 @@ export class LabelService {
       .where('causingLabelId')
       .equals(currentLabelId)
       .toArray();
+  }
+
+  getLabelsByIds(labelIds: string[]) {
+    return from(liveQuery(() => this.db.labels.bulkGet(labelIds))).pipe(
+      map((exercises) => exercises.filter((x) => !!x) as Label[])
+    );
   }
 }

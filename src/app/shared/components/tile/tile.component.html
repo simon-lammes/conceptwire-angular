@@ -1,0 +1,11 @@
+<button
+  class="px-4 w-full py-2 gap-2 flex flex-col items-center bg-neutral-100 rounded-lg border-2 border-neutral-300 hover:bg-neutral-200"
+  [ngClass]="{
+    'text-blue-800': color === 'default',
+    'text-red-800': color === 'danger'
+  }"
+  (click)="clicked.emit($event)"
+>
+  <i class="text-5xl" [ngClass]="fontawesomeIconClasses"></i>
+  <div class="text-xl font-medium">{{ title }}</div>
+</button>
