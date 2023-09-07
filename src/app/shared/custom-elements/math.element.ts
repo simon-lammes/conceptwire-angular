@@ -1,5 +1,6 @@
 import { css, html, LitElement } from 'lit';
 import { customElement } from 'lit/decorators.js';
+// @ts-ignore
 import katex from 'katex';
 import { unsafeHTML } from 'lit/directives/unsafe-html.js';
 import * as _ from 'lodash';
