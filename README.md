@@ -1,9 +1,13 @@
 ## Common Commands
 
+### Page - Inline
+```shell
+ng generate component pages/my-component --type page --standalone --inline-style --inline-template --skip-tests --change-detection OnPush
+```
 
 ### Component - Inline
 ```shell
-ng generate component shared/components/my-component --standalone --inline-style --inline-template --skip-tests --change-detection OnPush
+ng generate component components/my-component --standalone --inline-style --inline-template --skip-tests --change-detection OnPush
 ```
 
 ### Component - With HTML, TS and CSS
@@ -13,15 +17,10 @@ ng generate component shared/components/my-component --standalone --skip-tests  
 
 ### Service
 ```shell
-ng g service shared/services/my-service --skip-tests
+ng g service services/my-service --skip-tests
 ```
 
 ### Pipe
 ```shell
-ng g pipe shared/pipes/my-pipe --standalone
-```
-
-### Page - Lazy-Loaded
-```shell
-ng generate module customers --route customers --module app.module
+ng g pipe pipes/my-pipe --standalone
 ```

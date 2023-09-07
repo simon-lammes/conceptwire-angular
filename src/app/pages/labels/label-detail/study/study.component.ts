@@ -9,23 +9,23 @@ import {
   switchMap,
   take,
 } from 'rxjs';
-import { ExerciseService } from '../../../shared/services/exercise.service';
-import { ExperienceService } from '../../../shared/services/experience.service';
-import { ExerciseSituation } from '../../../shared/models/exercise-situation';
-import { ExerciseResult } from '../../../shared/models/exerciseResult';
-import { LabelService } from '../../../shared/services/label.service';
-import { Label } from '../../../shared/models/label';
-import { ExerciseSituationComponent } from '../../../shared/components/exercise-situation/exercise-situation.component';
-import { StudyProgressComponent } from '../../../shared/components/study-progress/study-progress.component';
-import { PaddedLayoutComponent } from '../../../shared/components/padded-layout/padded-layout.component';
+import { ExerciseService } from '../../../../services/exercise.service';
+import { ExperienceService } from '../../../../services/experience.service';
+import { ExerciseSituation } from '../../../../models/exercise-situation';
+import { ExerciseResult } from '../../../../models/exerciseResult';
+import { LabelService } from '../../../../services/label.service';
+import { Label } from '../../../../models/label';
+import { ExerciseSituationComponent } from '../../../../components/exercise-situation/exercise-situation.component';
+import { StudyProgressComponent } from '../../../../components/study-progress/study-progress.component';
+import { PaddedLayoutComponent } from '../../../../components/padded-layout/padded-layout.component';
 import { CommonModule } from '@angular/common';
 import {
   AdditionalToolbarAction,
   ToolbarComponent,
-} from '../../../shared/components/toolbar/toolbar.component';
-import { BookPossessionService } from '../../../shared/services/book-possession.service';
+} from '../../../../components/toolbar/toolbar.component';
+import { BookPossessionService } from '../../../../services/book-possession.service';
 import { IonicModule } from '@ionic/angular';
-import { ExercisePreviewComponent } from '../../../shared/components/exercise-preview/exercise-preview.component';
+import { ExercisePreviewComponent } from '../../../../components/exercise-preview/exercise-preview.component';
 
 @Component({
   selector: 'app-study',

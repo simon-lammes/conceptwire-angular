@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { ExerciseService } from '../shared/services/exercise.service';
+import { ExerciseService } from '../../services/exercise.service';
 import { firstValueFrom } from 'rxjs';
-import { DbService } from '../shared/services/db.service';
+import { DbService } from '../../services/db.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { TileComponent } from '../shared/components/tile/tile.component';
-import { PaddedLayoutComponent } from '../shared/components/padded-layout/padded-layout.component';
-import { ToolbarComponent } from '../shared/components/toolbar/toolbar.component';
+import { TileComponent } from '../../components/tile/tile.component';
+import { PaddedLayoutComponent } from '../../components/padded-layout/padded-layout.component';
+import { ToolbarComponent } from '../../components/toolbar/toolbar.component';
 import { IonicModule } from '@ionic/angular';
 
 @Component({

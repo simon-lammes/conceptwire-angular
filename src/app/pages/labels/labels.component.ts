@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { LabelService } from '../shared/services/label.service';
+import { LabelService } from '../../services/label.service';
 import { Observable } from 'rxjs';
-import { Label } from '../shared/models/label';
+import { Label } from '../../models/label';
 import { ActivatedRoute, Router } from '@angular/router';
 import { lab } from 'd3';
-import { LabelComponent } from '../shared/components/label/label.component';
+import { LabelComponent } from '../../components/label/label.component';
 import { CommonModule } from '@angular/common';
-import { ToolbarComponent } from '../shared/components/toolbar/toolbar.component';
+import { ToolbarComponent } from '../../components/toolbar/toolbar.component';
 import { IonicModule } from '@ionic/angular';
 
 @Component({

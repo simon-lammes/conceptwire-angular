@@ -1,14 +1,14 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { LabelService } from '../shared/services/label.service';
-import { Label } from '../shared/models/label';
+import { LabelService } from '../../services/label.service';
+import { Label } from '../../models/label';
 import { Router, RouterModule } from '@angular/router';
-import { TileComponent } from '../shared/components/tile/tile.component';
-import { LabelComponent } from '../shared/components/label/label.component';
+import { TileComponent } from '../../components/tile/tile.component';
+import { LabelComponent } from '../../components/label/label.component';
 import { CommonModule } from '@angular/common';
-import { PaddedLayoutComponent } from '../shared/components/padded-layout/padded-layout.component';
+import { PaddedLayoutComponent } from '../../components/padded-layout/padded-layout.component';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { firstValueFrom, map } from 'rxjs';
-import { ServiceWorkerService } from '../shared/services/service-worker.service';
+import { ServiceWorkerService } from '../../services/service-worker.service';
 import { IonicModule } from '@ionic/angular';
 
 @Component({

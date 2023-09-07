@@ -4,7 +4,7 @@ import { Exercise } from '../models/exercise';
 
 import install from '@twind/with-web-components';
 // @ts-ignore
-import config from '../../../../twind.config.js';
+import config from '../../../twind.config.js';
 
 const withTwind = install(config);
 

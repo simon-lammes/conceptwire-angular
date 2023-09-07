@@ -1,14 +1,14 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { LabelService } from '../../shared/services/label.service';
+import { LabelService } from '../../../services/label.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map, Observable, switchMap } from 'rxjs';
-import { Label } from '../../shared/models/label';
-import { LocalAssetUrlPipe } from '../../shared/pipes/local-asset-url.pipe';
+import { Label } from '../../../models/label';
+import { LocalAssetUrlPipe } from '../../../pipes/local-asset-url.pipe';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
-import { PaddedLayoutComponent } from '../../shared/components/padded-layout/padded-layout.component';
-import { ToolbarComponent } from '../../shared/components/toolbar/toolbar.component';
+import { PaddedLayoutComponent } from '../../../components/padded-layout/padded-layout.component';
+import { ToolbarComponent } from '../../../components/toolbar/toolbar.component';
 import { IonicModule } from '@ionic/angular';
 
 @Component({

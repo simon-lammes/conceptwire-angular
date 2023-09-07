@@ -4,12 +4,12 @@ import {
   CUSTOM_ELEMENTS_SCHEMA,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ToolbarComponent } from '../shared/components/toolbar/toolbar.component';
-import { DbService } from '../shared/services/db.service';
+import { ToolbarComponent } from '../../components/toolbar/toolbar.component';
+import { DbService } from '../../services/db.service';
 import { liveQuery } from 'dexie';
-import { PaddedLayoutComponent } from '../shared/components/padded-layout/padded-layout.component';
-import { BookPossession } from '../shared/models/book-possession';
-import { Book } from '../shared/models/book';
+import { PaddedLayoutComponent } from '../../components/padded-layout/padded-layout.component';
+import { BookPossession } from '../../models/book-possession';
+import { Book } from '../../models/book';
 import { combineLatest, from, map, Observable } from 'rxjs';
 import { IonicModule } from '@ionic/angular';
 

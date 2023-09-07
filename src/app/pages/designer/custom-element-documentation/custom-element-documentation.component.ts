@@ -7,7 +7,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { CustomElementDeclaration } from 'custom-elements-manifest';
 import * as _ from 'lodash';
-import { CustomElementTitlePipe } from '../../shared/pipes/custom-element-title.pipe';
+import { CustomElementTitlePipe } from '../../../pipes/custom-element-title.pipe';
 
 @Component({
   selector: 'app-custom-element-documentation',

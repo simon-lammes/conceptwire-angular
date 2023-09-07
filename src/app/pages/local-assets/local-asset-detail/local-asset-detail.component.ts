@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { map, Observable, switchMap } from 'rxjs';
-import { AssetAttributionService } from '../../shared/services/asset-attribution.service';
-import { LocalAssetUrlPipe } from '../../shared/pipes/local-asset-url.pipe';
+import { AssetAttributionService } from '../../../services/asset-attribution.service';
+import { LocalAssetUrlPipe } from '../../../pipes/local-asset-url.pipe';
 import { CommonModule } from '@angular/common';
-import { ToolbarComponent } from '../../shared/components/toolbar/toolbar.component';
+import { ToolbarComponent } from '../../../components/toolbar/toolbar.component';
 import { IonicModule } from '@ionic/angular';
 
 @Component({

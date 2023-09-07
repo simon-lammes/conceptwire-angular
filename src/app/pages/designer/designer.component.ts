@@ -6,9 +6,9 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
-import '../shared/custom-elements/shoelace-context.element';
-import { LabelService } from '../shared/services/label.service';
-import { ExerciseService } from '../shared/services/exercise.service';
+import '../../custom-elements/shoelace-context.element';
+import { LabelService } from '../../services/label.service';
+import { ExerciseService } from '../../services/exercise.service';
 import {
   debounceTime,
   firstValueFrom,
@@ -20,24 +20,24 @@ import {
   startWith,
   switchMap,
 } from 'rxjs';
-import { Exercise } from '../shared/models/exercise';
-import { Label } from '../shared/models/label';
-import { ExercisePreviewComponent } from '../shared/components/exercise-preview/exercise-preview.component';
-import { LabelComponent } from '../shared/components/label/label.component';
+import { Exercise } from '../../models/exercise';
+import { Label } from '../../models/label';
+import { ExercisePreviewComponent } from '../../components/exercise-preview/exercise-preview.component';
+import { LabelComponent } from '../../components/label/label.component';
 import {
   AdditionalToolbarAction,
   ToolbarComponent,
-} from '../shared/components/toolbar/toolbar.component';
-import { LabelPreviewComponent } from '../shared/components/label-preview/label-preview.component';
-import { FileSystemSynchronisationService } from '../shared/services/file-system-synchronisation.service';
+} from '../../components/toolbar/toolbar.component';
+import { LabelPreviewComponent } from '../../components/label-preview/label-preview.component';
+import { FileSystemSynchronisationService } from '../../services/file-system-synchronisation.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FileButtonComponent } from './file-button/file-button.component';
 import { BindQueryParamsFactory } from '@ngneat/bind-query-params';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { CustomElementsService } from '../shared/services/custom-elements.service';
+import { CustomElementsService } from '../../services/custom-elements.service';
 import { CustomElementDeclaration } from 'custom-elements-manifest';
 import { CustomElementDocumentationComponent } from './custom-element-documentation/custom-element-documentation.component';
-import { CustomElementTitlePipe } from '../shared/pipes/custom-element-title.pipe';
+import { CustomElementTitlePipe } from '../../pipes/custom-element-title.pipe';
 import { IonicModule } from '@ionic/angular';
 
 interface Selection {

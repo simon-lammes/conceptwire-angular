@@ -5,16 +5,16 @@ import {
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { StudySettingsService } from '../shared/services/study-settings.service';
+import { StudySettingsService } from '../../services/study-settings.service';
 import { firstValueFrom } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
-import { CooldownPreviewComponent } from '../shared/components/cooldown-preview/cooldown-preview.component';
+import { CooldownPreviewComponent } from '../../components/cooldown-preview/cooldown-preview.component';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { ToolbarComponent } from '../shared/components/toolbar/toolbar.component';
+import { ToolbarComponent } from '../../components/toolbar/toolbar.component';
 import { IonicModule } from '@ionic/angular';
-import { InternetConnectionEvaluationStrategy } from '../shared/models/internet-connection-evaluation-strategy';
+import { InternetConnectionEvaluationStrategy } from '../../models/internet-connection-evaluation-strategy';
 
 @Component({
   selector: 'app-settings',

@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { AssetService } from '../shared/services/asset.service';
+import { AssetService } from '../../services/asset.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Asset } from '../shared/models/asset';
-import { LocalAssetUrlPipe } from '../shared/pipes/local-asset-url.pipe';
+import { Asset } from '../../models/asset';
+import { LocalAssetUrlPipe } from '../../pipes/local-asset-url.pipe';
 import { CommonModule } from '@angular/common';
-import { ToolbarComponent } from '../shared/components/toolbar/toolbar.component';
+import { ToolbarComponent } from '../../components/toolbar/toolbar.component';
 import { IonicModule } from '@ionic/angular';
 
 @Component({
