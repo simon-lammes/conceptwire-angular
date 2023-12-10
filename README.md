@@ -13,3 +13,21 @@ Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The appli
 ```bash
 ng g c pages/xxx --change-detection OnPush --type page --skip-selector --skip-tests --inline-style --inline-template
 ```
+
+### Component
+
+```bash
+ng g c components/xxx --change-detection OnPush --skip-tests --inline-style --inline-template
+```
+
+### Service
+
+```bash
+ng g service services/xxx  --skip-tests 
+```
+
+### Guard
+
+```bash
+ng g guard guards/xxx  --skip-tests
+```

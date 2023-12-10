@@ -10,6 +10,4 @@ import { RouterOutlet } from '@angular/router';
   styleUrl: './app.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AppComponent {
-  title = 'conceptwire-angular';
-}
+export class AppComponent {}
