@@ -5,94 +5,37 @@
   "projects": {
     "conceptwire-angular": {
       "projectType": "application",
-      "schematics": {
-        "@schematics/angular:component": {
-          "style": "sass"
-        }
-      },
+      "schematics": {},
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "builder": "@angular-devkit/build-angular:application",
           "options": {
             "outputPath": "dist/conceptwire-angular",
             "index": "src/index.html",
-            "main": "src/main.ts",
+            "browser": "src/main.ts",
             "polyfills": [
               "zone.js"
             ],
             "tsConfig": "tsconfig.app.json",
-            "inlineStyleLanguage": "sass",
             "assets": [
               "src/favicon.ico",
-              "src/assets",
-              {
-                "glob": "**/*",
-                "input": "./node_modules/@shoelace-style/shoelace/dist/assets/",
-                "output": "./shoelace/dist/assets/"
-              },
-              {
-                "glob": "**/*",
-                "input": "./node_modules/@fortawesome/fontawesome-free",
-                "output": "./fontawesome/"
-              },
-              "src/manifest.webmanifest",
-              {
-                "glob": "**/*.svg",
-                "input": "node_modules/ionicons/dist/ionicons/svg",
-                "output": "./svg"
-              }
+              "src/assets"
             ],
             "styles": [
-              "src/custom-theme.scss",
-              "src/styles.sass",
-              {
-                "input": "node_modules/@ionic/angular/css/core.css"
-              },
-              {
-                "input": "node_modules/@ionic/angular/css/normalize.css"
-              },
-              {
-                "input": "node_modules/@ionic/angular/css/structure.css"
-              },
-              {
-                "input": "node_modules/@ionic/angular/css/typography.css"
-              },
-              {
-                "input": "node_modules/@ionic/angular/css/display.css"
-              },
-              {
-                "input": "node_modules/@ionic/angular/css/padding.css"
-              },
-              {
-                "input": "node_modules/@ionic/angular/css/float-elements.css"
-              },
-              {
-                "input": "node_modules/@ionic/angular/css/text-alignment.css"
-              },
-              {
-                "input": "node_modules/@ionic/angular/css/text-transformation.css"
-              },
-              {
-                "input": "node_modules/@ionic/angular/css/flex-utils.css"
-              },
-              {
-                "input": "src/theme/variables.css"
-              }
+              "src/styles.css"
             ],
-            "scripts": [],
-            "serviceWorker": true,
-            "ngswConfigPath": "ngsw-config.json"
+            "scripts": []
           },
           "configurations": {
             "production": {
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "5mb"
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -103,12 +46,9 @@
               "outputHashing": "all"
             },
             "development": {
-              "buildOptimizer": false,
               "optimization": false,
-              "vendorChunk": true,
               "extractLicenses": false,
-              "sourceMap": true,
-              "namedChunks": true
+              "sourceMap": true
             }
           },
           "defaultConfiguration": "production"
@@ -117,10 +57,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "conceptwire-angular:build:production"
+              "buildTarget": "conceptwire-angular:build:production"
             },
             "development": {
-              "browserTarget": "conceptwire-angular:build:development"
+              "buildTarget": "conceptwire-angular:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -128,7 +68,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "conceptwire-angular:build"
+            "buildTarget": "conceptwire-angular:build"
           }
         },
         "test": {
@@ -139,19 +79,12 @@
               "zone.js/testing"
             ],
             "tsConfig": "tsconfig.spec.json",
-            "inlineStyleLanguage": "sass",
             "assets": [
               "src/favicon.ico",
-              "src/assets",
-              "src/manifest.webmanifest",
-              {
-                "glob": "**/*.svg",
-                "input": "node_modules/ionicons/dist/ionicons/svg",
-                "output": "./svg"
-              }
+              "src/assets"
             ],
             "styles": [
-              "src/styles.sass"
+              "src/styles.css"
             ],
             "scripts": []
           }
@@ -164,36 +97,12 @@
               "src/**/*.html"
             ]
           }
-        },
-        "ionic-cordova-serve": {
-          "builder": "@ionic/angular-toolkit:cordova-serve",
-          "options": {
-            "cordovaBuildTarget": "conceptwire-angular:ionic-cordova-build",
-            "devServerTarget": "conceptwire-angular:serve"
-          },
-          "configurations": {
-            "production": {
-              "cordovaBuildTarget": "conceptwire-angular:ionic-cordova-build:production",
-              "devServerTarget": "conceptwire-angular:serve:production"
-            }
-          }
-        },
-        "ionic-cordova-build": {
-          "builder": "@ionic/angular-toolkit:cordova-build",
-          "options": {
-            "browserTarget": "conceptwire-angular:build"
-          },
-          "configurations": {
-            "production": {
-              "browserTarget": "conceptwire-angular:build:production"
-            }
-          }
         }
       }
     }
   },
   "cli": {
-    "analytics": "c77d357e-3e44-4d64-b8de-28cb7c402116",
+    "analytics": "3ee1c448-9097-4756-8201-4eb44e0bf2d1",
     "schematicCollections": [
       "@angular-eslint/schematics"
     ]
