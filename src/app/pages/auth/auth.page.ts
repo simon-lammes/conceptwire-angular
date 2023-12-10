@@ -6,8 +6,12 @@ import { InputComponent } from '../../components/input/input.component';
   imports: [InputComponent],
   template: `
     <div class="max-w-lg m-auto p-4 space-y-4">
-      <app-input />
-      <app-input />
+      <app-input
+        label="Email"
+        placeholder="you@example.com"
+        inputType="email"
+      />
+      <app-input label="Password" inputType="password" />
     </div>
   `,
   styles: ``,
