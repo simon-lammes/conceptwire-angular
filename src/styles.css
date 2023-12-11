@@ -1,3 +1,14 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  background: var(--background);
+  color: var(--foreground);
+  --background: var(--tw-color-neutral-50);
+  --foreground: var(--tw-color-neutral-900);
+  --foreground-subtle: var(--tw-color-neutral-400);
+  --border: var(--tw-color-neutral-300);
+  --border-highlight: var(--tw-color-indigo-600);
+  --tw-ring-color: var(--border);
+}
