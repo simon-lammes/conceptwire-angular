@@ -4,8 +4,8 @@ import { isAuthenticatedGuard } from './guards/is-authenticated.guard';
 export const routes: Routes = [
   {
     path: 'auth',
-    loadComponent: () =>
-      import('./pages/auth/auth.page').then((x) => x.AuthPage),
+    loadChildren: () =>
+      import('./pages/auth/auth.routes').then((x) => x.routes),
   },
   {
     path: 'home',
