@@ -1,7 +1,15 @@
 @import "primeng/resources/themes/lara-light-blue/theme.css";
 @import "primeng/resources/primeng.css";
+@import "primeicons/primeicons.css";
 
 // The base styles might conflict with primeng's base styles.
 // @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+html,
+body {
+  color: var(--text-color);
+  height: 100%;
+  margin: 0;
+}
