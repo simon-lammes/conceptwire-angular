@@ -1,6 +1,0 @@
-<button class="text-blue-800 hover:underline" (click)="onClick()">
-  <ng-container *ngIf="(indicateCopied$ | async) === false">{{
-    text
-  }}</ng-container>
-  <ng-container *ngIf="(indicateCopied$ | async) === true">copied</ng-container>
-</button>

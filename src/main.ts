@@ -1,30 +1,6 @@
-import { importProvidersFrom, isDevMode } from '@angular/core';
+import { bootstrapApplication } from '@angular/platform-browser';
+import { appConfig } from './app/app.config';
 import { AppComponent } from './app/app.component';
-import {
-  provideHttpClient,
-  withInterceptorsFromDi,
-} from '@angular/common/http';
-import { provideAnimations } from '@angular/platform-browser/animations';
-import { bootstrapApplication, BrowserModule } from '@angular/platform-browser';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { provideRouter } from '@angular/router';
-import appRoutes from './app/app.routes';
-import { provideServiceWorker } from '@angular/service-worker';
-import { setBasePath } from '@shoelace-style/shoelace';
-import { IonicModule } from '@ionic/angular';
 
-setBasePath('/shoelace/dist/');
-
-bootstrapApplication(AppComponent, {
-  providers: [
-    importProvidersFrom(BrowserModule, IonicModule.forRoot()),
-    MatSnackBar,
-    provideAnimations(),
-    provideHttpClient(withInterceptorsFromDi()),
-    provideRouter(appRoutes),
-    provideServiceWorker('ngsw-worker.js', {
-      enabled: !isDevMode(),
-      registrationStrategy: 'registerWhenStable:30000',
-    }),
-  ],
-}).catch((err) => console.error(err));
+bootstrapApplication(AppComponent, appConfig)
+  .catch((err) => console.error(err));
