@@ -1,2 +1,7 @@
 @import "primeng/resources/themes/lara-light-blue/theme.css";
 @import "primeng/resources/primeng.css";
+
+// The base styles might conflict with primeng's base styles.
+// @tailwind base;
+@tailwind components;
+@tailwind utilities;
