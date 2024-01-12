@@ -5,6 +5,12 @@ const routes: Routes = [
   {
     path: "",
     component: HomePage,
+    children: [
+      {
+        path: "exercises-editor",
+        loadChildren: () => import("./exercises-editor/routes"),
+      },
+    ],
   },
 ];
 

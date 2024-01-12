@@ -66,5 +66,10 @@ export class NavigationRailComponent {
       name: "Dashboard",
       icon: "pi-home",
     },
+    {
+      route: "exercises-editor",
+      name: "Editor",
+      icon: "pi-file-edit",
+    },
   ];
 }
