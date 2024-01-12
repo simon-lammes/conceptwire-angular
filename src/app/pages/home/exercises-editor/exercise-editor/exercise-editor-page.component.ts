@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component } from "@angular/core";
-import { ExerciseEditorComponent } from "../../../../components/exercise-editor/exercise-editor.component";
+import { HtmlEditorComponent } from "../../../../components/html-editor/html-editor.component";
 
 @Component({
-  selector: "app-exercise-editor-page",
+  selector: "app-html-editor-page",
   standalone: true,
-  imports: [ExerciseEditorComponent],
-  template: `<app-exercise-editor />`,
+  imports: [HtmlEditorComponent],
+  template: `<app-html-editor />`,
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

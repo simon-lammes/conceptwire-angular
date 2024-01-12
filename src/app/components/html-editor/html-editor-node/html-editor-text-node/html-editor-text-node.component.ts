@@ -5,7 +5,7 @@ import { FormsModule } from "@angular/forms";
 import { InputTextareaModule } from "primeng/inputtextarea";
 
 @Component({
-  selector: "app-text-node",
+  selector: "app-html-editor-text-node",
   standalone: true,
   imports: [FormsModule, InputTextareaModule],
   template: `<textarea
@@ -17,7 +17,7 @@ import { InputTextareaModule } from "primeng/inputtextarea";
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TextNodeComponent {
+export class HtmlEditorTextNodeComponent {
   @Input({ required: true })
   node!: TreeNode<hast.Text>;
 }

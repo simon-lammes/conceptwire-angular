@@ -3,13 +3,13 @@ import { TreeDragDropService, TreeNode } from "primeng/api";
 import { fromHtmlIsomorphic } from "hast-util-from-html-isomorphic";
 import { find } from "unist-util-find";
 import * as hast from "hast";
-import { TreeModule } from "primeng/tree";
-import { EditorNodeComponent } from "./editor-node/editor-node.component";
+import { TreeModule, TreeNodeDropEvent } from "primeng/tree";
+import { HtmlEditorNodeComponent } from "./html-editor-node/html-editor-node.component";
 
 @Component({
-  selector: "app-exercise-editor",
+  selector: "app-html-editor",
   standalone: true,
-  imports: [TreeModule, EditorNodeComponent],
+  imports: [TreeModule, HtmlEditorNodeComponent],
   template: `
     <p-tree
       class="md:w-30rem w-full"
@@ -18,9 +18,11 @@ import { EditorNodeComponent } from "./editor-node/editor-node.component";
       [droppableNodes]="true"
       draggableScope="self"
       droppableScope="self"
+      [validateDrop]="true"
+      (onNodeDrop)="onNodeDrop($event)"
     >
       <ng-template let-node pTemplate="default">
-        <app-editor-node [node]="node" />
+        <app-html-editor-node [node]="node" />
       </ng-template>
     </p-tree>
   `,
@@ -28,8 +30,12 @@ import { EditorNodeComponent } from "./editor-node/editor-node.component";
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ExerciseEditorComponent {
+export class HtmlEditorComponent {
   treeNodes!: TreeNode<hast.Node>[];
+
+  readonly customNames = new Map([
+    ["cw-question-answer-exercise", "Question Answer Exercise"],
+  ]);
 
   readonly x = `<cw-question-answer-exercise>
       <div slot="question">question???</div>
@@ -51,17 +57,34 @@ export class ExerciseEditorComponent {
   }
 
   shouldSkipHastNode(node: hast.Node): boolean {
-    return node.type === "text" && !(node as hast.Text).value.trim();
+    return node.type === "text";
   }
 
   hastNodeToVisualNode(node: hast.Node): TreeNode {
     return {
-      label:
-        node.type == "element" ? (node as hast.Element).tagName : node.type,
+      label: this.getLabelForHastNode(node),
       children: (node as hast.Element).children
         ?.filter((node) => !this.shouldSkipHastNode(node))
         .map((child) => this.hastNodeToVisualNode(child)),
       data: node,
     };
+  }
+
+  private getLabelForHastNode(node: hast.Node) {
+    if (node.type === "element") {
+      return (
+        this.customNames.get((node as hast.Element).tagName) ||
+        (node as hast.Element).tagName
+      );
+    }
+    return node.type;
+  }
+
+  onNodeDrop(event: TreeNodeDropEvent) {
+    const accept = Math.random() < 0.5;
+    console.log("random accept: ", accept);
+    if (accept) {
+      event.accept!();
+    }
   }
 }
