@@ -7,8 +7,8 @@ const routes: Routes = [
     component: HomePage,
     children: [
       {
-        path: "exercises-editor",
-        loadChildren: () => import("./exercises-editor/routes"),
+        path: "exercises",
+        loadChildren: () => import("./exercises/exercises.routes"),
       },
     ],
   },

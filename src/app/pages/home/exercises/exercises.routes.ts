@@ -1,10 +1,10 @@
 import { Routes } from "@angular/router";
-import { ExerciseEditorPage } from "./exercise-editor-page.component";
+import { ExercisesPage } from "./exercises.page";
 
 const routes: Routes = [
   {
     path: "",
-    component: ExerciseEditorPage,
+    component: ExercisesPage,
   },
 ];
 
