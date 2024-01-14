@@ -19,4 +19,18 @@ export class ExerciseService {
           .then((x) => x.data),
     });
   }
+
+  getExerciseById(exerciseId: any) {
+    return this.query({
+      queryKey: ["exercises", exerciseId],
+      queryFn: async () =>
+        await supabase
+          .from("exercises")
+          .select()
+          .eq("id", exerciseId)
+          .single()
+          .throwOnError()
+          .then((x) => x.data),
+    });
+  }
 }
