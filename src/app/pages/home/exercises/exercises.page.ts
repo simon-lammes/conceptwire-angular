@@ -1,17 +1,23 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { ExerciseService } from "../../../services/exercise.service";
+import { AsyncPipe, JsonPipe } from "@angular/common";
 
 @Component({
-  selector: 'app-exercises',
+  selector: "app-exercises",
   standalone: true,
-  imports: [],
+  imports: [JsonPipe, AsyncPipe],
   template: `
-    <p>
-      exercises works!
-    </p>
+    @if (exerciseQuery$ | async; as query) {
+      @if (query.data; as exercises) {
+        {{ exercises | json }}
+      }
+    }
   `,
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ExercisesPage {
+  readonly exerciseService = inject(ExerciseService);
 
+  readonly exerciseQuery$ = this.exerciseService.getExercisesQuery().result$;
 }
