@@ -3,19 +3,16 @@ import { ActivatedRoute } from "@angular/router";
 import { map } from "rxjs";
 import { ExerciseService } from "../../../../services/exercise.service";
 import { ToolbarComponent } from "../../../../components/toolbar/toolbar.component";
+import { OpenHtmlExternallyButtonComponent } from "../../../../components/open-html-externally-button/open-html-externally-button.component";
 
 @Component({
   selector: "app-exercise",
   standalone: true,
-  imports: [ToolbarComponent],
+  imports: [ToolbarComponent, OpenHtmlExternallyButtonComponent],
   template: `
     <app-toolbar title="Exercise">
       <ng-container end>
-        <a
-          href="jetbrains://web-storm/navigate/reference?project=conceptwire-angular&path=src/app/pages/home/exercises/exercise/exercise.page.ts"
-        >
-          open in webstorm
-        </a>
+        <app-open-html-externally-button />
       </ng-container>
     </app-toolbar>
   `,
