@@ -3,7 +3,7 @@ import { SplitButtonModule } from "primeng/splitbutton";
 import { MenuItem } from "primeng/api";
 import { DialogModule } from "primeng/dialog";
 import { LocalEditorSettingsComponent } from "./local-editor-settings/local-editor-settings.component";
-import { LocalSettingsService } from "../../services/local-settings.service";
+import { LocalEditingService } from "../../services/local-editing.service";
 
 @Component({
   selector: "app-open-html-externally-button",
@@ -42,27 +42,11 @@ export class OpenHtmlExternallyButtonComponent {
 
   readonly visible = signal(false);
 
-  constructor(private localSettingsService: LocalSettingsService) {}
+  constructor(private localEditingService: LocalEditingService) {}
 
   async open() {
-    const settings = await this.localSettingsService.getLocalSettings();
-    const projectDir = settings?.projectDirectory;
-    if (!projectDir) {
-      this.visible.set(true);
-      return;
-    }
-    await projectDir.requestPermission({ mode: "readwrite" });
-    const tempDir = await projectDir.getDirectoryHandle("temp", {
-      create: true,
+    await this.localEditingService.editTempFileLocally({
+      fileName: "exercise.html",
     });
-    const file = await tempDir.getFileHandle("exercise.html", {
-      create: true,
-    });
-    const writeable = await file.createWritable({ keepExistingData: false });
-    await writeable.write("hello world");
-    await writeable.close();
-    window.open(
-      `jetbrains://web-storm/navigate/reference?project=conceptwire-angular&path=temp/exercise.html`,
-    );
   }
 }
