@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { get, set } from "idb-keyval";
+import { LocalSettings } from "../models/local-settings";
 
 @Injectable({
   providedIn: "root",
@@ -7,11 +8,11 @@ import { get, set } from "idb-keyval";
 export class LocalSettingsService {
   readonly localSettingsKey = "local-settings";
 
-  async getLocalSettings() {
+  async getLocalSettings(): Promise<LocalSettings | undefined> {
     return get(this.localSettingsKey);
   }
 
-  async patchLocalSettings(updates: any) {
+  async patchLocalSettings(updates: Partial<LocalSettings>) {
     const existingSettings = (await this.getLocalSettings()) ?? {};
     const newSettings = { ...existingSettings, ...updates };
     await set(this.localSettingsKey, newSettings);

@@ -37,7 +37,7 @@ export class LocalEditorSettingsComponent {
   readonly localSettingsService = inject(LocalSettingsService);
 
   readonly form = this.fb.group({
-    projectDirectory: this.fb.control(null),
+    projectDirectory: this.fb.control<FileSystemDirectoryHandle | null>(null),
   });
 
   /**
