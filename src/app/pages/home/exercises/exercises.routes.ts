@@ -1,6 +1,6 @@
 import { Routes } from "@angular/router";
 import { ExercisesPage } from "./exercises.page";
-import { ExercisePage } from "./exercise/exercise.page";
+import { ExerciseDetailPage } from "./exercise-detail/exercise-detail.page";
 
 const routes: Routes = [
   {
@@ -8,8 +8,8 @@ const routes: Routes = [
     component: ExercisesPage,
   },
   {
-    path: ":id",
-    component: ExercisePage,
+    path: ":exerciseId",
+    component: ExerciseDetailPage,
   },
 ];
 
