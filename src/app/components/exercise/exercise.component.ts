@@ -8,15 +8,16 @@ import {
 import { fromHtmlIsomorphic } from "hast-util-from-html-isomorphic";
 import { find } from "unist-util-find";
 import * as hast from "hast";
+import { NodeComponent } from "./node/node.component";
 
 @Component({
   selector: "app-exercise",
   standalone: true,
-  imports: [],
+  imports: [NodeComponent],
   template: `
     @if (body) {
       @for (x of body.children; track $index) {
-        hi
+        <app-node [node]="x" />
       }
     }
   `,
