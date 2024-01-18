@@ -13,7 +13,8 @@ import { NgComponentOutlet } from "@angular/common";
 
 export interface NodeDefinition {
   component: Type<any>;
-  tagName: string;
+  tagName?: string;
+  type?: string;
 }
 
 @Component({
@@ -44,7 +45,9 @@ export class NodeComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     this.nodeDefinition = this.nodeDefinitions?.find(
-      (x) => x.tagName === (this.node as hast.Element).tagName,
+      (x) =>
+        x.type == this.node.type &&
+        x.tagName == (this.node as hast.Element).tagName,
     );
   }
 }

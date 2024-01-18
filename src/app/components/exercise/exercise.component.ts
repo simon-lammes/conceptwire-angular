@@ -11,6 +11,7 @@ import * as hast from "hast";
 import { NodeComponent, NodeDefinition } from "./node/node.component";
 import { QuestionAnswerExerciseComponent } from "./node/question-answer-exercise/question-answer-exercise.component";
 import { DivComponent } from "./node/div/div.component";
+import { TextComponent } from "./node/text/text.component";
 
 @Component({
   selector: "app-exercise",
@@ -35,11 +36,23 @@ export class ExerciseComponent implements OnChanges {
   readonly nodeDefinitions: NodeDefinition[] = [
     {
       tagName: "cw-question-answer-exercise",
+      type: "element",
       component: QuestionAnswerExerciseComponent,
     },
     {
       tagName: "div",
+      type: "element",
       component: DivComponent,
+    },
+    {
+      tagName: "div",
+      type: "element",
+      component: DivComponent,
+    },
+    {
+      tagName: undefined,
+      type: "text",
+      component: TextComponent,
     },
   ];
 
