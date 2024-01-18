@@ -4,26 +4,30 @@ import {
   Input,
   OnChanges,
   SimpleChanges,
+  Type,
 } from "@angular/core";
 import * as hast from "hast";
 import { QuestionAnswerExerciseComponent } from "./question-answer-exercise/question-answer-exercise.component";
 import { DivComponent } from "./div/div.component";
+import { NgComponentOutlet } from "@angular/common";
+
+export interface NodeDefinition {
+  component: Type<any>;
+  tagName: string;
+}
 
 @Component({
   selector: "app-node",
   standalone: true,
-  imports: [QuestionAnswerExerciseComponent, DivComponent],
+  imports: [QuestionAnswerExerciseComponent, DivComponent, NgComponentOutlet],
   template: `
-    @switch (tagName) {
-      @case ("cw-question-answer-exercise") {
-        <app-question-answer-exercise [node]="$any(node)" />
-      }
-      @case ("div") {
-        <app-div [node]="$any(node)" />
-      }
-    }
-    @if (text) {
-      {{ text }}
+    @if (nodeDefinition) {
+      <ng-container
+        *ngComponentOutlet="
+          nodeDefinition.component;
+          inputs: { nodeDefinitions: nodeDefinitions, node: node }
+        "
+      />
     }
   `,
   styles: ``,
@@ -33,15 +37,14 @@ export class NodeComponent implements OnChanges {
   @Input({ required: true })
   node!: hast.Node;
 
-  tagName?: string;
+  @Input({ required: true })
+  nodeDefinitions?: NodeDefinition[];
 
-  text?: string;
+  nodeDefinition?: NodeDefinition;
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.tagName = (this.node as hast.Element).tagName;
-    this.text =
-      this.node.type === "text"
-        ? (this.node as hast.Text).value.trim()
-        : undefined;
+    this.nodeDefinition = this.nodeDefinitions?.find(
+      (x) => x.tagName === (this.node as hast.Element).tagName,
+    );
   }
 }

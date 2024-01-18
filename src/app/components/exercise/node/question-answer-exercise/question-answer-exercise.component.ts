@@ -8,7 +8,7 @@ import {
 } from "@angular/core";
 import * as hast from "hast";
 import { find } from "unist-util-find";
-import { NodeComponent } from "../node.component";
+import { NodeComponent, NodeDefinition } from "../node.component";
 
 @Component({
   selector: "app-question-answer-exercise",
@@ -17,13 +17,13 @@ import { NodeComponent } from "../node.component";
   template: ` @if (questionNode) {
     <div>
       Question:
-      <app-node [node]="questionNode" />
+      <app-node [node]="questionNode" [nodeDefinitions]="nodeDefinitions" />
     </div>
     <hr />
     @if (answerNode) {
       <div>
         Answer:
-        <app-node [node]="answerNode" />
+        <app-node [node]="answerNode" [nodeDefinitions]="nodeDefinitions" />
       </div>
     }
   }`,
@@ -33,6 +33,9 @@ import { NodeComponent } from "../node.component";
 export class QuestionAnswerExerciseComponent implements OnChanges {
   @Input({ required: true })
   node!: hast.Element;
+
+  @Input({ required: true })
+  nodeDefinitions!: NodeDefinition[];
 
   questionNode?: hast.Node;
 

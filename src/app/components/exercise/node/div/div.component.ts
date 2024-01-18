@@ -5,7 +5,7 @@ import {
   Input,
 } from "@angular/core";
 import * as hast from "hast";
-import { NodeComponent } from "../node.component";
+import { NodeComponent, NodeDefinition } from "../node.component";
 
 @Component({
   selector: "app-div",
@@ -13,7 +13,7 @@ import { NodeComponent } from "../node.component";
   imports: [forwardRef(() => NodeComponent)],
   template: `
     @for (child of node.children; track $index) {
-      <app-node [node]="child" />
+      <app-node [node]="child" [nodeDefinitions]="nodeDefinitions" />
     }
   `,
   styles: ``,
@@ -22,4 +22,7 @@ import { NodeComponent } from "../node.component";
 export class DivComponent {
   @Input({ required: true })
   node!: hast.Element;
+
+  @Input({ required: true })
+  nodeDefinitions!: NodeDefinition[];
 }
